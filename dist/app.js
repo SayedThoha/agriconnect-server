@@ -14,11 +14,11 @@ const body_parser_1 = __importDefault(require("body-parser"));
 const cors_1 = __importDefault(require("cors"));
 const loggerMiddleware_1 = __importDefault(require("./middlewares/loggerMiddleware"));
 // import errorHandler from "./middlewares/errorHandler";
-const clearLogs_1 = __importDefault(require("./utils/clearLogs"));
+// import clearLogs from "./utils/clearLogs";
 const app = (0, express_1.default)();
 const server = http_1.default.createServer(app);
 dotenv_1.default.config();
-(0, clearLogs_1.default)();
+// clearLogs()
 app.use((0, cors_1.default)({
     origin: "http://localhost:4200",
     methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],

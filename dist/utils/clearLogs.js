@@ -8,8 +8,8 @@ const fs_1 = __importDefault(require("fs"));
 const path_1 = __importDefault(require("path"));
 const logger_1 = __importDefault(require("./logger"));
 // Define the paths to the log files
-const errorLogPath = path_1.default.join(__dirname, "logs", "error.log");
-const allLogPath = path_1.default.join(__dirname, "logs", "all.log");
+const errorLogPath = path_1.default.join(__dirname, "../../logs/error.log");
+const allLogPath = path_1.default.join(__dirname, "../../logs/all.log");
 // Function to clear log files
 const clearLogs = () => {
     try {

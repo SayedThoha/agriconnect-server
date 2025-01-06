@@ -4,8 +4,8 @@ import path from "path";
 import Logger from "./logger";
 
 // Define the paths to the log files
-const errorLogPath = path.join(__dirname, "logs", "error.log");
-const allLogPath = path.join(__dirname, "logs", "all.log");
+const errorLogPath = path.join(__dirname, "../../logs/error.log");
+const allLogPath = path.join(__dirname, "../../logs/all.log");
 
 // Function to clear log files
 const clearLogs = () => {

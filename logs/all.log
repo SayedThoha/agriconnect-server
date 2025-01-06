@@ -1,49 +1,9 @@
-2025-01-05 20:16:21:1621 [35mhttp[39m: [35mGET / 404 139 - 6.294 ms[39m
+2025-01-06 08:40:49:4049 [32minfo[39m: [32mLog files cleared successfully.[39m
+2025-01-06 08:43:13:4313 [35mhttp[39m: [35mPOST /user/login 200 349 - 190.481 ms[39m
 [35m[39m
-2025-01-05 20:16:33:1633 [35mhttp[39m: [35mGET / 404 139 - 1.438 ms[39m
+2025-01-06 08:43:51:4351 [35mhttp[39m: [35mPOST /expert/login 200 354 - 223.553 ms[39m
 [35m[39m
-2025-01-05 20:16:37:1637 [35mhttp[39m: [35mGET /error 500 1309 - 1.737 ms[39m
+2025-01-06 08:44:44:4444 [35mhttp[39m: [35mPOST /admin/login 200 281 - 110.874 ms[39m
 [35m[39m
-2025-01-05 20:34:13:3413 [35mhttp[39m: [35mGET /error 500 1309 - 6.287 ms[39m
+2025-01-06 08:44:45:4445 [35mhttp[39m: [35mGET /admin/get_admin_dashboard_details?expertId=6778dd30ee8cc2c975dae416 304 - - 128.911 ms[39m
 [35m[39m
-2025-01-05 20:34:25:3425 [35mhttp[39m: [35mGET /error 500 1309 - 0.812 ms[39m
-[35m[39m
-2025-01-05 20:44:55:4455 [35mhttp[39m: [35mGET /error 500 1309 - 10.566 ms[39m
-[35m[39m
-2025-01-05 20:45:52:4552 [35mhttp[39m: [35mGET /error 500 1309 - 9.999 ms[39m
-[35m[39m
-2025-01-05 20:46:45:4645 [35mhttp[39m: [35mGET /error 500 1309 - 2.706 ms[39m
-[35m[39m
-2025-01-05 20:48:23:4823 [35mhttp[39m: [35mGET /error 500 1309 - 10.050 ms[39m
-[35m[39m
-2025-01-05 20:53:24:5324 [35mhttp[39m: [35mGET /error 500 1309 - 13.009 ms[39m
-[35m[39m
-2025-01-05 21:09:18:918 [35mhttp[39m: [35mGET /error 500 1309 - 3.426 ms[39m
-[35m[39m
-2025-01-05 21:47:19:4719 [35mhttp[39m: [35mPOST /admin/login 200 281 - 374.075 ms[39m
-[35m[39m
-2025-01-05 21:47:19:4719 [35mhttp[39m: [35mGET /admin/get_admin_dashboard_details?expertId=6778dd30ee8cc2c975dae416 401 26 - 14.510 ms[39m
-[35m[39m
-2025-01-05 21:49:18:4918 [35mhttp[39m: [35mPOST /admin/login 200 281 - 379.033 ms[39m
-[35m[39m
-2025-01-05 21:49:18:4918 [35mhttp[39m: [35mGET /admin/get_admin_dashboard_details?expertId=6778dd30ee8cc2c975dae416 401 26 - 24.677 ms[39m
-[35m[39m
-2025-01-05 21:51:31:5131 [35mhttp[39m: [35mPOST /admin/login 200 281 - 463.018 ms[39m
-[35m[39m
-2025-01-05 21:51:31:5131 [35mhttp[39m: [35mGET /admin/get_admin_dashboard_details?expertId=6778dd30ee8cc2c975dae416 401 26 - 13.841 ms[39m
-[35m[39m
-2025-01-05 21:55:12:5512 [35mhttp[39m: [35mPOST /admin/login 200 281 - 344.452 ms[39m
-[35m[39m
-2025-01-05 21:55:12:5512 [35mhttp[39m: [35mGET /admin/get_admin_dashboard_details?expertId=6778dd30ee8cc2c975dae416 401 26 - 27.489 ms[39m
-[35m[39m
-2025-01-05 23:26:34:2634 [35mhttp[39m: [35mPOST /admin/login 200 281 - 345.993 ms[39m
-[35m[39m
-2025-01-05 23:26:34:2634 [35mhttp[39m: [35mGET /admin/get_admin_dashboard_details?expertId=6778dd30ee8cc2c975dae416 304 - - 92.049 ms[39m
-[35m[39m
-2025-01-05 23:28:12:2812 [35mhttp[39m: [35mPOST /admin/login 200 281 - 308.580 ms[39m
-[35m[39m
-2025-01-05 23:28:13:2813 [35mhttp[39m: [35mGET /admin/get_admin_dashboard_details?expertId=6778dd30ee8cc2c975dae416 304 - - 105.210 ms[39m
-[35m[39m
-2025-01-05 23:32:35:3235 [35mhttp[39m: [35mPOST /expert/login 200 354 - 320.476 ms[39m
-[35m[39m
-2025-01-05 23:46:29:4629 [31merror[39m: [31mFailed to clear log files: Error: ENOENT: no such file or directory, open 'D:\Brototype\Agri Connect\server\dist\utils\logs\error.log'[39m

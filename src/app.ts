@@ -11,13 +11,13 @@ import cors from "cors";
 
 import morganMiddleware from "./middlewares/loggerMiddleware";
 // import errorHandler from "./middlewares/errorHandler";
-import clearLogs from "./utils/clearLogs";
+// import clearLogs from "./utils/clearLogs";
 
 const app = express();
 const server = http.createServer(app);
 
 dotenv.config();
-clearLogs()
+// clearLogs()
 
 app.use(
   cors({
