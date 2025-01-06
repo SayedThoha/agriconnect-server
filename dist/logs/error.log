@@ -1,0 +1,154 @@
+::1 - - [05/Jan/2025:12:14:12 +0000] "GET /error HTTP/1.1" 500 1309 "-" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36"
+::1 - - [05/Jan/2025:12:14:47 +0000] "GET /error HTTP/1.1" 500 1309 "-" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36"
+::1 - - [05/Jan/2025:12:14:55 +0000] "GET /error HTTP/1.1" 500 1309 "-" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36"
+::ffff:127.0.0.1 - - [05/Jan/2025:12:17:27 +0000] "GET /error HTTP/1.1" 500 1309 "-" "Thunder Client (https://www.thunderclient.com)"
+::1 - - [05/Jan/2025:12:29:12 +0000] "GET /error HTTP/1.1" 404 144 "-" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36"
+::1 - - [05/Jan/2025:12:30:43 +0000] "GET /error HTTP/1.1" 404 144 "-" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36"
+::1 - - [05/Jan/2025:12:31:21 +0000] "GET /error HTTP/1.1" 404 144 "-" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36"
+::1 - - [05/Jan/2025:12:32:15 +0000] "GET /error HTTP/1.1" 500 1327 "-" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36"
+::1 - - [05/Jan/2025:12:44:01 +0000] "GET /error HTTP/1.1" 500 58 "-" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36"
+2025-01-05T12:44:01.610Z - GET /error - 500 - {"message":"This is a mocked error for testing purposes."}
+::1 - - [05/Jan/2025:12:44:01 +0000] "GET /favicon.ico HTTP/1.1" 404 150 "http://localhost:3000/error" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36"
+::1 - - [05/Jan/2025:12:44:06 +0000] "GET /error HTTP/1.1" 500 58 "-" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36"
+2025-01-05T12:44:06.896Z - GET /error - 500 - {"message":"This is a mocked error for testing purposes."}
+::1 - - [05/Jan/2025:12:47:27 +0000] "GET /error HTTP/1.1" 500 58 "-" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36"
+2025-01-05T12:47:27.336Z - GET /error - 500 - {"message":"This is a mocked error for testing purposes."}
+::1 - - [05/Jan/2025:12:51:07 +0000] "GET /error HTTP/1.1" 500 58 "-" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36"
+2025-01-05T12:51:07.034Z - GET /error - 500 - {"message":"This is a mocked error for testing purposes."}
+::1 - - [05/Jan/2025:12:51:09 +0000] "GET /error HTTP/1.1" 500 58 "-" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36"
+2025-01-05T12:51:09.529Z - GET /error - 500 - {"message":"This is a mocked error for testing purposes."}
+::1 - - [05/Jan/2025:12:56:39 +0000] "GET /error HTTP/1.1" 500 58 "-" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36"
+::1 - - [05/Jan/2025:12:56:58 +0000] "GET /error HTTP/1.1" 500 58 "-" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36"
+::1 - - [05/Jan/2025:13:34:46 +0000] "GET /error HTTP/1.1" 500 1309 "-" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36"
+2025-01-05T13:34:46.598Z - GET /error - 200 - Error: This is a mocked error for testing purposes.
+    at D:\Brototype\Agri Connect\server\dist\app.js:33:19
+    at Layer.handle [as handle_request] (D:\Brototype\Agri Connect\server\node_modules\express\lib\router\layer.js:95:5)
+    at next (D:\Brototype\Agri Connect\server\node_modules\express\lib\router\route.js:149:13)
+    at Route.dispatch (D:\Brototype\Agri Connect\server\node_modules\express\lib\router\route.js:119:3)
+    at Layer.handle [as handle_request] (D:\Brototype\Agri Connect\server\node_modules\express\lib\router\layer.js:95:5)
+    at D:\Brototype\Agri Connect\server\node_modules\express\lib\router\index.js:284:15
+    at Function.process_params (D:\Brototype\Agri Connect\server\node_modules\express\lib\router\index.js:346:12)
+    at next (D:\Brototype\Agri Connect\server\node_modules\express\lib\router\index.js:280:10)
+    at logger (D:\Brototype\Agri Connect\server\node_modules\morgan\index.js:144:5)
+    at Layer.handle [as handle_request] (D:\Brototype\Agri Connect\server\node_modules\express\lib\router\layer.js:95:5)
+::1 - - [05/Jan/2025:13:36:28 +0000] "GET /error HTTP/1.1" 500 1309 "-" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36"
+2025-01-05T13:36:28.009Z - GET /error - 200 - Error: This is a mocked error for testing purposes.
+    at D:\Brototype\Agri Connect\server\dist\app.js:33:19
+    at Layer.handle [as handle_request] (D:\Brototype\Agri Connect\server\node_modules\express\lib\router\layer.js:95:5)
+    at next (D:\Brototype\Agri Connect\server\node_modules\express\lib\router\route.js:149:13)
+    at Route.dispatch (D:\Brototype\Agri Connect\server\node_modules\express\lib\router\route.js:119:3)
+    at Layer.handle [as handle_request] (D:\Brototype\Agri Connect\server\node_modules\express\lib\router\layer.js:95:5)
+    at D:\Brototype\Agri Connect\server\node_modules\express\lib\router\index.js:284:15
+    at Function.process_params (D:\Brototype\Agri Connect\server\node_modules\express\lib\router\index.js:346:12)
+    at next (D:\Brototype\Agri Connect\server\node_modules\express\lib\router\index.js:280:10)
+    at logger (D:\Brototype\Agri Connect\server\node_modules\morgan\index.js:144:5)
+    at Layer.handle [as handle_request] (D:\Brototype\Agri Connect\server\node_modules\express\lib\router\layer.js:95:5)
+::1 - - [05/Jan/2025:13:38:31 +0000] "GET /error HTTP/1.1" 500 1309 "-" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36"
+2025-01-05T13:38:31.736Z - GET /error - 200 - Error: This is a mocked error for testing purposes.
+    at D:\Brototype\Agri Connect\server\dist\app.js:33:19
+    at Layer.handle [as handle_request] (D:\Brototype\Agri Connect\server\node_modules\express\lib\router\layer.js:95:5)
+    at next (D:\Brototype\Agri Connect\server\node_modules\express\lib\router\route.js:149:13)
+    at Route.dispatch (D:\Brototype\Agri Connect\server\node_modules\express\lib\router\route.js:119:3)
+    at Layer.handle [as handle_request] (D:\Brototype\Agri Connect\server\node_modules\express\lib\router\layer.js:95:5)
+    at D:\Brototype\Agri Connect\server\node_modules\express\lib\router\index.js:284:15
+    at Function.process_params (D:\Brototype\Agri Connect\server\node_modules\express\lib\router\index.js:346:12)
+    at next (D:\Brototype\Agri Connect\server\node_modules\express\lib\router\index.js:280:10)
+    at logger (D:\Brototype\Agri Connect\server\node_modules\morgan\index.js:144:5)
+    at Layer.handle [as handle_request] (D:\Brototype\Agri Connect\server\node_modules\express\lib\router\layer.js:95:5)
+2025-01-05T13:45:31.465Z - GET /error - 200 - Error: This is a mocked error for testing purposes.
+    at D:\Brototype\Agri Connect\server\dist\app.js:33:19
+    at Layer.handle [as handle_request] (D:\Brototype\Agri Connect\server\node_modules\express\lib\router\layer.js:95:5)
+    at next (D:\Brototype\Agri Connect\server\node_modules\express\lib\router\route.js:149:13)
+    at Route.dispatch (D:\Brototype\Agri Connect\server\node_modules\express\lib\router\route.js:119:3)
+    at Layer.handle [as handle_request] (D:\Brototype\Agri Connect\server\node_modules\express\lib\router\layer.js:95:5)
+    at D:\Brototype\Agri Connect\server\node_modules\express\lib\router\index.js:284:15
+    at Function.process_params (D:\Brototype\Agri Connect\server\node_modules\express\lib\router\index.js:346:12)
+    at next (D:\Brototype\Agri Connect\server\node_modules\express\lib\router\index.js:280:10)
+    at logger (D:\Brototype\Agri Connect\server\node_modules\morgan\index.js:144:5)
+    at Layer.handle [as handle_request] (D:\Brototype\Agri Connect\server\node_modules\express\lib\router\layer.js:95:5)
+::1 - - [05/Jan/2025:13:45:31 +0000] "GET /error HTTP/1.1" 500 1309 "-" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36"
+2025-01-05T13:45:33.739Z - GET /error - 200 - Error: This is a mocked error for testing purposes.
+    at D:\Brototype\Agri Connect\server\dist\app.js:33:19
+    at Layer.handle [as handle_request] (D:\Brototype\Agri Connect\server\node_modules\express\lib\router\layer.js:95:5)
+    at next (D:\Brototype\Agri Connect\server\node_modules\express\lib\router\route.js:149:13)
+    at Route.dispatch (D:\Brototype\Agri Connect\server\node_modules\express\lib\router\route.js:119:3)
+    at Layer.handle [as handle_request] (D:\Brototype\Agri Connect\server\node_modules\express\lib\router\layer.js:95:5)
+    at D:\Brototype\Agri Connect\server\node_modules\express\lib\router\index.js:284:15
+    at Function.process_params (D:\Brototype\Agri Connect\server\node_modules\express\lib\router\index.js:346:12)
+    at next (D:\Brototype\Agri Connect\server\node_modules\express\lib\router\index.js:280:10)
+    at logger (D:\Brototype\Agri Connect\server\node_modules\morgan\index.js:144:5)
+    at Layer.handle [as handle_request] (D:\Brototype\Agri Connect\server\node_modules\express\lib\router\layer.js:95:5)
+::1 - - [05/Jan/2025:13:45:33 +0000] "GET /error HTTP/1.1" 500 1309 "-" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36"
+2025-01-05T13:45:33.863Z - GET /error - 200 - Error: This is a mocked error for testing purposes.
+    at D:\Brototype\Agri Connect\server\dist\app.js:33:19
+    at Layer.handle [as handle_request] (D:\Brototype\Agri Connect\server\node_modules\express\lib\router\layer.js:95:5)
+    at next (D:\Brototype\Agri Connect\server\node_modules\express\lib\router\route.js:149:13)
+    at Route.dispatch (D:\Brototype\Agri Connect\server\node_modules\express\lib\router\route.js:119:3)
+    at Layer.handle [as handle_request] (D:\Brototype\Agri Connect\server\node_modules\express\lib\router\layer.js:95:5)
+    at D:\Brototype\Agri Connect\server\node_modules\express\lib\router\index.js:284:15
+    at Function.process_params (D:\Brototype\Agri Connect\server\node_modules\express\lib\router\index.js:346:12)
+    at next (D:\Brototype\Agri Connect\server\node_modules\express\lib\router\index.js:280:10)
+    at logger (D:\Brototype\Agri Connect\server\node_modules\morgan\index.js:144:5)
+    at Layer.handle [as handle_request] (D:\Brototype\Agri Connect\server\node_modules\express\lib\router\layer.js:95:5)
+::1 - - [05/Jan/2025:13:45:33 +0000] "GET /error HTTP/1.1" 500 1309 "-" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36"
+2025-01-05T13:45:34.020Z - GET /error - 200 - Error: This is a mocked error for testing purposes.
+    at D:\Brototype\Agri Connect\server\dist\app.js:33:19
+    at Layer.handle [as handle_request] (D:\Brototype\Agri Connect\server\node_modules\express\lib\router\layer.js:95:5)
+    at next (D:\Brototype\Agri Connect\server\node_modules\express\lib\router\route.js:149:13)
+    at Route.dispatch (D:\Brototype\Agri Connect\server\node_modules\express\lib\router\route.js:119:3)
+    at Layer.handle [as handle_request] (D:\Brototype\Agri Connect\server\node_modules\express\lib\router\layer.js:95:5)
+    at D:\Brototype\Agri Connect\server\node_modules\express\lib\router\index.js:284:15
+    at Function.process_params (D:\Brototype\Agri Connect\server\node_modules\express\lib\router\index.js:346:12)
+    at next (D:\Brototype\Agri Connect\server\node_modules\express\lib\router\index.js:280:10)
+    at logger (D:\Brototype\Agri Connect\server\node_modules\morgan\index.js:144:5)
+    at Layer.handle [as handle_request] (D:\Brototype\Agri Connect\server\node_modules\express\lib\router\layer.js:95:5)
+::1 - - [05/Jan/2025:13:45:34 +0000] "GET /error HTTP/1.1" 500 1309 "-" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36"
+2025-01-05T13:45:34.159Z - GET /error - 200 - Error: This is a mocked error for testing purposes.
+    at D:\Brototype\Agri Connect\server\dist\app.js:33:19
+    at Layer.handle [as handle_request] (D:\Brototype\Agri Connect\server\node_modules\express\lib\router\layer.js:95:5)
+    at next (D:\Brototype\Agri Connect\server\node_modules\express\lib\router\route.js:149:13)
+    at Route.dispatch (D:\Brototype\Agri Connect\server\node_modules\express\lib\router\route.js:119:3)
+    at Layer.handle [as handle_request] (D:\Brototype\Agri Connect\server\node_modules\express\lib\router\layer.js:95:5)
+    at D:\Brototype\Agri Connect\server\node_modules\express\lib\router\index.js:284:15
+    at Function.process_params (D:\Brototype\Agri Connect\server\node_modules\express\lib\router\index.js:346:12)
+    at next (D:\Brototype\Agri Connect\server\node_modules\express\lib\router\index.js:280:10)
+    at logger (D:\Brototype\Agri Connect\server\node_modules\morgan\index.js:144:5)
+    at Layer.handle [as handle_request] (D:\Brototype\Agri Connect\server\node_modules\express\lib\router\layer.js:95:5)
+::1 - - [05/Jan/2025:13:45:34 +0000] "GET /error HTTP/1.1" 500 1309 "-" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36"
+2025-01-05T13:45:34.299Z - GET /error - 200 - Error: This is a mocked error for testing purposes.
+    at D:\Brototype\Agri Connect\server\dist\app.js:33:19
+    at Layer.handle [as handle_request] (D:\Brototype\Agri Connect\server\node_modules\express\lib\router\layer.js:95:5)
+    at next (D:\Brototype\Agri Connect\server\node_modules\express\lib\router\route.js:149:13)
+    at Route.dispatch (D:\Brototype\Agri Connect\server\node_modules\express\lib\router\route.js:119:3)
+    at Layer.handle [as handle_request] (D:\Brototype\Agri Connect\server\node_modules\express\lib\router\layer.js:95:5)
+    at D:\Brototype\Agri Connect\server\node_modules\express\lib\router\index.js:284:15
+    at Function.process_params (D:\Brototype\Agri Connect\server\node_modules\express\lib\router\index.js:346:12)
+    at next (D:\Brototype\Agri Connect\server\node_modules\express\lib\router\index.js:280:10)
+    at logger (D:\Brototype\Agri Connect\server\node_modules\morgan\index.js:144:5)
+    at Layer.handle [as handle_request] (D:\Brototype\Agri Connect\server\node_modules\express\lib\router\layer.js:95:5)
+::1 - - [05/Jan/2025:13:45:34 +0000] "GET /error HTTP/1.1" 500 1309 "-" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36"
+2025-01-05T13:45:34.426Z - GET /error - 200 - Error: This is a mocked error for testing purposes.
+    at D:\Brototype\Agri Connect\server\dist\app.js:33:19
+    at Layer.handle [as handle_request] (D:\Brototype\Agri Connect\server\node_modules\express\lib\router\layer.js:95:5)
+    at next (D:\Brototype\Agri Connect\server\node_modules\express\lib\router\route.js:149:13)
+    at Route.dispatch (D:\Brototype\Agri Connect\server\node_modules\express\lib\router\route.js:119:3)
+    at Layer.handle [as handle_request] (D:\Brototype\Agri Connect\server\node_modules\express\lib\router\layer.js:95:5)
+    at D:\Brototype\Agri Connect\server\node_modules\express\lib\router\index.js:284:15
+    at Function.process_params (D:\Brototype\Agri Connect\server\node_modules\express\lib\router\index.js:346:12)
+    at next (D:\Brototype\Agri Connect\server\node_modules\express\lib\router\index.js:280:10)
+    at logger (D:\Brototype\Agri Connect\server\node_modules\morgan\index.js:144:5)
+    at Layer.handle [as handle_request] (D:\Brototype\Agri Connect\server\node_modules\express\lib\router\layer.js:95:5)
+::1 - - [05/Jan/2025:13:45:34 +0000] "GET /error HTTP/1.1" 500 1309 "-" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36"
+2025-01-05T13:45:34.789Z - GET /error - 200 - Error: This is a mocked error for testing purposes.
+    at D:\Brototype\Agri Connect\server\dist\app.js:33:19
+    at Layer.handle [as handle_request] (D:\Brototype\Agri Connect\server\node_modules\express\lib\router\layer.js:95:5)
+    at next (D:\Brototype\Agri Connect\server\node_modules\express\lib\router\route.js:149:13)
+    at Route.dispatch (D:\Brototype\Agri Connect\server\node_modules\express\lib\router\route.js:119:3)
+    at Layer.handle [as handle_request] (D:\Brototype\Agri Connect\server\node_modules\express\lib\router\layer.js:95:5)
+    at D:\Brototype\Agri Connect\server\node_modules\express\lib\router\index.js:284:15
+    at Function.process_params (D:\Brototype\Agri Connect\server\node_modules\express\lib\router\index.js:346:12)
+    at next (D:\Brototype\Agri Connect\server\node_modules\express\lib\router\index.js:280:10)
+    at logger (D:\Brototype\Agri Connect\server\node_modules\morgan\index.js:144:5)
+    at Layer.handle [as handle_request] (D:\Brototype\Agri Connect\server\node_modules\express\lib\router\layer.js:95:5)
+::1 - - [05/Jan/2025:13:45:34 +0000] "GET /error HTTP/1.1" 500 1309 "-" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36"
+GET /error 500 1309 - 10.566 ms

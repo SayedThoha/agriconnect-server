@@ -1,0 +1,1 @@
+2025-01-05 23:46:29:4629 [31merror[39m: [31mFailed to clear log files: Error: ENOENT: no such file or directory, open 'D:\Brototype\Agri Connect\server\dist\utils\logs\error.log'[39m
