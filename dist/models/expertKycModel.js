@@ -13,36 +13,45 @@ const expertKycschema = new mongoose_1.default.Schema({
         required: true,
     },
     exp_certificate: {
-        type: String,
+        type: Boolean,
         default: enum_1.enumForKycVerification[1],
     },
     qualification_certificate: {
-        type: String,
+        type: Boolean,
         default: enum_1.enumForKycVerification[1],
     },
-    liscence: {
-        type: String,
+    expert_licence: {
+        type: Boolean,
         default: enum_1.enumForKycVerification[1],
     },
     id_proof_type: {
-        type: String,
+        type: Boolean,
         default: enum_1.enumForKycVerification[1],
     },
     id_proof: {
-        type: String,
+        type: Boolean,
         default: enum_1.enumForKycVerification[1],
     },
     specialisation: {
-        type: String,
+        type: Boolean,
         default: enum_1.enumForKycVerification[1],
     },
-    curr_work_details: {
-        type: String,
+    current_working_address: {
+        type: Boolean,
         default: enum_1.enumForKycVerification[1],
     },
     created_time: {
         type: Date,
         default: Date.now(),
+    },
+    address: {
+        type: String,
+    },
+    identity_proof_name: {
+        type: String,
+    },
+    specialisation_name: {
+        type: String,
     },
 }, { timestamps: true });
 exports.ExpertKyc = mongoose_1.default.model("expertKyccollection", expertKycschema);

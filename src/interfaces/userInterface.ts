@@ -15,6 +15,7 @@ export interface IUserInput {
   created_time?: Date;
   wallet?: number;
   profile_picture?: string;
+  
 }
 
 export interface LoginResponse {

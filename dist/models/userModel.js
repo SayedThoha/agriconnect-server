@@ -14,9 +14,11 @@ const userSchema = new mongoose_1.default.Schema({
     otp_update_time: { type: Date, default: Date.now },
     is_verified: { type: Boolean, default: false },
     role: { type: String, default: "user" },
-    blocked: { type: String, default: false },
+    blocked: { type: Boolean, default: false },
     created_time: { type: Date, default: Date.now },
     wallet: { type: Number, default: 0 },
     profile_picture: { type: String, default: null },
+    googleId: { type: String },
+    authProvider: { type: String, default: "local" },
 }, { timestamps: true });
 exports.User = mongoose_1.default.model("User", userSchema);

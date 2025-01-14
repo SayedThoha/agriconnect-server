@@ -8,7 +8,7 @@ export interface IUserRepository {
      checkEmail(email: string): Promise<IUser | null>;
      findById(id: string): Promise<IUser | null>;
      updateUserOtp(email: string, otp: string): Promise<IUser | null>;
-     
+     findUserById(id: string): Promise<IUser | null> ;
+     updateUserProfile(id: string,updateData: Partial<IUser> ): Promise<IUser | null>;
+     updateProfilePicture(userId: string, imageUrl: string): Promise<void>
 }
-// updatePassword(newPassword: string, userId: string): Promise<any>;
-     // createUser(userData:any): Promise<Record<string,any>|null>

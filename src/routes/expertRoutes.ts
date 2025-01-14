@@ -3,6 +3,7 @@ import ExpertRepository from "../repositories/expert/expertRepository";
 import ExpertServices from "../services/expertService";
 import ExpertController from "../controllers/expertController";
 import upload from "../utils/multer";
+
 const expertRouter = express.Router();
 
 const expertRepository = new ExpertRepository();
@@ -30,7 +31,7 @@ expertRouter.get("/specialisation", (req, res) =>
   expertController.getSpecialisation(req, res)
 );
 
-expertRouter.post("/resend-otp", (req, res) =>
+expertRouter.post("/resendOtp", (req, res) =>
   expertController.resendOtp(req, res)
 );
 
@@ -39,5 +40,25 @@ expertRouter.post("/verifyOtp", (req, res) =>
 );
 
 expertRouter.post("/login", (req, res) => expertController.login(req, res));
+
+expertRouter.get(
+  "/getExpertDetails",
+
+  (req, res) => expertController.getExpertDetails(req, res)
+);
+
+expertRouter.post(
+  "/editExpertProfile",
+
+  (req, res) => expertController.editExpertProfile(req, res)
+);
+
+expertRouter.post("/opt_for_new_email", (req, res) =>
+  expertController.optForNewEmail(req, res)
+);
+
+expertRouter.post("/edit_expert_profile_picture", (req, res) =>
+  expertController.editExpertProfilePicture(req, res)
+);
 
 export default expertRouter;

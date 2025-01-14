@@ -15,7 +15,7 @@ class UserController {
     constructor(userService) {
         this.userService = userService;
     }
-    registerUserController(req, res) {
+    registerUser(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             console.log("Registering user...");
             try {
@@ -138,6 +138,119 @@ class UserController {
                     success: false,
                     message: "Internal server error",
                 });
+            }
+        });
+    }
+    getUserDetails(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const { _id } = req.query;
+                if (!_id) {
+                    res
+                        .status(httpStatusCodes_1.Http_Status_Codes.BAD_REQUEST)
+                        .json({ message: "User ID is required" });
+                    return;
+                }
+                const user = yield this.userService.getUserDetails(_id);
+                if (!user) {
+                    res
+                        .status(httpStatusCodes_1.Http_Status_Codes.NOT_FOUND)
+                        .json({ message: "User not found" });
+                    return;
+                }
+                res.status(httpStatusCodes_1.Http_Status_Codes.OK).json(user);
+            }
+            catch (error) {
+                console.error("Error in getExpertDetails controller:", error);
+                res
+                    .status(httpStatusCodes_1.Http_Status_Codes.INTERNAL_SERVER_ERROR)
+                    .json({ message: "Internal server error" });
+            }
+        });
+    }
+    editUserProfile(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                console.log("editUserProfile backend");
+                const { _id, firstName, lastName, email } = req.body;
+                console.log(`id :${_id} firstName:${firstName} secondName:${lastName} email:${email}`);
+                if (!_id || !firstName || !lastName || !email) {
+                    res
+                        .status(httpStatusCodes_1.Http_Status_Codes.BAD_REQUEST)
+                        .json({ message: "All fields are required" });
+                    return;
+                }
+                const updatedUser = yield this.userService.editUserProfile(_id, {
+                    firstName,
+                    lastName,
+                    email,
+                });
+                if (!updatedUser) {
+                    res
+                        .status(httpStatusCodes_1.Http_Status_Codes.NOT_FOUND)
+                        .json({ message: "User not found" });
+                    return;
+                }
+                res
+                    .status(httpStatusCodes_1.Http_Status_Codes.OK)
+                    .json({ message: "profile updated sucessfully", data: updatedUser });
+            }
+            catch (error) {
+                console.error("Error in editUserProfile controller:", error);
+                res
+                    .status(httpStatusCodes_1.Http_Status_Codes.INTERNAL_SERVER_ERROR)
+                    .json({ message: "Internal server error" });
+            }
+        });
+    }
+    optForNewEmail(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                console.log("optForNewEmail backend");
+                const { userId, email } = req.body;
+                if (!userId || !email) {
+                    res
+                        .status(httpStatusCodes_1.Http_Status_Codes.BAD_REQUEST)
+                        .json({ message: "User ID and email are required" });
+                    return;
+                }
+                const message = yield this.userService.optForNewEmail(userId, email);
+                res.status(httpStatusCodes_1.Http_Status_Codes.OK).json({ message });
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            }
+            catch (error) {
+                console.error("Error in optForNewEmail controller:", error);
+                if (error.message === "Existing email. Try another") {
+                    res
+                        .status(httpStatusCodes_1.Http_Status_Codes.BAD_REQUEST)
+                        .json({ message: error.message });
+                }
+                else {
+                    res
+                        .status(httpStatusCodes_1.Http_Status_Codes.INTERNAL_SERVER_ERROR)
+                        .json({ message: "Internal Server Error" });
+                }
+            }
+        });
+    }
+    editUserProfilePicture(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const { userId, image_url } = req.body;
+                if (!userId || !image_url) {
+                    res
+                        .status(httpStatusCodes_1.Http_Status_Codes.BAD_REQUEST)
+                        .json({ message: "Missing required fields" });
+                    return;
+                }
+                const message = yield this.userService.editUserProfilePicture(userId, image_url);
+                res.status(httpStatusCodes_1.Http_Status_Codes.OK).json({ message });
+            }
+            catch (error) {
+                console.error("Error in editUserProfilePicture controller:", error);
+                res
+                    .status(httpStatusCodes_1.Http_Status_Codes.INTERNAL_SERVER_ERROR)
+                    .json({ message: "Internal Server Error" });
             }
         });
     }

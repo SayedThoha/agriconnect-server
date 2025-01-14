@@ -31,9 +31,9 @@ app.use("/user", userRoutes_1.default);
 app.use("/expert", expertRoutes_1.default);
 app.use("/admin", adminRoutes_1.default);
 // Mock error route
-app.get("/error", (req, res, next) => {
-    const error = new Error("This is a mocked error for testing purposes.");
-    next(error); // Pass error to error handling middleware
-});
+// app.get("/error", (req, res, next) => {
+//   const error = new Error("This is a mocked error for testing purposes.");
+//   next(error); // Pass error to error handling middleware
+// });
 // app.use(errorHandler);
 exports.default = server;

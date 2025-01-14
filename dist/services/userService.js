@@ -186,7 +186,7 @@ class UserServices {
                     };
                 }
                 // Check if user is blocked
-                if (user.blocked === "true") {
+                if (user.blocked === true) {
                     return {
                         success: false,
                         statusCode: httpStatusCodes_1.Http_Status_Codes.FORBIDDEN,
@@ -247,6 +247,62 @@ class UserServices {
                     message: "Internal server error",
                 };
             }
+        });
+    }
+    getUserDetails(id) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const user = yield this.userRepository.findUserById(id);
+            if (!user) {
+                throw new Error("user not found");
+            }
+            return user;
+        });
+    }
+    editUserProfile(id, updateData) {
+        return __awaiter(this, void 0, void 0, function* () {
+            if (!id || !updateData) {
+                throw new Error("User ID and update data are required");
+            }
+            return this.userRepository.updateUserProfile(id, updateData);
+        });
+    }
+    optForNewEmail(userId, email) {
+        return __awaiter(this, void 0, void 0, function* () {
+            if (!userId || !email) {
+                throw new Error("User ID and email are required");
+            }
+            const user = yield this.userRepository.findUserById(userId);
+            if (!user) {
+                throw new Error("User not found");
+            }
+            if (user.email === email) {
+                throw new Error("Existing email. Try another");
+            }
+            const otp = (0, otp_1.generateOtp)();
+            // Send OTP
+            const isOtpSent = yield (0, sendOtpToMail_1.sentOtpToEmail)(email, otp);
+            if (!isOtpSent) {
+                return {
+                    success: false,
+                    statusCode: httpStatusCodes_1.Http_Status_Codes.INTERNAL_SERVER_ERROR,
+                    message: "Failed to send OTP",
+                };
+            }
+            // const otp = await generateMail(email);
+            yield this.userRepository.updateUserById(userId, {
+                otp: otp,
+                otp_update_time: new Date(),
+            });
+            return "otp sent to mail";
+        });
+    }
+    editUserProfilePicture(userId, imageUrl) {
+        return __awaiter(this, void 0, void 0, function* () {
+            if (!userId || !imageUrl) {
+                throw new Error("Missing required fields");
+            }
+            yield this.userRepository.updateProfilePicture(userId, imageUrl);
+            return "Profile picture updated successfully";
         });
     }
 }

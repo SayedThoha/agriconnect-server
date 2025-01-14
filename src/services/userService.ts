@@ -221,7 +221,7 @@ class UserServices {
       }
 
       // Check if user is blocked
-      if (user.blocked === "true") {
+      if (user.blocked === true) {
         return {
           success: false,
           statusCode: Http_Status_Codes.FORBIDDEN,
@@ -294,8 +294,73 @@ class UserServices {
     }
   }
 
+  async getUserDetails(id: string): Promise<IUser | null> {
+    const user = await this.userRepository.findUserById(id);
+
+    if (!user) {
+      throw new Error("user not found");
+    }
+
+    return user;
+  }
 
 
+  async editUserProfile(
+    id: string,
+    updateData: Partial<IUser>
+  ): Promise<IUser | null> {
+    if (!id || !updateData) {
+      throw new Error("User ID and update data are required");
+    }
+
+    return this.userRepository.updateUserProfile(id, updateData);
+  }
+
+
+  async optForNewEmail(userId: string, email: string): Promise<any> {
+    if (!userId || !email) {
+      throw new Error("User ID and email are required");
+    }
+
+    const user = await this.userRepository.findUserById(userId);
+    if (!user) {
+      throw new Error("User not found");
+    }
+
+    if (user.email === email) {
+      throw new Error("Existing email. Try another");
+    }
+    const otp = generateOtp();
+
+    // Send OTP
+    const isOtpSent = await sentOtpToEmail(email, otp);
+    if (!isOtpSent) {
+      return {
+        success: false,
+        statusCode: Http_Status_Codes.INTERNAL_SERVER_ERROR,
+        message: "Failed to send OTP",
+      };
+    }
+    // const otp = await generateMail(email);
+
+    await this.userRepository.updateUserById(userId, {
+      otp: otp,
+      otp_update_time: new Date(),
+    });
+
+    return "otp sent to mail"
+  }
+
+  async editUserProfilePicture(userId: string, imageUrl: string): Promise<string> {
+    if (!userId || !imageUrl) {
+      throw new Error("Missing required fields");
+    }
+  
+    await this.userRepository.updateProfilePicture(userId, imageUrl);
+  
+    return "Profile picture updated successfully";
+  }
+  
 }
 
 export default UserServices;

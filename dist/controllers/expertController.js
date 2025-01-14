@@ -19,14 +19,16 @@ class ExpertController {
                 const missingFields = this.expertService.validateRegistrationData(req.body);
                 if (missingFields.length > 0) {
                     res.status(httpStatusCodes_1.Http_Status_Codes.BAD_REQUEST).json({
-                        error: `Missing required fields: ${missingFields.join(", ")}`
+                        error: `Missing required fields: ${missingFields.join(", ")}`,
                     });
                     return;
                 }
                 const result = yield this.expertService.registerExpert(req.body);
                 console.log(result);
                 if (!result.status) {
-                    res.status(httpStatusCodes_1.Http_Status_Codes.BAD_REQUEST).json({ message: result.message });
+                    res
+                        .status(httpStatusCodes_1.Http_Status_Codes.BAD_REQUEST)
+                        .json({ message: result.message });
                     return;
                 }
                 res.status(httpStatusCodes_1.Http_Status_Codes.CREATED).json({ message: result.message });
@@ -34,7 +36,7 @@ class ExpertController {
             catch (error) {
                 console.log("error due to expert registration:", error);
                 res.status(httpStatusCodes_1.Http_Status_Codes.INTERNAL_SERVER_ERROR).json({
-                    message: "Internal Server Error"
+                    message: "Internal Server Error",
                 });
             }
         });
@@ -46,7 +48,7 @@ class ExpertController {
             catch (error) {
                 console.log(error);
                 res.status(httpStatusCodes_1.Http_Status_Codes.INTERNAL_SERVER_ERROR).json({
-                    message: "Internal Server Error"
+                    message: "Internal Server Error",
                 });
             }
         });
@@ -85,11 +87,11 @@ class ExpertController {
             try {
                 // Validate required fields
                 const requiredFields = ["email", "otp"];
-                const missingFields = requiredFields.filter(field => !req.body[field]);
+                const missingFields = requiredFields.filter((field) => !req.body[field]);
                 if (missingFields.length > 0) {
                     res.status(httpStatusCodes_1.Http_Status_Codes.BAD_REQUEST).json({
                         success: false,
-                        message: `Missing required fields: ${missingFields.join(", ")}`
+                        message: `Missing required fields: ${missingFields.join(", ")}`,
                     });
                     return;
                 }
@@ -97,14 +99,14 @@ class ExpertController {
                 const result = yield this.expertService.verifyOtp(email, otp, role, new_email);
                 res.status(result.statusCode).json({
                     success: result.success,
-                    message: result.message
+                    message: result.message,
                 });
             }
             catch (error) {
                 console.log(error);
                 res.status(httpStatusCodes_1.Http_Status_Codes.INTERNAL_SERVER_ERROR).json({
                     success: false,
-                    message: "Internal server error"
+                    message: "Internal server error",
                 });
             }
         });
@@ -115,11 +117,11 @@ class ExpertController {
                 console.log("entering the login in admin");
                 // Validate required fields
                 const requiredFields = ["email", "password"];
-                const missingFields = requiredFields.filter(field => !req.body[field]);
+                const missingFields = requiredFields.filter((field) => !req.body[field]);
                 if (missingFields.length > 0) {
                     res.status(httpStatusCodes_1.Http_Status_Codes.BAD_REQUEST).json({
                         success: false,
-                        message: `Missing required fields: ${missingFields.join(", ")}`
+                        message: `Missing required fields: ${missingFields.join(", ")}`,
                     });
                     return;
                 }
@@ -131,8 +133,122 @@ class ExpertController {
                 console.log(error);
                 res.status(httpStatusCodes_1.Http_Status_Codes.INTERNAL_SERVER_ERROR).json({
                     success: false,
-                    message: "Internal server error"
+                    message: "Internal server error",
                 });
+            }
+        });
+    }
+    getExpertDetails(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const { _id } = req.query;
+                if (!_id) {
+                    res
+                        .status(httpStatusCodes_1.Http_Status_Codes.BAD_REQUEST)
+                        .json({ message: "Expert ID is required" });
+                    return;
+                }
+                const expert = yield this.expertService.getExpertDetails(_id);
+                if (!expert) {
+                    res
+                        .status(httpStatusCodes_1.Http_Status_Codes.NOT_FOUND)
+                        .json({ message: "Expert not found" });
+                    return;
+                }
+                res.status(httpStatusCodes_1.Http_Status_Codes.OK).json(expert);
+            }
+            catch (error) {
+                console.error("Error in getExpertDetails controller:", error);
+                res
+                    .status(httpStatusCodes_1.Http_Status_Codes.INTERNAL_SERVER_ERROR)
+                    .json({ message: "Internal server error" });
+            }
+        });
+    }
+    editExpertProfile(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                console.log("Edit profile of expert - server side");
+                const data = req.body;
+                if (!data._id) {
+                    res
+                        .status(httpStatusCodes_1.Http_Status_Codes.BAD_REQUEST)
+                        .json({ message: "Expert ID is required" });
+                    return;
+                }
+                const updatedExpert = yield this.expertService.editExpertProfile(data._id, {
+                    firstName: data.firstName,
+                    lastName: data.lastName,
+                    contactno: data.contactno,
+                    experience: data.experience,
+                    consultation_fee: data.consultation_fee,
+                });
+                if (!updatedExpert) {
+                    res
+                        .status(httpStatusCodes_1.Http_Status_Codes.NOT_FOUND)
+                        .json({ message: "Expert not found" });
+                    return;
+                }
+                res
+                    .status(httpStatusCodes_1.Http_Status_Codes.OK)
+                    .json({ message: "Profile updated successfully" });
+            }
+            catch (error) {
+                console.error("Error in editExpertProfile controller:", error);
+                res
+                    .status(httpStatusCodes_1.Http_Status_Codes.INTERNAL_SERVER_ERROR)
+                    .json({ message: "Internal server error" });
+            }
+        });
+    }
+    optForNewEmail(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                console.log("optForNewEmail backend");
+                const { expertId, email } = req.body;
+                if (!expertId || !email) {
+                    res
+                        .status(httpStatusCodes_1.Http_Status_Codes.BAD_REQUEST)
+                        .json({ message: "User ID and email are required" });
+                    return;
+                }
+                const message = yield this.expertService.optForNewEmail(expertId, email);
+                res.status(httpStatusCodes_1.Http_Status_Codes.OK).json({ message });
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            }
+            catch (error) {
+                console.error("Error in optForNewEmail controller:", error);
+                if (error.message === "Existing email. Try another") {
+                    res
+                        .status(httpStatusCodes_1.Http_Status_Codes.BAD_REQUEST)
+                        .json({ message: error.message });
+                }
+                else {
+                    res
+                        .status(httpStatusCodes_1.Http_Status_Codes.INTERNAL_SERVER_ERROR)
+                        .json({ message: "Internal Server Error" });
+                }
+            }
+        });
+    }
+    editExpertProfilePicture(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const { expertId, image_url } = req.body;
+                if (!expertId || !image_url) {
+                    res
+                        .status(httpStatusCodes_1.Http_Status_Codes.BAD_REQUEST)
+                        .json({ message: "Missing required fields" });
+                    return;
+                }
+                const message = yield this.expertService.editExpertProfilePicture(expertId, image_url);
+                res.status(httpStatusCodes_1.Http_Status_Codes.OK).json({ message });
+            }
+            catch (error) {
+                console.error("Error in editExpertProfilePicture controller:", error);
+                res
+                    .status(httpStatusCodes_1.Http_Status_Codes.INTERNAL_SERVER_ERROR)
+                    .json({ message: "Internal Server Error" });
             }
         });
     }

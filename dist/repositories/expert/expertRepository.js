@@ -17,7 +17,7 @@ class ExpertRepository {
     getSpecialisations() {
         return __awaiter(this, void 0, void 0, function* () {
             console.log("get specialisation serverside");
-            return yield specialisationModel_1.specialisation.find();
+            return yield specialisationModel_1.Specialisation.find();
         });
     }
     findByEmail(email) {
@@ -31,10 +31,13 @@ class ExpertRepository {
             return yield expert.save();
         });
     }
-    createKyc(expertId) {
+    createKyc(expertId, expertDetails) {
         return __awaiter(this, void 0, void 0, function* () {
             return yield expertKycModel_1.ExpertKyc.create({
                 expertId: expertId,
+                address: expertDetails.current_working_address,
+                identity_proof_name: expertDetails.identity_proof_type,
+                specialisation_name: expertDetails.specialisation,
             });
         });
     }
@@ -49,7 +52,7 @@ class ExpertRepository {
     updateExpertVerification(email, isVerified, newEmail) {
         return __awaiter(this, void 0, void 0, function* () {
             const updateData = {
-                is_verified: isVerified
+                is_verified: isVerified,
             };
             if (newEmail) {
                 updateData.email = newEmail;
@@ -62,9 +65,57 @@ class ExpertRepository {
             return yield expertModel_1.Expert.findByIdAndUpdate(userId, {
                 $set: {
                     otp,
-                    otp_update_time: new Date()
-                }
+                    otp_update_time: new Date(),
+                },
             }, { new: true });
+        });
+    }
+    findById(id) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                return yield expertModel_1.Expert.findById(id);
+            }
+            catch (error) {
+                console.error("Error in expert repository findById:", error);
+                throw new Error("Database operation failed");
+            }
+        });
+    }
+    updateExpertProfile(id, updateData) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                return yield expertModel_1.Expert.findOneAndUpdate({ _id: id }, {
+                    $set: updateData,
+                }, { new: true });
+            }
+            catch (error) {
+                console.error('Error in expert repository updateExpertProfile:', error);
+                throw new Error('Database operation failed');
+            }
+        });
+    }
+    updateExpertById(expertId, updateData) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                return yield expertModel_1.Expert.findByIdAndUpdate(expertId, { $set: updateData }, { new: true });
+            }
+            catch (error) {
+                console.error('Error in updateExpertById:', error);
+                throw new Error('Database operation failed');
+            }
+        });
+    }
+    updateProfilePicture(expertId, imageUrl) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                yield expertModel_1.Expert.findByIdAndUpdate(expertId, {
+                    $set: { profile_picture: imageUrl },
+                });
+            }
+            catch (error) {
+                console.error("Error in updateProfilePicture repository:", error);
+                throw new Error("Database operation failed");
+            }
         });
     }
 }

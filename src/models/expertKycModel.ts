@@ -4,16 +4,19 @@ import { enumForKycVerification } from "../constants/enum";
 
 export interface IExpertKyc extends Document {
   expertId: mongoose.Schema.Types.ObjectId;
-  exp_certificate: string;
-  qualification_certificate: string;
-  liscence: string;
-  id_proof_type: string;
-  id_proof: string;
-  specialisation: string;
-  curr_work_details: string;
+  exp_certificate: boolean;
+  qualification_certificate: boolean;
+  expert_licence: boolean;
+  id_proof_type: boolean;
+  id_proof: boolean;
+  specialisation: boolean;
+  current_working_address: boolean;
   created_time: Date;
   createdAt?: Date;
   updatedAt?: Date;
+  address: string;
+  identity_proof_name: string;
+  specialisation_name: string;
 }
 
 const expertKycschema: Schema<IExpertKyc> = new mongoose.Schema(
@@ -24,36 +27,46 @@ const expertKycschema: Schema<IExpertKyc> = new mongoose.Schema(
       required: true,
     },
     exp_certificate: {
-      type: String,
+      type: Boolean,
       default: enumForKycVerification[1],
     },
     qualification_certificate: {
-      type: String,
+      type: Boolean,
       default: enumForKycVerification[1],
     },
-    liscence: {
-      type: String,
+    expert_licence: {
+      type: Boolean,
       default: enumForKycVerification[1],
     },
     id_proof_type: {
-      type: String,
+      type: Boolean,
       default: enumForKycVerification[1],
     },
     id_proof: {
-      type: String,
+      type: Boolean,
       default: enumForKycVerification[1],
     },
     specialisation: {
-      type: String,
+      type: Boolean,
       default: enumForKycVerification[1],
     },
-    curr_work_details: {
-      type: String,
+    current_working_address: {
+      type: Boolean,
       default: enumForKycVerification[1],
     },
     created_time: {
       type: Date,
       default: Date.now(),
+    },
+
+    address: {
+      type: String,
+    },
+    identity_proof_name: {
+      type: String,
+    },
+    specialisation_name: {
+      type: String,
     },
   },
 
@@ -61,3 +74,22 @@ const expertKycschema: Schema<IExpertKyc> = new mongoose.Schema(
 );
 
 export const ExpertKyc = mongoose.model("expertKyccollection", expertKycschema);
+
+
+
+export interface KycUpdateData {
+  _id: string;
+  expert_id: string;
+  exp_certificate: boolean;
+  qualification_certificate: boolean;
+  expert_licence: boolean;
+  id_proof_type: boolean;
+  id_proof: boolean;
+  specialisation: boolean;
+  current_working_address: boolean;
+}
+
+export type KycVerificationField = keyof Omit<
+  KycUpdateData,
+  "_id" | "expert_id"
+>;

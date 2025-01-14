@@ -11,7 +11,7 @@ const specialisationSchema: Schema<ISpecialisation> = new mongoose.Schema({
   },
 });
 
-export const specialisation = mongoose.model(
+export const Specialisation = mongoose.model(
   "Specialisation",
   specialisationSchema
 );

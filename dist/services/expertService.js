@@ -19,10 +19,10 @@ const otp_1 = require("../utils/otp");
 const sendOtpToMail_1 = require("../utils/sendOtpToMail");
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 class ExpertServices {
-    constructor(expertRepository, jwtSecret = process.env.JWT_SECRET || "default_secret") {
+    constructor(expertRepository) {
         this.expertRepository = expertRepository;
-        this.jwtSecret = jwtSecret;
         this.OTP_EXPIRY_MINUTES = 59;
+        this.jwtSecret = process.env.JWT_SECRET || "default_secret";
     }
     registerExpert(expertData) {
         return __awaiter(this, void 0, void 0, function* () {
@@ -40,7 +40,7 @@ class ExpertServices {
             if (!isOtpSent) {
                 return { status: false, message: "Failed to send OTP" };
             }
-            yield this.expertRepository.createKyc(expert._id.toString());
+            yield this.expertRepository.createKyc(expert._id.toString(), expert);
             return { status: true, message: "Expert Registration successful" };
         });
     }
@@ -246,6 +246,61 @@ class ExpertServices {
                     message: "Internal server error",
                 };
             }
+        });
+    }
+    getExpertDetails(id) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const expert = yield this.expertRepository.findById(id);
+            if (!expert) {
+                throw new Error("Expert not found");
+            }
+            return expert;
+        });
+    }
+    editExpertProfile(id, updateData) {
+        return __awaiter(this, void 0, void 0, function* () {
+            if (!id || !updateData) {
+                throw new Error("Expert ID and update data are required");
+            }
+            return this.expertRepository.updateExpertProfile(id, updateData);
+        });
+    }
+    optForNewEmail(expertId, email) {
+        return __awaiter(this, void 0, void 0, function* () {
+            if (!expertId || !email) {
+                throw new Error("Expert ID and email are required");
+            }
+            const expert = yield this.expertRepository.findById(expertId);
+            if (!expert) {
+                throw new Error("expert not found");
+            }
+            if (expert.email === email) {
+                throw new Error("Existing email. Try another");
+            }
+            const otp = (0, otp_1.generateOtp)();
+            // Send OTP
+            const isOtpSent = yield (0, sendOtpToMail_1.sentOtpToEmail)(email, otp);
+            if (!isOtpSent) {
+                return {
+                    success: false,
+                    statusCode: httpStatusCodes_1.Http_Status_Codes.INTERNAL_SERVER_ERROR,
+                    message: "Failed to send OTP",
+                };
+            }
+            yield this.expertRepository.updateExpertById(expertId, {
+                otp: otp,
+                otp_update_time: new Date(),
+            });
+            return "otp sent to mail";
+        });
+    }
+    editExpertProfilePicture(expertId, imageUrl) {
+        return __awaiter(this, void 0, void 0, function* () {
+            if (!expertId || !imageUrl) {
+                throw new Error("Missing required fields");
+            }
+            yield this.expertRepository.updateProfilePicture(expertId, imageUrl);
+            return "Profile picture updated successfully";
         });
     }
 }

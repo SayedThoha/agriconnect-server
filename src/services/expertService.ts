@@ -21,10 +21,9 @@ interface OtpVerificationResult {
 }
 class ExpertServices {
   private readonly OTP_EXPIRY_MINUTES = 59;
-  constructor(
-    private expertRepository: ExpertRepository,
-    private jwtSecret: string = process.env.JWT_SECRET || "default_secret"
-  ) {}
+  constructor(private expertRepository: ExpertRepository) {}
+
+  private jwtSecret: string = process.env.JWT_SECRET || "default_secret";
 
   async registerExpert(
     expertData: ExpertRegistrationDTO
@@ -53,7 +52,7 @@ class ExpertServices {
     if (!isOtpSent) {
       return { status: false, message: "Failed to send OTP" };
     }
-    await this.expertRepository.createKyc(expert._id.toString());
+    await this.expertRepository.createKyc(expert._id.toString(),expert);
 
     return { status: true, message: "Expert Registration successful" };
   }
@@ -301,6 +300,71 @@ class ExpertServices {
       };
     }
   }
+
+  async getExpertDetails(id: string): Promise<IExpert | null> {
+    const expert = await this.expertRepository.findById(id);
+
+    if (!expert) {
+      throw new Error("Expert not found");
+    }
+
+    return expert;
+  }
+
+  async editExpertProfile(
+    id: string,
+    updateData: Partial<IExpert>
+  ): Promise<IExpert | null> {
+    if (!id || !updateData) {
+      throw new Error("Expert ID and update data are required");
+    }
+
+    return this.expertRepository.updateExpertProfile(id, updateData);
+  }
+
+  async optForNewEmail(expertId: string, email: string): Promise<any> {
+    if (!expertId || !email) {
+      throw new Error("Expert ID and email are required");
+    }
+
+    const expert = await this.expertRepository.findById(expertId);
+    if (!expert) {
+      throw new Error("expert not found");
+    }
+
+    if (expert.email === email) {
+      throw new Error("Existing email. Try another");
+    }
+    const otp = generateOtp();
+
+    // Send OTP
+    const isOtpSent = await sentOtpToEmail(email, otp);
+    if (!isOtpSent) {
+      return {
+        success: false,
+        statusCode: Http_Status_Codes.INTERNAL_SERVER_ERROR,
+        message: "Failed to send OTP",
+      };
+    }
+
+    await this.expertRepository.updateExpertById(expertId, {
+      otp: otp,
+      otp_update_time: new Date(),
+    });
+
+    return "otp sent to mail";
+  }
+
+  async editExpertProfilePicture(expertId: string, imageUrl: string): Promise<string> {
+    if (!expertId || !imageUrl) {
+      throw new Error("Missing required fields");
+    }
+  
+    await this.expertRepository.updateProfilePicture(expertId, imageUrl);
+  
+    return "Profile picture updated successfully";
+  }
+
 }
 
 export default ExpertServices;

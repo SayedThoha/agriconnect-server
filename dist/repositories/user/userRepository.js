@@ -10,6 +10,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+// import { IUserInput } from "../../interfaces/userInterface";
 const userModel_1 = require("../../models/userModel");
 class UserRepository {
     constructor() { }
@@ -20,12 +21,16 @@ class UserRepository {
             return yield userModel_1.User.findOne({ email });
         });
     }
-    saveUser(data) {
+    // async saveUser(data: IUserInput): Promise<Partial<IUser> | null> {
+    //   // Save user data to the database
+    //   // return await User.create(data);
+    //   console.log("save user in user repository");
+    //   const user = new User(data);
+    //   return await user.save();
+    // }
+    saveUser(userData) {
         return __awaiter(this, void 0, void 0, function* () {
-            // Save user data to the database
-            // return await User.create(data);
-            console.log('save user in user repository');
-            const user = new userModel_1.User(data);
+            const user = new userModel_1.User(userData);
             return yield user.save();
         });
     }
@@ -57,7 +62,7 @@ class UserRepository {
     updateUserVerification(email, isVerified, newEmail) {
         return __awaiter(this, void 0, void 0, function* () {
             const updateData = {
-                is_verified: isVerified
+                is_verified: isVerified,
             };
             if (newEmail) {
                 updateData.email = newEmail;
@@ -73,9 +78,55 @@ class UserRepository {
             return yield userModel_1.User.findByIdAndUpdate(userId, {
                 $set: {
                     otp,
-                    otp_update_time: new Date()
-                }
+                    otp_update_time: new Date(),
+                },
             }, { new: true });
+        });
+    }
+    findUserById(id) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                return yield userModel_1.User.findById(id);
+            }
+            catch (error) {
+                console.error("Error in expert repository findById:", error);
+                throw new Error("Database operation failed");
+            }
+        });
+    }
+    updateUserProfile(id, updateData) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                return yield userModel_1.User.findByIdAndUpdate(id, { $set: updateData }, { new: true });
+            }
+            catch (error) {
+                console.error("Error in user repository updateUserProfile:", error);
+                throw new Error("Database operation failed");
+            }
+        });
+    }
+    updateUserById(userId, updateData) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                return yield userModel_1.User.findByIdAndUpdate(userId, { $set: updateData }, { new: true });
+            }
+            catch (error) {
+                console.error("Error in updateUserById:", error);
+                throw new Error("Database operation failed");
+            }
+        });
+    }
+    updateProfilePicture(userId, imageUrl) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                yield userModel_1.User.findByIdAndUpdate(userId, {
+                    $set: { profile_picture: imageUrl },
+                });
+            }
+            catch (error) {
+                console.error("Error in updateProfilePicture repository:", error);
+                throw new Error("Database operation failed");
+            }
         });
     }
 }

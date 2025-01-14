@@ -19,12 +19,14 @@ const server = http.createServer(app);
 dotenv.config();
 // clearLogs()
 
+
 app.use(
   cors({
     origin: "http://localhost:4200",
     methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
     allowedHeaders: ["Content-Type", "Authorization"],
   })
+  
 );
 
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -36,10 +38,10 @@ app.use("/expert", expertRouter);
 app.use("/admin", adminRouter);
 
 // Mock error route
-app.get("/error", (req, res, next) => {
-  const error = new Error("This is a mocked error for testing purposes.");
-  next(error); // Pass error to error handling middleware
-});
+// app.get("/error", (req, res, next) => {
+//   const error = new Error("This is a mocked error for testing purposes.");
+//   next(error); // Pass error to error handling middleware
+// });
 
 // app.use(errorHandler);
 

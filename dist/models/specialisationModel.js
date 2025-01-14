@@ -3,7 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.specialisation = void 0;
+exports.Specialisation = void 0;
 const mongoose_1 = __importDefault(require("mongoose"));
 const specialisationSchema = new mongoose_1.default.Schema({
     specialisation: {
@@ -11,4 +11,4 @@ const specialisationSchema = new mongoose_1.default.Schema({
         required: true,
     },
 });
-exports.specialisation = mongoose_1.default.model("Specialisation", specialisationSchema);
+exports.Specialisation = mongoose_1.default.model("Specialisation", specialisationSchema);

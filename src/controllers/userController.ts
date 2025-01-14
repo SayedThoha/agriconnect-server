@@ -7,7 +7,7 @@ import { Http_Status_Codes } from "../constants/httpStatusCodes";
 class UserController {
   constructor(private userService: UserServices) {}
 
-  async registerUserController(req: Request, res: Response): Promise<void> {
+  async registerUser(req: Request, res: Response): Promise<void> {
     console.log("Registering user...");
 
     try {
@@ -134,8 +134,8 @@ class UserController {
       }
 
       const { email, password } = req.body;
-      console.log(email,password);
-      
+      console.log(email, password);
+
       const result = await this.userService.login(email, password);
 
       res.status(result.statusCode).json({
@@ -152,6 +152,131 @@ class UserController {
         success: false,
         message: "Internal server error",
       });
+    }
+  }
+
+  async getUserDetails(req: Request, res: Response): Promise<void> {
+    try {
+      const { _id } = req.query;
+
+      if (!_id) {
+        res
+          .status(Http_Status_Codes.BAD_REQUEST)
+          .json({ message: "User ID is required" });
+        return;
+      }
+
+      const user = await this.userService.getUserDetails(_id as string);
+
+      if (!user) {
+        res
+          .status(Http_Status_Codes.NOT_FOUND)
+          .json({ message: "User not found" });
+        return;
+      }
+
+      res.status(Http_Status_Codes.OK).json(user);
+    } catch (error) {
+      console.error("Error in getExpertDetails controller:", error);
+      res
+        .status(Http_Status_Codes.INTERNAL_SERVER_ERROR)
+        .json({ message: "Internal server error" });
+    }
+  }
+
+  async editUserProfile(req: Request, res: Response): Promise<void> {
+    try {
+      console.log("editUserProfile backend");
+      const { _id, firstName, lastName, email } = req.body;
+
+      console.log(
+        `id :${_id} firstName:${firstName} secondName:${lastName} email:${email}`
+      );
+
+      if (!_id || !firstName || !lastName || !email) {
+        res
+          .status(Http_Status_Codes.BAD_REQUEST)
+          .json({ message: "All fields are required" });
+        return;
+      }
+
+      const updatedUser = await this.userService.editUserProfile(_id, {
+        firstName,
+        lastName,
+        email,
+      });
+
+      if (!updatedUser) {
+        res
+          .status(Http_Status_Codes.NOT_FOUND)
+          .json({ message: "User not found" });
+        return;
+      }
+
+      res
+        .status(Http_Status_Codes.OK)
+        .json({ message: "profile updated sucessfully", data: updatedUser });
+    } catch (error) {
+      console.error("Error in editUserProfile controller:", error);
+      res
+        .status(Http_Status_Codes.INTERNAL_SERVER_ERROR)
+        .json({ message: "Internal server error" });
+    }
+  }
+
+  async optForNewEmail(req: Request, res: Response): Promise<void> {
+    try {
+      console.log("optForNewEmail backend");
+
+      const { userId, email } = req.body;
+
+      if (!userId || !email) {
+        res
+          .status(Http_Status_Codes.BAD_REQUEST)
+          .json({ message: "User ID and email are required" });
+        return;
+      }
+
+      const message = await this.userService.optForNewEmail(userId, email);
+
+      res.status(Http_Status_Codes.OK).json({ message });
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (error: any) {
+      console.error("Error in optForNewEmail controller:", error);
+
+      if (error.message === "Existing email. Try another") {
+        res
+          .status(Http_Status_Codes.BAD_REQUEST)
+          .json({ message: error.message });
+      } else {
+        res
+          .status(Http_Status_Codes.INTERNAL_SERVER_ERROR)
+          .json({ message: "Internal Server Error" });
+      }
+    }
+  }
+
+  async editUserProfilePicture(req:Request, res:Response): Promise<void> {
+    try {
+      const { userId, image_url } = req.body;
+
+      if (!userId || !image_url) {
+        res
+          .status(Http_Status_Codes.BAD_REQUEST)
+          .json({ message: "Missing required fields" });
+          return ;
+      }
+
+      const message = await this.userService.editUserProfilePicture(
+        userId,
+        image_url
+      );
+      res.status(Http_Status_Codes.OK).json({ message });
+    } catch (error) {
+      console.error("Error in editUserProfilePicture controller:", error);
+      res
+        .status(Http_Status_Codes.INTERNAL_SERVER_ERROR)
+        .json({ message: "Internal Server Error" });
     }
   }
 }
