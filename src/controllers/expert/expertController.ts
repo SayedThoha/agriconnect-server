@@ -1,13 +1,14 @@
 import { Request, Response } from "express";
-import { Http_Status_Codes } from "../constants/httpStatusCodes";
-import ExpertServices from "../services/expertService";
+import { Http_Status_Codes } from "../../constants/httpStatusCodes";
+import ExpertServices from "../../services/expert/expertService";
+import { IExpertController } from "./IExpertController";
 
-class ExpertController {
+class ExpertController implements IExpertController {
   constructor(private expertService: ExpertServices) {}
 
-  expertRegistration = async (req: Request, res: Response): Promise<void> => {
+  async expertRegistration(req: Request, res: Response): Promise<void>  {
     try {
-      console.log("expert registration backend");
+      console.log("expert registration backend", req.body);
 
       const missingFields = this.expertService.validateRegistrationData(
         req.body
@@ -39,7 +40,7 @@ class ExpertController {
     }
   };
 
-  getSpecialisation = async (req: Request, res: Response): Promise<void> => {
+  async getSpecialisation (req: Request, res: Response): Promise<void> {
     try {
       const specialisation = await this.expertService.getSpecialisations();
       res.status(Http_Status_Codes.OK).json({ specialisation });
@@ -121,7 +122,7 @@ class ExpertController {
 
   async login(req: Request, res: Response): Promise<void> {
     try {
-      console.log("entering the login in admin");
+      console.log("entering the login in expert");
       // Validate required fields
       const requiredFields = ["email", "password"];
       const missingFields = requiredFields.filter((field) => !req.body[field]);
@@ -141,6 +142,7 @@ class ExpertController {
         success: result.success,
         message: result.message,
         ...(result.accessToken && { accessToken: result.accessToken }),
+        ...(result.refreshToken && { refreshToken: result.refreshToken }),
         ...(result.accessedUser && { accessedUser: result.accessedUser }),
         ...(result.email && { email: result.email }),
       });
@@ -224,9 +226,8 @@ class ExpertController {
     }
   }
 
- async optForNewEmail(req: Request, res: Response): Promise<void> {
+  async optForNewEmail(req: Request, res: Response): Promise<void> {
     try {
-      
       console.log("optForNewEmail backend");
 
       const { expertId, email } = req.body;
@@ -256,32 +257,135 @@ class ExpertController {
       }
     }
   }
-  
-  async editExpertProfilePicture(req:Request, res:Response): Promise<void> {
-      try {
-        const { expertId, image_url } = req.body;
-  
-        if (!expertId || !image_url) {
-          res
-            .status(Http_Status_Codes.BAD_REQUEST)
-            .json({ message: "Missing required fields" });
-            return ;
-        }
-  
-        const message = await this.expertService.editExpertProfilePicture(
-          expertId,
-          image_url
-        );
-        res.status(Http_Status_Codes.OK).json({ message });
-      } catch (error) {
-        console.error("Error in editExpertProfilePicture controller:", error);
+
+  async editExpertProfilePicture(req: Request, res: Response): Promise<void> {
+    try {
+      console.log("Raw Request Body:", req.body);
+
+      const { expertId, image_url } = req.body;
+
+      if (!expertId || !image_url) {
         res
-          .status(Http_Status_Codes.INTERNAL_SERVER_ERROR)
-          .json({ message: "Internal Server Error" });
+          .status(Http_Status_Codes.BAD_REQUEST)
+          .json({ message: "Missing required fields" });
+        return;
       }
+
+      const message = await this.expertService.editExpertProfilePicture(
+        expertId,
+        image_url
+      );
+      res.status(Http_Status_Codes.OK).json({ message });
+    } catch (error) {
+      console.error("Error in editExpertProfilePicture controller:", error);
+      res
+        .status(Http_Status_Codes.INTERNAL_SERVER_ERROR)
+        .json({ message: "Internal Server Error" });
+    }
+  }
+
+  async checkExpertStatus(req: Request, res: Response): Promise<void> {
+    try {
+      const expertId = req.params.id;
+      console.log(expertId);
+      const status = await this.expertService.checkExpertStatus(expertId);
+      res.status(200).json(status);
+    } catch (error) {
+      console.error("Error in checkUserStatus:", error);
+
+      res.status(500).json({ message: "Internal server error" });
+    }
+  }
+
+  async verifyEmailForPasswordReset(
+    req: Request,
+    res: Response
+  ): Promise<void> {
+    try {
+      // Input validation
+      const requiredFields = ["email"];
+      const missingFields = requiredFields.filter((field) => !req.body[field]);
+
+      if (missingFields.length > 0) {
+        res.status(Http_Status_Codes.BAD_REQUEST).json({
+          error: `Missing required fields: ${missingFields.join(", ")}`,
+        });
+        return;
+      }
+
+      const { email } = req.body;
+
+      await this.expertService.verifyEmailForPasswordReset(email);
+
+      res.status(Http_Status_Codes.OK).json({
+        message: "Email verification done",
+      });
+    } catch (error) {
+      console.error("Email verification error:", error);
+      res.status(Http_Status_Codes.INTERNAL_SERVER_ERROR).json({
+        message: "Internal server error",
+      });
+    }
+  }
+
+  async updatePassword(req: Request, res: Response): Promise<void>  {
+    try {
+      // Validation
+      const requiredFields = ["email", "password"];
+      const missingFields = requiredFields.filter((field) => !req.body[field]);
+
+      if (missingFields.length > 0) {
+        res.status(Http_Status_Codes.BAD_REQUEST).json({
+          error: `Missing required fields: ${missingFields.join(", ")}`,
+        });
+        return;
+      }
+
+      const { email, password } = req.body;
+      const result = await this.expertService.updatePassword(email, password);
+
+      if (!result.status) {
+        res
+          .status(Http_Status_Codes.NOT_FOUND)
+          .json({ message: result.message });
+        return;
+      }
+
+      res.status(Http_Status_Codes.OK).json({ message: result.message });
+    } catch (error) {
+      console.log(error);
+      res.status(Http_Status_Codes.INTERNAL_SERVER_ERROR).json({
+        message: "Internal server error",
+      });
+    }
+  };
+
+  async refreshToken(req: Request, res: Response): Promise<void> {
+    const { refreshToken } = req.body;
+
+    if (!refreshToken) {
+      res.status(Http_Status_Codes.BAD_REQUEST).json({
+        success: false,
+        message: "Refresh token is required",
+      });
+      return;
     }
 
+    try {
+      // Call the refreshToken method from UserService
+      const response = await this.expertService.refreshToken(refreshToken);
 
+      res.status(response.statusCode).json(response);
+      return;
+    } catch (error) {
+      console.log(error);
+      res.status(Http_Status_Codes.INTERNAL_SERVER_ERROR).json({
+        success: false,
+        message: "Internal server error",
+      });
+      return;
+    }
+  }
 }
 
 export default ExpertController;

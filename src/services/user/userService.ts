@@ -2,32 +2,32 @@
 
 //userService.ts
 
-import UserRepository from "../repositories/user/userRepository";
-import { AccessedUser, LoginResponse } from "../interfaces/userInterface";
-import { IUser } from "../models/userModel";
-import { generateOtp } from "../utils/otp";
-import { sentOtpToEmail } from "../utils/sendOtpToMail";
-// import { MESSAGES } from "../constants/messages";
-import { comparePass, hashedPass } from "../utils/hashPassword";
-import { Http_Status_Codes } from "../constants/httpStatusCodes";
-import jwt from "jsonwebtoken";
+// import jwt from "jsonwebtoken";
+import { IUserService } from "./IUserService";
+import UserRepository from "../../repositories/user/userRepository";
+import { IUser } from "../../models/userModel";
+import { comparePass, hashedPass } from "../../utils/hashPassword";
+import { generateOtp } from "../../utils/otp";
+import { sentOtpToEmail } from "../../utils/sendOtpToMail";
+import { Http_Status_Codes } from "../../constants/httpStatusCodes";
+import {
+  AccessedUser,
+  LoginResponse,
+  OtpVerificationResult,
+} from "../../interfaces/userInterface";
+import {
+  generateAccessToken,
+  generateRefreshToken,
+  verifyRefreshToken,
+} from "../../utils/token";
 
 export type UserResponse = IUser | null;
 export type UserResponeType = IUser | null | { success?: boolean };
 
-interface OtpVerificationResult {
-  success: boolean;
-  statusCode: number;
-  message: string;
-}
-
-class UserServices {
+class UserServices implements IUserService {
   private readonly OTP_EXPIRY_MINUTES = 59;
-
-  constructor(
-    private userRepository: UserRepository,
-    private jwtSecret: string = process.env.JWT_SECRET || "default_secret"
-  ) {}
+  
+  constructor(private userRepository: UserRepository) {}
 
   async registerUser(userData: {
     firstName: string;
@@ -35,9 +35,9 @@ class UserServices {
     email: string;
     password: string;
   }): Promise<any> {
-    // Promise<Record<string, any>>
+    
     try {
-      // console.log("hello the service reached");
+      
       console.log("Registration service started for email:", userData.email);
 
       // Check if the user already exists
@@ -265,8 +265,10 @@ class UserServices {
       }
 
       // Generate JWT token
-      const accessToken = jwt.sign({ userId: user._id }, this.jwtSecret);
+      // const accessToken = jwt.sign({ userId: user._id }, this.jwtSecret);
+      const accessToken = generateAccessToken(user._id);
 
+      const refreshToken = generateRefreshToken(user._id);
       // Create user object for response
       const accessedUser: AccessedUser = {
         _id: user._id,
@@ -281,6 +283,7 @@ class UserServices {
         statusCode: Http_Status_Codes.OK,
         message: "Login successful",
         accessToken,
+        refreshToken,
         accessedUser,
       };
     } catch (error) {
@@ -304,7 +307,6 @@ class UserServices {
     return user;
   }
 
-
   async editUserProfile(
     id: string,
     updateData: Partial<IUser>
@@ -315,7 +317,6 @@ class UserServices {
 
     return this.userRepository.updateUserProfile(id, updateData);
   }
-
 
   async optForNewEmail(userId: string, email: string): Promise<any> {
     if (!userId || !email) {
@@ -348,19 +349,121 @@ class UserServices {
       otp_update_time: new Date(),
     });
 
-    return "otp sent to mail"
+    return "otp sent to mail";
   }
 
-  async editUserProfilePicture(userId: string, imageUrl: string): Promise<string> {
+  async editUserProfilePicture(
+    userId: string,
+    imageUrl: string
+  ): Promise<string> {
     if (!userId || !imageUrl) {
       throw new Error("Missing required fields");
     }
-  
+
     await this.userRepository.updateProfilePicture(userId, imageUrl);
-  
+
     return "Profile picture updated successfully";
   }
-  
+
+  async checkUserStatus(userId: string): Promise<{ blocked: boolean }> {
+    try {
+      const status = await this.userRepository.checkUserStatus(userId);
+      return status;
+    } catch (error) {
+      console.error(error);
+      throw new Error("Error checking user status");
+    }
+  }
+
+  async verifyEmailForPasswordReset(email: string): Promise<void> {
+    try {
+      const user = await this.userRepository.findUserByEmail(email);
+
+      if (!user) {
+        throw new Error("Invalid Email");
+      }
+
+      const otp = generateOtp();
+      // Send OTP
+      const isOtpSent = await sentOtpToEmail(email, otp);
+
+      if (!isOtpSent) {
+        {
+          console.log("otp not send");
+        }
+      }
+      await this.userRepository.updateUserOtp(email, otp);
+    } catch (error) {
+      console.log(error);
+      throw new Error(`Email verification failed`);
+    }
+  }
+
+  async updatePassword(
+    email: string,
+    password: string
+  ): Promise<{ status: boolean; message: string }> {
+    try {
+      const hashedPassword = await hashedPass(password);
+      const user = await this.userRepository.updatePassword(
+        email,
+        hashedPassword
+      );
+
+      if (!user) {
+        return { status: false, message: "User not found" };
+      }
+
+      return { status: true, message: "Password Updated" };
+    } catch (error) {
+      throw new Error(`Failed to update password: ${error}`);
+    }
+  }
+
+  async refreshToken(refreshToken: string): Promise<LoginResponse> {
+    try {
+      // Validate refresh token
+      const decodedRefreshToken = verifyRefreshToken(refreshToken); // This method will decode and validate the refresh token
+      if (!decodedRefreshToken) {
+        return {
+          success: false,
+          statusCode: Http_Status_Codes.UNAUTHORIZED,
+          message: "Invalid refresh token",
+        };
+      }
+
+      // Find the user based on decoded token
+      const user = await this.userRepository.findUserById(
+        decodedRefreshToken.userId
+      );
+      if (!user) {
+        return {
+          success: false,
+          statusCode: Http_Status_Codes.NOT_FOUND,
+          message: "User not found",
+        };
+      }
+
+      // Generate new access token and refresh token
+      const newAccessToken = generateAccessToken(user._id);
+      const newRefreshToken = generateRefreshToken(user._id);
+
+      return {
+        success: true,
+        statusCode: Http_Status_Codes.OK,
+        message: "Token refreshed successfully",
+        accessToken: newAccessToken,
+        refreshToken: newRefreshToken,
+      };
+    } catch (error) {
+      console.log(error);
+      return {
+        success: false,
+        statusCode: Http_Status_Codes.INTERNAL_SERVER_ERROR,
+        message: "Internal server error",
+      };
+    }
+  }
 }
 
 export default UserServices;

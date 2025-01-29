@@ -1,8 +1,9 @@
 //userController.ts
 
-import { Request, Response } from "express-serve-static-core";
-import UserServices from "../services/userService";
-import { Http_Status_Codes } from "../constants/httpStatusCodes";
+import { Request, Response } from "express";
+
+import { Http_Status_Codes } from "../../constants/httpStatusCodes";
+import UserServices from "../../services/user/userService";
 
 class UserController {
   constructor(private userService: UserServices) {}
@@ -142,6 +143,7 @@ class UserController {
         success: result.success,
         message: result.message,
         ...(result.accessToken && { accessToken: result.accessToken }),
+        ...(result.refreshToken && { refreshToken: result.refreshToken }),
         ...(result.accessedUser && { accessedUser: result.accessedUser }),
         ...(result.email && { email: result.email }),
       });
@@ -256,7 +258,7 @@ class UserController {
     }
   }
 
-  async editUserProfilePicture(req:Request, res:Response): Promise<void> {
+  async editUserProfilePicture(req: Request, res: Response): Promise<void> {
     try {
       const { userId, image_url } = req.body;
 
@@ -264,7 +266,7 @@ class UserController {
         res
           .status(Http_Status_Codes.BAD_REQUEST)
           .json({ message: "Missing required fields" });
-          return ;
+        return;
       }
 
       const message = await this.userService.editUserProfilePicture(
@@ -277,6 +279,106 @@ class UserController {
       res
         .status(Http_Status_Codes.INTERNAL_SERVER_ERROR)
         .json({ message: "Internal Server Error" });
+    }
+  }
+
+  async checkUserStatus(req: Request, res: Response): Promise<void>  {
+    try {
+      const userId = req.params.id;
+      console.log(userId);
+      const status = await this.userService.checkUserStatus(userId);
+      res.status(200).json(status);
+    } catch (error) {
+      console.error("Error in checkUserStatus:", error);
+
+      res.status(500).json({ message: "Internal server error" });
+    }
+  };
+
+  async verifyEmailForPasswordReset( req: Request,res: Response):Promise<void> {
+    try {
+      // Input validation
+      const requiredFields = ["email"];
+      const missingFields = requiredFields.filter((field) => !req.body[field]);
+
+      if (missingFields.length > 0) {
+        res.status(Http_Status_Codes.BAD_REQUEST).json({
+          error: `Missing required fields: ${missingFields.join(", ")}`,
+        });
+        return;
+      }
+
+      const { email } = req.body;
+
+      await this.userService.verifyEmailForPasswordReset(email);
+
+      res.status(Http_Status_Codes.OK).json({
+        message: "Email verification done",
+      });
+    } catch (error) {
+      console.error("Email verification error:", error);
+      res.status(Http_Status_Codes.INTERNAL_SERVER_ERROR).json({
+        message: "Internal server error",
+      });
+    }
+  };
+
+ async updatePassword (req: Request, res: Response): Promise<void> {
+    try {
+      // Validation
+      const requiredFields = ["email", "password"];
+      const missingFields = requiredFields.filter((field) => !req.body[field]);
+
+      if (missingFields.length > 0) {
+        res.status(Http_Status_Codes.BAD_REQUEST).json({
+          error: `Missing required fields: ${missingFields.join(", ")}`,
+        });
+        return;
+      }
+
+      const { email, password } = req.body;
+      const result = await this.userService.updatePassword(email, password);
+
+      if (!result.status) {
+        res
+          .status(Http_Status_Codes.NOT_FOUND)
+          .json({ message: result.message });
+        return;
+      }
+
+      res.status(Http_Status_Codes.OK).json({ message: result.message });
+    } catch (error) {
+      console.log(error);
+      res.status(Http_Status_Codes.INTERNAL_SERVER_ERROR).json({
+        message: "Internal server error",
+      });
+    }
+  };
+
+  async refreshToken(req: Request, res: Response): Promise<void> {
+    const { refreshToken } = req.body;
+
+    if (!refreshToken) {
+      res.status(Http_Status_Codes.BAD_REQUEST).json({
+        success: false,
+        message: "Refresh token is required",
+      });
+      return;
+    }
+
+    try {
+      // Call the refreshToken method from UserService
+      const response = await this.userService.refreshToken(refreshToken);
+
+      res.status(response.statusCode).json(response);
+      return;
+    } catch (error) {
+      console.log(error);
+      res.status(Http_Status_Codes.INTERNAL_SERVER_ERROR).json({
+        success: false,
+        message: "Internal server error",
+      });
+      return;
     }
   }
 }

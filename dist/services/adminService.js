@@ -153,6 +153,20 @@ class AdminServices {
             }
         });
     }
+    searchExperts(searchTerm) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                if (!searchTerm) {
+                    throw new Error("Search term is required");
+                }
+                return yield this.adminRepository.searchExperts(searchTerm);
+            }
+            catch (error) {
+                console.error("Error in searchUsers service:", error);
+                throw error;
+            }
+        });
+    }
     getAllSpecialisations() {
         return __awaiter(this, void 0, void 0, function* () {
             try {

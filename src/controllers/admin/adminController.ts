@@ -1,25 +1,23 @@
 /* eslint-disable  @typescript-eslint/no-explicit-any */
 
 import { Request, Response } from "express";
-import { Http_Status_Codes } from "../constants/httpStatusCodes";
-import AdminService from "../services/adminService";
-import { KycUpdateData } from "../models/expertKycModel";
-import { DownloadRequest } from "../interfaces/adminInterface";
+import { Http_Status_Codes } from "../../constants/httpStatusCodes";
+import AdminService from "../../services/admin/adminService";
+import { KycUpdateData } from "../../models/expertKycModel";
+import { DownloadRequest } from "../../interfaces/adminInterface";
+import { IAdminController } from "./IAdminController";
+import { SearchUserRequest } from "../../interfaces/commonInterface";
 
 
-interface SearchUserRequest {
-  data: string;
-}
 
-// interface ExpertStatusRequest {
-//   _id: string;
-// }
 
-class AdminController {
+
+class AdminController implements IAdminController {
   constructor(private adminService: AdminService) {}
 
   async login(req: Request, res: Response): Promise<void> {
     try {
+      
       const requiredFields = ["email", "password"];
       const missingFields = requiredFields.filter((field) => !req.body[field]);
 
@@ -46,7 +44,7 @@ class AdminController {
     }
   }
 
-  async getAdminDashboardDetails(req: Request, res: Response) {
+  async getAdminDashboardDetails(req: Request, res: Response): Promise<void> {
     try {
       console.log("getAdminDashboardDetails server-side");
       const { userCount, expertCount } =
@@ -313,6 +311,40 @@ class AdminController {
       }
 
       const results = await this.adminService.searchUsers(data);
+      res.status(Http_Status_Codes.OK).json(results);
+    } catch (error: any) {
+      console.error("Error in searchUsers controller:", error);
+
+      if (error.message === "Search term is required") {
+        res.status(Http_Status_Codes.BAD_REQUEST).json({
+          message: "Search term is required",
+        });
+        return;
+      }
+
+      res.status(Http_Status_Codes.INTERNAL_SERVER_ERROR).json({
+        message: "Internal Server Error",
+      });
+    }
+  }
+
+  async searchExperts(
+    // eslint-disable-next-line @typescript-eslint/no-empty-object-type
+    req: Request<{}, {}, SearchUserRequest>,
+    res: Response
+  ): Promise<void> {
+    try {
+      console.log("searchUser serverside");
+      const { data } = req.body;
+
+      if (!data) {
+        res.status(Http_Status_Codes.BAD_REQUEST).json({
+          message: "No data to search",
+        });
+        return;
+      }
+
+      const results = await this.adminService.searchExperts(data);
       res.status(Http_Status_Codes.OK).json(results);
     } catch (error: any) {
       console.error("Error in searchUsers controller:", error);

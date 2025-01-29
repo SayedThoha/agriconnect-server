@@ -14,6 +14,70 @@ const httpStatusCodes_1 = require("../constants/httpStatusCodes");
 class UserController {
     constructor(userService) {
         this.userService = userService;
+        this.checkUserStatus = (req, res) => __awaiter(this, void 0, void 0, function* () {
+            try {
+                const userId = req.params.id;
+                console.log(userId);
+                const status = yield this.userService.checkUserStatus(userId);
+                res.status(200).json(status);
+            }
+            catch (error) {
+                console.error("Error in checkUserStatus:", error);
+                res.status(500).json({ message: "Internal server error" });
+            }
+        });
+        this.verifyEmailForPasswordReset = (req, res) => __awaiter(this, void 0, void 0, function* () {
+            try {
+                // Input validation
+                const requiredFields = ["email"];
+                const missingFields = requiredFields.filter((field) => !req.body[field]);
+                if (missingFields.length > 0) {
+                    res.status(httpStatusCodes_1.Http_Status_Codes.BAD_REQUEST).json({
+                        error: `Missing required fields: ${missingFields.join(", ")}`,
+                    });
+                    return;
+                }
+                const { email } = req.body;
+                yield this.userService.verifyEmailForPasswordReset(email);
+                res.status(httpStatusCodes_1.Http_Status_Codes.OK).json({
+                    message: "Email verification done",
+                });
+            }
+            catch (error) {
+                console.error("Email verification error:", error);
+                res.status(httpStatusCodes_1.Http_Status_Codes.INTERNAL_SERVER_ERROR).json({
+                    message: "Internal server error",
+                });
+            }
+        });
+        this.updatePassword = (req, res) => __awaiter(this, void 0, void 0, function* () {
+            try {
+                // Validation
+                const requiredFields = ["email", "password"];
+                const missingFields = requiredFields.filter((field) => !req.body[field]);
+                if (missingFields.length > 0) {
+                    res.status(httpStatusCodes_1.Http_Status_Codes.BAD_REQUEST).json({
+                        error: `Missing required fields: ${missingFields.join(", ")}`,
+                    });
+                    return;
+                }
+                const { email, password } = req.body;
+                const result = yield this.userService.updatePassword(email, password);
+                if (!result.status) {
+                    res
+                        .status(httpStatusCodes_1.Http_Status_Codes.NOT_FOUND)
+                        .json({ message: result.message });
+                    return;
+                }
+                res.status(httpStatusCodes_1.Http_Status_Codes.OK).json({ message: result.message });
+            }
+            catch (error) {
+                console.log(error);
+                res.status(httpStatusCodes_1.Http_Status_Codes.INTERNAL_SERVER_ERROR).json({
+                    message: "Internal server error",
+                });
+            }
+        });
     }
     registerUser(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
@@ -130,7 +194,7 @@ class UserController {
                 const { email, password } = req.body;
                 console.log(email, password);
                 const result = yield this.userService.login(email, password);
-                res.status(result.statusCode).json(Object.assign(Object.assign(Object.assign({ success: result.success, message: result.message }, (result.accessToken && { accessToken: result.accessToken })), (result.accessedUser && { accessedUser: result.accessedUser })), (result.email && { email: result.email })));
+                res.status(result.statusCode).json(Object.assign(Object.assign(Object.assign(Object.assign({ success: result.success, message: result.message }, (result.accessToken && { accessToken: result.accessToken })), (result.refreshToken && { refreshToken: result.refreshToken })), (result.accessedUser && { accessedUser: result.accessedUser })), (result.email && { email: result.email })));
             }
             catch (error) {
                 console.log(error);
@@ -251,6 +315,32 @@ class UserController {
                 res
                     .status(httpStatusCodes_1.Http_Status_Codes.INTERNAL_SERVER_ERROR)
                     .json({ message: "Internal Server Error" });
+            }
+        });
+    }
+    refreshToken(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const { refreshToken } = req.body;
+            if (!refreshToken) {
+                res.status(httpStatusCodes_1.Http_Status_Codes.BAD_REQUEST).json({
+                    success: false,
+                    message: "Refresh token is required",
+                });
+                return;
+            }
+            try {
+                // Call the refreshToken method from UserService
+                const response = yield this.userService.refreshToken(refreshToken);
+                res.status(response.statusCode).json(response);
+                return;
+            }
+            catch (error) {
+                console.log(error);
+                res.status(httpStatusCodes_1.Http_Status_Codes.INTERNAL_SERVER_ERROR).json({
+                    success: false,
+                    message: "Internal server error",
+                });
+                return;
             }
         });
     }

@@ -1,30 +1,30 @@
 // /* eslint-disable  @typescript-eslint/no-explicit-any */
-import fs from "fs"
+import fs from "fs";
 import path from "path";
-
-import { Http_Status_Codes } from "../constants/httpStatusCodes";
-import {
-  IAdminResponse,
-  
-  ILoginResult,
-} from "../interfaces/adminInterface";
+import { config } from "dotenv";
+import { Http_Status_Codes } from "../../constants/httpStatusCodes";
+import { IAdminResponse, ILoginResult } from "../../interfaces/adminInterface";
 import {
   IExpertKyc,
   KycUpdateData,
   KycVerificationField,
-} from "../models/expertKycModel";
-import { IExpert } from "../models/expertModel";
-import { ISpecialisation } from "../models/specialisationModel";
-import { IUser } from "../models/userModel";
-import AdminRepository from "../repositories/admin/adminRepository";
+} from "../../models/expertKycModel";
+import { IExpert } from "../../models/expertModel";
+import { ISpecialisation } from "../../models/specialisationModel";
+import { IUser } from "../../models/userModel";
+import AdminRepository from "../../repositories/admin/adminRepository";
 
-import { comparePass } from "../utils/hashPassword";
+import { comparePass } from "../../utils/hashPassword";
 import jwt from "jsonwebtoken";
+import { IAdminService } from "./IAdminService";
 
-class AdminServices {
+config();
+class AdminServices implements IAdminService {
+  private jwtSecret: string = process.env.JWT_SECRET || "default_secret";
+
   constructor(
     private adminRepository: AdminRepository,
-    private jwtSecret: string = process.env.JWT_SECRET || "default_secret",
+
     private baseDestinationPath = path.join(
       "D:",
       "Project 2 Pics",
@@ -52,9 +52,24 @@ class AdminServices {
         message: "Incorrect Password",
       };
     }
+    // Ensure adminData._id is treated as a string (or ObjectId) for simplicity
+    if (!adminData._id) {
+      return {
+        success: false,
+        status: Http_Status_Codes.INTERNAL_SERVER_ERROR,
+        message: "Invalid user ID",
+      };
+    }
+    if (!this.jwtSecret) {
+      throw new Error(
+        "JWT_SECRET is not defined. Please set it in your environment."
+      );
+    }
 
     const accessToken = jwt.sign({ adminId: adminData._id }, this.jwtSecret);
 
+    console.log("secret in adminlogin", this.jwtSecret);
+    console.log("accessToken in login admin", accessToken);
     const accessedUser: IAdminResponse = {
       email: adminData.email,
       role: adminData.role,
@@ -72,7 +87,10 @@ class AdminServices {
     };
   }
 
-  async getAdminDashboardDetails() {
+  async getAdminDashboardDetails(): Promise<{
+    userCount: number;
+    expertCount: number;
+  }> {
     const userCount = await this.adminRepository.getUserCount();
     const expertCount = await this.adminRepository.getExpertCount();
 
@@ -121,7 +139,6 @@ class AdminServices {
     }
   }
 
-
   async getUserDetails(_id: string): Promise<IUser> {
     try {
       if (!_id) {
@@ -140,13 +157,24 @@ class AdminServices {
     }
   }
 
-
   async searchUsers(searchTerm: string): Promise<IUser[]> {
     try {
       if (!searchTerm) {
         throw new Error("Search term is required");
       }
       return await this.adminRepository.searchUsers(searchTerm);
+    } catch (error) {
+      console.error("Error in searchUsers service:", error);
+      throw error;
+    }
+  }
+
+  async searchExperts(searchTerm: string): Promise<IExpert[]> {
+    try {
+      if (!searchTerm) {
+        throw new Error("Search term is required");
+      }
+      return await this.adminRepository.searchExperts(searchTerm);
     } catch (error) {
       console.error("Error in searchUsers service:", error);
       throw error;
@@ -332,7 +360,6 @@ class AdminServices {
     }
   }
 
-  
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   private getFilePath(expert: IExpert, name: any, index: number) {
     switch (name) {
@@ -373,7 +400,7 @@ class AdminServices {
   }
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  async downloadDocument(data: { expertId: any; name: any; index: any; }) {
+  async downloadDocument(data: { expertId: any; name: any; index: any }) {
     const { expertId, name, index } = data;
     const expert = await this.adminRepository.findExpertById(expertId);
 

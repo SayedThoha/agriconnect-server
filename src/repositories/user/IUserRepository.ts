@@ -10,5 +10,7 @@ export interface IUserRepository {
      updateUserOtp(email: string, otp: string): Promise<IUser | null>;
      findUserById(id: string): Promise<IUser | null> ;
      updateUserProfile(id: string,updateData: Partial<IUser> ): Promise<IUser | null>;
-     updateProfilePicture(userId: string, imageUrl: string): Promise<void>
+     updateProfilePicture(userId: string, imageUrl: string): Promise<void>;
+     checkUserStatus(userId: string): Promise<{ blocked: boolean }>
+     updatePassword(email: string, hashedPassword: string): Promise<IUser | null>
 }

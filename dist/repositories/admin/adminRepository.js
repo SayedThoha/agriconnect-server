@@ -8,27 +8,51 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 const adminModel_1 = require("../../models/adminModel");
 const expertKycModel_1 = require("../../models/expertKycModel");
 const expertModel_1 = require("../../models/expertModel");
 const specialisationModel_1 = require("../../models/specialisationModel");
 const userModel_1 = require("../../models/userModel");
-class AdminRepository {
-    constructor() { }
+const baseRepository_1 = __importDefault(require("../base/baseRepository"));
+class AdminRepository extends baseRepository_1.default {
+    constructor() {
+        super(adminModel_1.Admin);
+    }
+    // async findByEmail(email: string): Promise<IAdmin | null> {
+    //   return await Admin.findOne({ email });
+    // }
     findByEmail(email) {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield adminModel_1.Admin.findOne({ email });
+            try {
+                return yield this.model.findOne({ email });
+            }
+            catch (error) {
+                throw new Error(`Error finding admin by email: ${error}`);
+            }
         });
     }
     getUserCount() {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield userModel_1.User.countDocuments({});
+            try {
+                return yield userModel_1.User.countDocuments({});
+            }
+            catch (error) {
+                throw new Error(`Error getting user count: ${error}`);
+            }
         });
     }
     getExpertCount() {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield expertModel_1.Expert.countDocuments({});
+            try {
+                return yield expertModel_1.Expert.countDocuments({});
+            }
+            catch (error) {
+                throw new Error(`Error getting expert count: ${error}`);
+            }
         });
     }
     findAllExperts() {
@@ -46,8 +70,8 @@ class AdminRepository {
     findAllUsers() {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                const experts = yield userModel_1.User.find();
-                return experts;
+                const users = yield userModel_1.User.find();
+                return users;
             }
             catch (error) {
                 console.error("Error in findAllExperts repository:", error);
@@ -146,6 +170,21 @@ class AdminRepository {
             }
             catch (error) {
                 console.error("Error in searchUsers repository:", error);
+                throw error;
+            }
+        });
+    }
+    searchExperts(searchTerm) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const regex = new RegExp("^" + searchTerm.toLowerCase(), "i");
+                const experts = yield expertModel_1.Expert.find();
+                return experts.filter((expert) => regex.test(expert.firstName) ||
+                    regex.test(expert.lastName) ||
+                    regex.test(expert.email));
+            }
+            catch (error) {
+                console.error("Error in searchExperts repository:", error);
                 throw error;
             }
         });

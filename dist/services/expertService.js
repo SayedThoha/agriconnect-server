@@ -184,7 +184,7 @@ class ExpertServices {
                         message: "Incorrect password",
                     };
                 }
-                // Check if user is blocked
+                // Check if expert is blocked
                 if (expert.blocked === true) {
                     return {
                         success: false,
@@ -301,6 +301,57 @@ class ExpertServices {
             }
             yield this.expertRepository.updateProfilePicture(expertId, imageUrl);
             return "Profile picture updated successfully";
+        });
+    }
+    checkExpertStatus(expertId) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const status = yield this.expertRepository.checkExpertStatus(expertId);
+                return status;
+            }
+            catch (error) {
+                console.error(error);
+                throw new Error("Error checking user status");
+            }
+        });
+    }
+    verifyEmailForPasswordReset(email) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const expert = yield this.expertRepository.findByEmail(email);
+                if (!expert) {
+                    throw new Error('Invalid Email');
+                }
+                const otp = (0, otp_1.generateOtp)();
+                // Send OTP
+                const isOtpSent = yield (0, sendOtpToMail_1.sentOtpToEmail)(email, otp);
+                if (!isOtpSent) {
+                    {
+                        console.log("otp not send");
+                    }
+                    ;
+                }
+                yield this.expertRepository.updateExpertOtp(email, otp);
+            }
+            catch (error) {
+                console.log(error);
+                throw new Error(`Email verification failed`);
+            }
+        });
+    }
+    updatePassword(email, password) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const hashedPassword = yield (0, hashPassword_1.hashedPass)(password);
+                const user = yield this.expertRepository.updatePassword(email, hashedPassword);
+                if (!user) {
+                    return { status: false, message: "User not found" };
+                }
+                return { status: true, message: "Password Updated" };
+            }
+            catch (error) {
+                throw new Error(`Failed to update password: ${error}`);
+            }
         });
     }
 }

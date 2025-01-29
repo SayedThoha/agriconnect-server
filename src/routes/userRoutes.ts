@@ -1,10 +1,12 @@
 import express from "express";
 import UserRepository from "../repositories/user/userRepository";
-import UserServices from "../services/userService";
-import UserController from "../controllers/userController";
+
+import UserController from "../controllers/user/userController";
 import GoogleAuthRepository from "../repositories/googleAuth/googleAuthRepository";
 import GoogleAuthService from "../services/googleAuthService";
 import GoogleAuthController from "../controllers/googleAuthController";
+import UserServices from "../services/user/userService";
+import { userAuth } from "../middlewares/userAuth";
 
 // import { checkUserBlocked } from "../middlewares/userAuth";
 
@@ -35,20 +37,35 @@ userRouter.post("/googleLogin", (req, res) =>
   googleAuthController.login(req, res)
 );
 
-userRouter.get("/getuserDetails", (req, res) =>
+userRouter.get("/getuserDetails",userAuth, (req, res) =>
   userController.getUserDetails(req, res)
 );
 
-userRouter.post("/editUserProfile_name", (req, res) =>
+userRouter.post("/editUserProfile_name",userAuth, (req, res) =>
   userController.editUserProfile(req, res)
 );
 
-userRouter.post("/opt_for_new_email", (req, res) =>
+userRouter.post("/opt_for_new_email",userAuth, (req, res) =>
   userController.optForNewEmail(req, res)
 );
 
-userRouter.post("/edit_user_profile_picture", (req, res) =>
+userRouter.post("/edit_user_profile_picture",userAuth, (req, res) =>
   userController.editUserProfilePicture(req, res)
+);
+
+userRouter.get("/status/:id",userAuth, (req, res) =>
+  userController.checkUserStatus(req, res)
+);
+
+userRouter.post("/verifyEmail", (req, res) =>
+  userController.verifyEmailForPasswordReset(req, res)
+);
+userRouter.post("/updatePassword",userAuth, (req, res) =>
+  userController.updatePassword(req, res)
+);
+
+userRouter.post("/auth/refresh-token", (req, res) =>
+  userController.refreshToken(req, res)
 );
 
 export default userRouter;

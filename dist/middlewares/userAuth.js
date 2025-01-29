@@ -8,28 +8,25 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.checkUserBlocked = exports.userAuth = void 0;
 const userModel_1 = require("../models/userModel");
-const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
+// import jwt, { JwtPayload } from "jsonwebtoken";
+const token_1 = require("../utils/token");
 const userAuth = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     const authHeader = req.headers["authorization"];
     if (authHeader && authHeader.startsWith("user-Bearer")) {
         const token = authHeader.split(" ")[1]; // Getting token from the header
-        const secret = process.env.JWT_SECRET;
-        if (!secret) {
-            console.error("JWT_SECRET is not defined in the environment variables.");
-            res.status(500).json({ message: "Internal Server Error" });
-            return; // Ensure no further processing
-        }
         try {
-            const decoded = jsonwebtoken_1.default.verify(token, secret);
+            // const decoded = jwt.verify(token, secret) as JwtPayload;
+            const decoded = yield (0, token_1.verifyToken)(token);
+            if (!decoded) {
+                res.status(401).json({ message: "Unauthorized: Invalid or expired token" });
+                return;
+            }
             // Check if decoded has the expertId property
-            if (decoded && typeof decoded === "object" && "userId" in decoded) {
-                req.userId = decoded.userId; // Explicitly cast to string
+            if (decoded && typeof decoded === "object" && "data" in decoded) {
+                req.userId = decoded.data; // Explicitly cast to string
                 next();
             }
             else {

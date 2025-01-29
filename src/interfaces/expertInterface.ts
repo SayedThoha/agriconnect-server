@@ -15,3 +15,10 @@ export interface ExpertRegistrationDTO {
     experience_certificate: string[];
     password: string;
 }
+
+
+export interface OtpVerificationResult {
+    success: boolean;
+    statusCode: number;
+    message: string;
+  }

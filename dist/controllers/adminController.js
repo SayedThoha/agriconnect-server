@@ -11,9 +11,6 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const httpStatusCodes_1 = require("../constants/httpStatusCodes");
-// interface ExpertStatusRequest {
-//   _id: string;
-// }
 class AdminController {
     constructor(adminService) {
         this.adminService = adminService;
@@ -295,6 +292,36 @@ class AdminController {
                     return;
                 }
                 const results = yield this.adminService.searchUsers(data);
+                res.status(httpStatusCodes_1.Http_Status_Codes.OK).json(results);
+            }
+            catch (error) {
+                console.error("Error in searchUsers controller:", error);
+                if (error.message === "Search term is required") {
+                    res.status(httpStatusCodes_1.Http_Status_Codes.BAD_REQUEST).json({
+                        message: "Search term is required",
+                    });
+                    return;
+                }
+                res.status(httpStatusCodes_1.Http_Status_Codes.INTERNAL_SERVER_ERROR).json({
+                    message: "Internal Server Error",
+                });
+            }
+        });
+    }
+    searchExperts(
+    // eslint-disable-next-line @typescript-eslint/no-empty-object-type
+    req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                console.log("searchUser serverside");
+                const { data } = req.body;
+                if (!data) {
+                    res.status(httpStatusCodes_1.Http_Status_Codes.BAD_REQUEST).json({
+                        message: "No data to search",
+                    });
+                    return;
+                }
+                const results = yield this.adminService.searchExperts(data);
                 res.status(httpStatusCodes_1.Http_Status_Codes.OK).json(results);
             }
             catch (error) {

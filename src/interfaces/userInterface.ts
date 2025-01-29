@@ -23,6 +23,7 @@ export interface LoginResponse {
     statusCode: number;
     message: string;
     accessToken?: string;
+    refreshToken?:string;
     accessedUser?: Partial<IUser>;
     email?: string;
 }
@@ -33,4 +34,13 @@ export interface AccessedUser {
     lastName: string;
     email: string;
     role?: string;
+}
+
+
+
+
+export interface OtpVerificationResult {
+  success: boolean;
+  statusCode: number;
+  message: string;
 }

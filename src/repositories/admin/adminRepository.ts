@@ -7,22 +7,43 @@ import {
   Specialisation,
 } from "../../models/specialisationModel";
 import { IUser, User } from "../../models/userModel";
+import BaseRepository from "../base/baseRepository";
 import { IAdminRepository } from "./IAdminRepository";
 
-class AdminRepository implements IAdminRepository {
-  constructor() {}
+class AdminRepository extends BaseRepository<IAdmin>  implements IAdminRepository {
+  constructor() {
+    super(Admin)
+  }
 
+  // async findByEmail(email: string): Promise<IAdmin | null> {
+  //   return await Admin.findOne({ email });
+  // }
+
+  
   async findByEmail(email: string): Promise<IAdmin | null> {
-    return await Admin.findOne({ email });
+    try {
+      return await this.model.findOne({ email });
+    } catch (error) {
+      throw new Error(`Error finding admin by email: ${error}`);
+    }
   }
 
   async getUserCount(): Promise<number> {
+    try{
     return await User.countDocuments({});
+    }catch(error){
+      throw new Error(`Error getting user count: ${error}`);
+    }
   }
 
   async getExpertCount(): Promise<number> {
+    try{
     return await Expert.countDocuments({});
+    }catch(error){
+      throw new Error(`Error getting expert count: ${error}`);
+    }
   }
+
 
   async findAllExperts(): Promise<IExpert[]> {
     try {
@@ -36,8 +57,8 @@ class AdminRepository implements IAdminRepository {
 
   async findAllUsers(): Promise<IUser[]> {
     try {
-      const experts = await User.find();
-      return experts;
+      const users = await User.find();
+      return users;
     } catch (error) {
       console.error("Error in findAllExperts repository:", error);
       throw error;
@@ -132,6 +153,23 @@ class AdminRepository implements IAdminRepository {
       );
     } catch (error) {
       console.error("Error in searchUsers repository:", error);
+      throw error;
+    }
+  }
+
+  async searchExperts(searchTerm: string): Promise<IExpert[]> {
+    try {
+      const regex = new RegExp("^" + searchTerm.toLowerCase(), "i");
+      const experts = await Expert.find();
+
+      return experts.filter(
+        (expert: IExpert) =>
+          regex.test(expert.firstName) ||
+          regex.test(expert.lastName) ||
+          regex.test(expert.email)
+      );
+    } catch (error) {
+      console.error("Error in searchExperts repository:", error);
       throw error;
     }
   }

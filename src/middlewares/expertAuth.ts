@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction } from "express";
-import jwt, { JwtPayload } from "jsonwebtoken";
+// import jwt, { JwtPayload } from "jsonwebtoken";
 import { Expert } from "../models/expertModel";
+import { verifyToken } from "../utils/token";
 
 interface ExpertRequest extends Request {
   expertId?: string;
@@ -19,20 +20,14 @@ export const expertAuth = async (
   }
 
   const token = authHeader.split(" ")[1];
-  const secret = process.env.JWT_SECRET;
 
-  if (!secret) {
-    console.error("JWT_SECRET is not defined in the environment variables.");
-    res.status(500).json({ message: "Internal Server Error" });
-    return; // Ensure no further processing
-  }
 
   try {
-    const decoded = jwt.verify(token, secret) as JwtPayload;
-
+    // const decoded = jwt.verify(token, secret) as JwtPayload;
+    const decoded = await verifyToken(token);
     // Check if decoded has the expertId property
-    if (decoded && typeof decoded === "object" && "expertId" in decoded) {
-      req.expertId = decoded.expertId as string; // Explicitly cast to string
+    if (decoded && typeof decoded === "object" && "data" in decoded) {
+      req.expertId = decoded.data as string; // Explicitly cast to string
       next();
     } else {
       res.status(401).json({ message: "Unauthorized: Invalid token payload" });
@@ -42,7 +37,6 @@ export const expertAuth = async (
     res.status(401).json({ message: "Unauthorized: Invalid token" });
   }
 };
-
 
 export const checkExpertBlocked = async (
   req: ExpertRequest,
