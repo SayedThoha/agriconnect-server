@@ -74,4 +74,12 @@ adminRouter.post("/submit_kyc_details", adminAuth, (req, res) =>
 // adminRouter.get("/download_kyc_documents",
 //   (req,res)=>adminController.downloadKycDocuments(req,res))
 
+adminRouter.post("/editpayOut", (req, res) =>
+  adminController.editPayOut(req, res)
+);
+
+adminRouter.get("/get_appointment_details", (req, res) =>
+  adminController.getAppointmentDetails(req, res)
+);
+
 export default adminRouter;

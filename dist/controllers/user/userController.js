@@ -268,7 +268,6 @@ class UserController {
             }
         });
     }
-    ;
     verifyEmailForPasswordReset(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
@@ -295,7 +294,6 @@ class UserController {
             }
         });
     }
-    ;
     updatePassword(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
@@ -326,7 +324,6 @@ class UserController {
             }
         });
     }
-    ;
     refreshToken(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             const { refreshToken } = req.body;
@@ -350,6 +347,332 @@ class UserController {
                     message: "Internal server error",
                 });
                 return;
+            }
+        });
+    }
+    getSpecialisation(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const specialisation = yield this.userService.getSpecialisations();
+                res.status(httpStatusCodes_1.Http_Status_Codes.OK).json(specialisation);
+            }
+            catch (error) {
+                console.log(error);
+                res.status(httpStatusCodes_1.Http_Status_Codes.INTERNAL_SERVER_ERROR).json({
+                    message: "Internal Server Error",
+                });
+            }
+        });
+    }
+    getExperts(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const expert = yield this.userService.getExperts();
+                res.status(httpStatusCodes_1.Http_Status_Codes.OK).json(expert);
+            }
+            catch (error) {
+                console.log(error);
+                res.status(httpStatusCodes_1.Http_Status_Codes.INTERNAL_SERVER_ERROR).json({
+                    message: "Internal Server Error",
+                });
+            }
+        });
+    }
+    getExpertDetails(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const data = req.query;
+                // console.log("hai hello",data);
+                if (!data._id) {
+                    res.status(httpStatusCodes_1.Http_Status_Codes.BAD_REQUEST).json({
+                        message: "Missing required data",
+                    });
+                    return;
+                }
+                const expert = yield this.userService.getExpertDetails(data._id);
+                console.log(expert);
+                res.status(httpStatusCodes_1.Http_Status_Codes.OK).json(expert);
+            }
+            catch (error) {
+                console.error("Error in getExpertDetails controller:", error);
+                res.status(httpStatusCodes_1.Http_Status_Codes.INTERNAL_SERVER_ERROR).json({
+                    message: "Internal Server Error",
+                });
+            }
+        });
+    }
+    getExpertSlots(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const data = req.query;
+                if (!data._id) {
+                    res.status(httpStatusCodes_1.Http_Status_Codes.BAD_REQUEST).json({
+                        message: "Missing required data",
+                    });
+                    return;
+                }
+                const expert = yield this.userService.getExpertSlots(data._id);
+                console.log(expert);
+                res.status(httpStatusCodes_1.Http_Status_Codes.OK).json(expert);
+            }
+            catch (error) {
+                console.error("Error in getExpertSlotss controller:", error);
+                res.status(httpStatusCodes_1.Http_Status_Codes.INTERNAL_SERVER_ERROR).json({
+                    message: "Internal Server Error",
+                });
+            }
+        });
+    }
+    addSlots(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                console.log("addSlots backend");
+                const slotData = req.body;
+                console.log(slotData);
+                const updatedSlot = yield this.userService.bookSlot(slotData);
+                console.log("slots after booking:", updatedSlot);
+                res.status(httpStatusCodes_1.Http_Status_Codes.CREATED).json({
+                    message: "slot updated",
+                    slot: updatedSlot,
+                });
+            }
+            catch (error) {
+                console.error("Error in slot controller addSlots:", error);
+                res
+                    .status(httpStatusCodes_1.Http_Status_Codes.INTERNAL_SERVER_ERROR)
+                    .json({ message: "Internal server error" });
+            }
+        });
+    }
+    getSlot(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                console.log("getSlot backend");
+                const { slotId } = req.query;
+                console.log("Query data:", { slotId });
+                const slot = yield this.userService.getSlotDetails(slotId);
+                console.log("Retrieved slot:", slot);
+                res.status(httpStatusCodes_1.Http_Status_Codes.OK).json(slot);
+            }
+            catch (error) {
+                console.error("Error in slot controller getSlot:", error);
+                res
+                    .status(httpStatusCodes_1.Http_Status_Codes.INTERNAL_SERVER_ERROR)
+                    .json({ message: "Internal server error" });
+            }
+        });
+    }
+    checkSlotAvailability(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                console.log("check_if_the_slot_available backend");
+                const { slotId } = req.query;
+                if (!slotId) {
+                    res
+                        .status(httpStatusCodes_1.Http_Status_Codes.BAD_REQUEST)
+                        .json({ message: "slot Id is missing" });
+                    return;
+                }
+                console.log("slotId:", slotId, req.query);
+                const { isAvailable, message } = yield this.userService.checkSlotAvailability(slotId);
+                if (!isAvailable) {
+                    res.status(httpStatusCodes_1.Http_Status_Codes.UNAUTHORIZED).json({ message });
+                    return;
+                }
+                res.status(httpStatusCodes_1.Http_Status_Codes.OK).json({ message });
+            }
+            catch (error) {
+                console.error("Error in slot controller checkSlotAvailability:", error);
+                res
+                    .status(httpStatusCodes_1.Http_Status_Codes.INTERNAL_SERVER_ERROR)
+                    .json({ message: "Internal server error" });
+            }
+        });
+    }
+    createBookingPayment(
+    // eslint-disable-next-line @typescript-eslint/no-empty-object-type
+    req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                console.log("booking_payment backend");
+                const { consultation_fee } = req.body;
+                if (!consultation_fee || consultation_fee <= 0) {
+                    res.status(httpStatusCodes_1.Http_Status_Codes.BAD_REQUEST).json({
+                        success: false,
+                        message: "Invalid consultation fee",
+                    });
+                    return;
+                }
+                const paymentOrder = yield this.userService.createPaymentOrder(consultation_fee);
+                console.log(paymentOrder);
+                if (!paymentOrder.success) {
+                    res.status(httpStatusCodes_1.Http_Status_Codes.BAD_REQUEST).json(paymentOrder);
+                    return;
+                }
+                res.status(httpStatusCodes_1.Http_Status_Codes.OK).json(paymentOrder);
+            }
+            catch (error) {
+                console.error("Error in user controller createBookingPayment:", error);
+                res
+                    .status(httpStatusCodes_1.Http_Status_Codes.INTERNAL_SERVER_ERROR)
+                    .json({ message: "Internal server error" });
+            }
+        });
+    }
+    appointmentBooking(
+    // eslint-disable-next-line @typescript-eslint/no-empty-object-type
+    req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                console.log("appointmnet_booking backend");
+                const farmerDetails = req.body;
+                console.log(farmerDetails);
+                yield this.userService.bookAppointment(farmerDetails);
+                res
+                    .status(httpStatusCodes_1.Http_Status_Codes.CREATED)
+                    .json({ message: "Slot booking completed" });
+            }
+            catch (error) {
+                console.error("Error in appointment booking:", error);
+                res
+                    .status(httpStatusCodes_1.Http_Status_Codes.INTERNAL_SERVER_ERROR)
+                    .json({ message: "Internal server error" });
+            }
+        });
+    }
+    userDetails(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const { userId } = req.query;
+                if (!userId) {
+                    res
+                        .status(httpStatusCodes_1.Http_Status_Codes.BAD_REQUEST)
+                        .json({ message: "User ID is required" });
+                    return;
+                }
+                const user = yield this.userService.getUserDetails(userId);
+                if (!user) {
+                    res
+                        .status(httpStatusCodes_1.Http_Status_Codes.NOT_FOUND)
+                        .json({ message: "User not found" });
+                    return;
+                }
+                res.status(httpStatusCodes_1.Http_Status_Codes.OK).json(user);
+            }
+            catch (error) {
+                console.error("Error in userDetails controller:", error);
+                res
+                    .status(httpStatusCodes_1.Http_Status_Codes.INTERNAL_SERVER_ERROR)
+                    .json({ message: "Internal server error" });
+            }
+        });
+    }
+    getBookingDetails(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                console.log("get get_booking_details serverside");
+                const { userId } = req.query;
+                console.log("Query data:", { userId });
+                if (!userId) {
+                    res.status(httpStatusCodes_1.Http_Status_Codes.BAD_REQUEST).json({
+                        message: "User ID is required",
+                    });
+                    return;
+                }
+                const bookedSlots = yield this.userService.getBookingDetails(userId);
+                res.status(httpStatusCodes_1.Http_Status_Codes.OK).json(bookedSlots);
+            }
+            catch (error) {
+                console.error("Error in getBookingDetails controller:", error);
+                res
+                    .status(httpStatusCodes_1.Http_Status_Codes.INTERNAL_SERVER_ERROR)
+                    .json({ message: "Internal Server Error" });
+            }
+        });
+    }
+    cancelSlot(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                console.log("get get_booking_details serverside");
+                const { slotId } = req.query;
+                console.log("Slot ID:", slotId);
+                const response = yield this.userService.cancelSlot(slotId);
+                res.status(httpStatusCodes_1.Http_Status_Codes.OK).json(response);
+            }
+            catch (error) {
+                console.error(error);
+                res
+                    .status(httpStatusCodes_1.Http_Status_Codes.INTERNAL_SERVER_ERROR)
+                    .json("Internal Server Error");
+            }
+        });
+    }
+    upcomingAppointment(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                console.log("Fetching upcoming appointment from server...");
+                const userId = req.query._id;
+                console.log("User ID:", userId);
+                const appointment = yield this.userService.getUpcomingAppointment(userId);
+                if (Object.keys(appointment).length) {
+                    console.log("Next appointment:", appointment);
+                }
+                else {
+                    console.log("No upcoming appointments found.");
+                }
+                res.status(httpStatusCodes_1.Http_Status_Codes.OK).json(appointment);
+            }
+            catch (error) {
+                console.error("Error fetching upcoming appointment:", error);
+                res
+                    .status(httpStatusCodes_1.Http_Status_Codes.INTERNAL_SERVER_ERROR)
+                    .json({ message: "Internal Server Error" });
+            }
+        });
+    }
+    getUpcomingSlot(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                console.log(req.query);
+                const { appointmentId } = req.query;
+                if (!appointmentId) {
+                    res
+                        .status(httpStatusCodes_1.Http_Status_Codes.BAD_REQUEST)
+                        .json({ message: "Appointment ID is required" });
+                    return;
+                }
+                const data = yield this.userService.getUpcomingSlot(appointmentId);
+                console.log("data:", data);
+                res.status(httpStatusCodes_1.Http_Status_Codes.OK).json(data);
+            }
+            catch (error) {
+                console.error(error);
+                res
+                    .status(httpStatusCodes_1.Http_Status_Codes.INTERNAL_SERVER_ERROR)
+                    .json({ message: "Internal Server Error" });
+            }
+        });
+    }
+    getPrescriptionDetails(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                console.log("get_prescription_details:", req.query);
+                const { _id } = req.query;
+                if (!_id) {
+                    res
+                        .status(httpStatusCodes_1.Http_Status_Codes.BAD_REQUEST)
+                        .json({ message: "Missing required data" });
+                    return;
+                }
+                const data = yield this.userService.getPrescriptionDetails(_id);
+                console.log("Prescription details:", data);
+                res.status(httpStatusCodes_1.Http_Status_Codes.OK).json(data);
+            }
+            catch (error) {
+                console.error(error);
+                res
+                    .status(httpStatusCodes_1.Http_Status_Codes.INTERNAL_SERVER_ERROR)
+                    .json({ message: "Internal Server Error" });
             }
         });
     }

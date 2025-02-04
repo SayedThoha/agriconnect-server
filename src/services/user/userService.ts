@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-empty-object-type */
 /* eslint-disable  @typescript-eslint/no-explicit-any */
 
 //userService.ts
@@ -20,14 +21,27 @@ import {
   generateRefreshToken,
   verifyRefreshToken,
 } from "../../utils/token";
+import { ISpecialisation } from "../../models/specialisationModel";
+import { IExpert } from "../../models/expertModel";
+import { ISlot } from "../../models/slotModel";
+import {
+  FarmerBookingDetails,
+  PaymentOrder,
+  SlotUpdateData,
+} from "../../interfaces/commonInterface";
+import Razorpay from "razorpay";
+import { IBookedSlot } from "../../models/bookeSlotModel";
+import { IPrescription } from "../../models/prescriptionModel";
 
 export type UserResponse = IUser | null;
 export type UserResponeType = IUser | null | { success?: boolean };
 
 class UserServices implements IUserService {
   private readonly OTP_EXPIRY_MINUTES = 59;
-  
-  constructor(private userRepository: UserRepository) {}
+  private razorpayInstance!: Razorpay;
+  constructor(private userRepository: UserRepository) {
+    this.initializeRazorpay();
+  }
 
   async registerUser(userData: {
     firstName: string;
@@ -35,9 +49,7 @@ class UserServices implements IUserService {
     email: string;
     password: string;
   }): Promise<any> {
-    
     try {
-      
       console.log("Registration service started for email:", userData.email);
 
       // Check if the user already exists
@@ -422,8 +434,11 @@ class UserServices implements IUserService {
 
   async refreshToken(refreshToken: string): Promise<LoginResponse> {
     try {
+      console.log("Attempting to refresh access token...");
       // Validate refresh token
       const decodedRefreshToken = verifyRefreshToken(refreshToken); // This method will decode and validate the refresh token
+      // console.log(decodedRefreshToken);
+
       if (!decodedRefreshToken) {
         return {
           success: false,
@@ -434,7 +449,7 @@ class UserServices implements IUserService {
 
       // Find the user based on decoded token
       const user = await this.userRepository.findUserById(
-        decodedRefreshToken.userId
+        decodedRefreshToken.data
       );
       if (!user) {
         return {
@@ -446,7 +461,9 @@ class UserServices implements IUserService {
 
       // Generate new access token and refresh token
       const newAccessToken = generateAccessToken(user._id);
+      // console.log("new accesstoken", newAccessToken);
       const newRefreshToken = generateRefreshToken(user._id);
+      // console.log("newRefresh token", newRefreshToken);
 
       return {
         success: true,
@@ -464,6 +481,278 @@ class UserServices implements IUserService {
       };
     }
   }
+
+  async getSpecialisations(): Promise<ISpecialisation[]> {
+    return await this.userRepository.getSpecialisations();
+  }
+
+  async getExperts(): Promise<IExpert[]> {
+    try {
+      const experts = await this.userRepository.getExperts();
+      return experts;
+    } catch (error) {
+      console.error("Error in getAllExperts service:", error);
+      throw error;
+    }
+  }
+
+  async getExpertDetails(_id: string): Promise<IExpert> {
+    try {
+      if (!_id) {
+        throw new Error("Expert ID is required");
+      }
+      const expert = await this.userRepository.getExpertDetailsById(_id);
+      if (!expert) {
+        throw new Error("User not found");
+      }
+
+      return expert;
+    } catch (error) {
+      console.error("Error in getExpertDetails service:", error);
+      throw error;
+    }
+  }
+
+  async getExpertSlots(expertId: string): Promise<ISlot[]> {
+    try {
+      const slots = await this.userRepository.getSlots(expertId);
+      return slots;
+    } catch (error) {
+      console.error("Error in getExpertSlots service:", error);
+      throw error;
+    }
+  }
+
+  async bookSlot(slotData: SlotUpdateData): Promise<ISlot | null> {
+    try {
+      const updatedSlot = await this.userRepository.updateSlotBooking(slotData);
+      if (!updatedSlot) {
+        throw new Error("Slot not found or could not be updated");
+      }
+      return updatedSlot;
+    } catch (error) {
+      console.error("Error in slot service bookSlot:", error);
+      throw error;
+    }
+  }
+
+  async getSlotDetails(slotId: string): Promise<ISlot | null> {
+    try {
+      const slot = await this.userRepository.findSlotById(slotId);
+      if (!slot) {
+        throw new Error("Slot not found");
+      }
+      return slot;
+    } catch (error) {
+      console.error("Error in slot service getSlotDetails:", error);
+      throw error;
+    }
+  }
+
+  async checkSlotAvailability(slotId: string): Promise<{
+    isAvailable: boolean;
+    message: string;
+  }> {
+    try {
+      const bookedSlot = await this.userRepository.findBookedSlot(slotId);
+
+      if (bookedSlot && bookedSlot.consultation_status === "pending") {
+        return {
+          isAvailable: false,
+          message: "Slot already booked! Try another slot",
+        };
+      }
+
+      return {
+        isAvailable: true,
+        message: "Select payment method",
+      };
+    } catch (error) {
+      console.error("Error in slot service checkSlotAvailability:", error);
+      throw error;
+    }
+  }
+
+  private initializeRazorpay(): void {
+    try {
+      const keyId = process.env.razorpay_key_id;
+      const keySecret = process.env.razorpay_secret_id;
+      if (!keyId || !keySecret) {
+        throw new Error(
+          "Razorpay key_id or key_secret is missing in environment variables."
+        );
+      }
+      this.razorpayInstance = new Razorpay({
+        key_id: keyId,
+        key_secret: keySecret,
+      });
+    } catch (error) {
+      console.error("Failed to initialize Razorpay:", error);
+      // Even with the error, TypeScript knows the property is assigned
+    }
+  }
+
+  async createPaymentOrder(fee: number): Promise<PaymentOrder> {
+    if (!this.razorpayInstance) {
+      throw new Error("Razorpay is not properly initialized");
+    }
+
+    return new Promise((resolve, reject) => {
+      const options = {
+        amount: fee * 100,
+        currency: "INR",
+        receipt: "razorUser@gmail.com",
+      };
+
+      console.log("Razorpay Key ID:", process.env.razorpay_key_id);
+
+      this.razorpayInstance.orders.create(options, (err, order) => {
+        console.log("Razorpay order creation result:", order);
+
+        if (!err) {
+          resolve({
+            success: true,
+            fee: order.amount,
+            key_id: process.env.razorpay_key_id,
+            order_id: order.id,
+          });
+        } else {
+          console.log("Razorpay failure case:", err);
+          reject({
+            success: false,
+            message: err || "Payment order creation failed",
+          });
+        }
+      });
+    });
+  }
+
+  async bookAppointment(farmerDetails: FarmerBookingDetails): Promise<void> {
+    try {
+      // Check if slot exists and is available
+      const slot = await this.userRepository.findSlotById(farmerDetails.slotId);
+
+      if (!slot) {
+        throw new Error("Slot not found");
+      }
+
+      if (slot.booked) {
+        throw new Error("Slot already booked");
+      }
+
+      // Update slot status
+      await this.userRepository.updateSlotBookingStatus(
+        farmerDetails.slotId,
+        true
+      );
+
+      // Create booked slot record
+      await this.userRepository.createBookedSlot(farmerDetails);
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  async getBookingDetails(userId: string): Promise<IBookedSlot[]> {
+    try {
+      if (!userId) {
+        throw new Error("User ID is required");
+      }
+
+      const bookings = await this.userRepository.findBookedSlotsByUser(userId);
+      return bookings;
+    } catch (error) {
+      console.error("Error in getBookingDetails service:", error);
+      throw error;
+    }
+  }
+
+  async cancelSlot(slotId: string):Promise<{ message: string }> {
+    const slot = await this.userRepository.findSlotByIdAndUpdate(slotId, {
+      cancelled: true,
+    });
+
+    if (!slot) {
+      throw new Error("Slot not found");
+    }
+
+    const bookedSlot = await this.userRepository.findOneBookedSlotAndUpdate(
+      { slotId },
+      { consultation_status: "cancelled" }
+    );
+
+    if (!bookedSlot) {
+      throw new Error("Booked slot not found");
+    }
+
+    const userId = bookedSlot.userId.toString();
+    const user = await this.userRepository.findById(userId);
+
+    if (!user) {
+      throw new Error("User not found");
+    }
+
+    await this.userRepository.updateWallet(
+      user._id.toString(),
+      slot.bookingAmount
+    );
+
+    return { message: "Slot cancelled" };
+  }
+
+  async getUpcomingAppointment(userId: string): Promise<IBookedSlot | {}> {
+    console.log("Fetching upcoming appointments...");
+
+    const now = new Date();
+    const margin = 15 * 60 * 1000; // 15 minutes in milliseconds
+
+    const bookedSlots = await this.userRepository.findPendingAppointmentsByUser(
+      userId
+    );
+    console.log("Booked Slots:", bookedSlots);
+
+    // Filter appointments that are upcoming
+    const upcomingAppointments = bookedSlots.filter((slot) => {
+      if (
+        !slot.slotId ||
+        typeof slot.slotId !== "object" ||
+        !("time" in slot.slotId)
+      ) {
+        console.error("Invalid slotId:", slot.slotId);
+        return false;
+      }
+
+      const slotTime = new Date((slot.slotId as any).time);
+      return slotTime.getTime() > now.getTime() - margin;
+    });
+
+    // Sort to get the nearest upcoming appointment
+    upcomingAppointments.sort(
+      (a, b) =>
+        new Date((a.slotId as any).time).getTime() -
+        new Date((b.slotId as any).time).getTime()
+    );
+
+    return upcomingAppointments[0] || {};
+  }
+
+  async getUpcomingSlot(appointmentId: string): Promise<IBookedSlot> {
+    const data = await this.userRepository.findBookedSlotById(appointmentId);
+    if (!data) {
+      throw new Error("Appointment not found");
+    }
+    return data;
+  }
+
+  async getPrescriptionDetails(prescriptionId: string): Promise<IPrescription> {
+
+    const data = await this.userRepository.findPrescriptionById(prescriptionId);
+    if (!data) {
+      throw new Error("Prescription not found");
+    }
+    return data;
+  }
+  
 }
 
 export default UserServices;

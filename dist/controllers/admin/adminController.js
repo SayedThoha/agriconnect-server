@@ -45,10 +45,10 @@ class AdminController {
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 console.log("getAdminDashboardDetails server-side");
-                const { userCount, expertCount } = yield this.adminService.getAdminDashboardDetails();
+                const { userCount, expertCount, slotDetails } = yield this.adminService.getAdminDashboardDetails();
                 res
                     .status(httpStatusCodes_1.Http_Status_Codes.OK)
-                    .json({ user_count: userCount, expert_count: expertCount });
+                    .json({ user_count: userCount, expert_count: expertCount, slotDetails: slotDetails });
             }
             catch (error) {
                 console.error("Error in getAdminDashboardDetails:", error);
@@ -467,8 +467,9 @@ class AdminController {
             }
         });
     }
+    downloadKycDocuments(
     // eslint-disable-next-line @typescript-eslint/no-empty-object-type
-    downloadKycDocuments(req, res) {
+    req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 console.log("get download_kyc_documents serverside");
@@ -513,5 +514,46 @@ class AdminController {
             }
         });
     }
+    editPayOut(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                console.log("editPayOut serverside");
+                const data = req.body;
+                // Validate input data
+                if (!data || !data.payOut) {
+                    res
+                        .status(httpStatusCodes_1.Http_Status_Codes.BAD_REQUEST)
+                        .json({ message: "Edit payout failed. Invalid data." });
+                    return;
+                }
+                // Call the service to perform the logic
+                const message = yield this.adminService.editPayOut(data.payOut);
+                // Respond with success message
+                res.status(httpStatusCodes_1.Http_Status_Codes.OK).json({ message });
+            }
+            catch (error) {
+                console.error("Error during editPayOut:", error);
+                res
+                    .status(httpStatusCodes_1.Http_Status_Codes.INTERNAL_SERVER_ERROR)
+                    .json({ message: "Internal Server Error ." });
+            }
+        });
+    }
+    getAppointmentDetails(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                console.log("get get_appointment_details serverside");
+                const appointments = yield this.adminService.getAppointmentDetails();
+                res.status(httpStatusCodes_1.Http_Status_Codes.OK).json(appointments);
+            }
+            catch (error) {
+                console.error("Error fetching appointment details:", error);
+                res
+                    .status(httpStatusCodes_1.Http_Status_Codes.INTERNAL_SERVER_ERROR)
+                    .json({ message: "Internal Server Error" });
+            }
+        });
+    }
+    ;
 }
 exports.default = AdminController;

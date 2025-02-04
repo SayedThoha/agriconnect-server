@@ -57,7 +57,7 @@ expertRouter.post("/edit_expert_profile_picture", expertAuth, (req, res) =>
   expertController.editExpertProfilePicture(req, res)
 );
 
-expertRouter.get("/status/:id",expertAuth, (req, res) =>
+expertRouter.get("/status/:id", expertAuth, (req, res) =>
   expertController.checkExpertStatus(req, res)
 );
 
@@ -65,11 +65,55 @@ expertRouter.post("/verifyEmail", (req, res) =>
   expertController.verifyEmailForPasswordReset(req, res)
 );
 
-expertRouter.post("/updatePassword",expertAuth, (req, res) =>
+expertRouter.post("/updatePassword", (req, res) =>
   expertController.updatePassword(req, res)
 );
 
 expertRouter.post("/auth/refresh-token", (req, res) =>
   expertController.refreshToken(req, res)
 );
+
+expertRouter.post("/slotCreation",expertAuth, (req, res) =>
+  expertController.createSlot(req, res)
+);
+
+expertRouter.post("/add_all_slots", (req, res) =>
+  expertController.addAllSlots(req, res)
+);
+
+expertRouter.get("/expertSlotDetails",expertAuth, (req, res) =>
+  expertController.expertSlotDetails(req, res)
+);
+
+expertRouter.delete("/removeSlot",expertAuth, (req, res) =>
+  expertController.removeSlot(req, res)
+);
+
+expertRouter.get("/get_booking_details",expertAuth, (req, res) =>
+  expertController.getBookingDetails(req, res)
+);
+expertRouter.get("/get_expert_dashboard_details",expertAuth, (req, res) =>
+  expertController.getExpertDashboardDetails(req, res)
+);
+
+expertRouter.get("/upcoming_appointment",expertAuth, (req, res) =>
+  expertController.upcomingAppointment(req, res)
+);
+
+expertRouter.get("/updateUpcomingSlot",expertAuth, (req, res) =>
+  expertController.updateUpcomingSlot(req, res)
+);
+
+expertRouter.get("/update_consultationStatus",expertAuth, (req, res) =>
+  expertController.updateSlotStatus(req, res)
+);
+
+expertRouter.get("/get_bookings_of_expert",expertAuth, (req, res) =>
+  expertController.getExpertBookings(req, res)
+);
+
+expertRouter.get("/add_prescription", (req, res) =>
+  expertController.addPrescription(req, res)
+);
+
 export default expertRouter;

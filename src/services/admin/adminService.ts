@@ -17,6 +17,7 @@ import AdminRepository from "../../repositories/admin/adminRepository";
 import { comparePass } from "../../utils/hashPassword";
 import jwt from "jsonwebtoken";
 import { IAdminService } from "./IAdminService";
+import { IBookedSlot } from "../../models/bookeSlotModel";
 
 config();
 class AdminServices implements IAdminService {
@@ -90,13 +91,15 @@ class AdminServices implements IAdminService {
   async getAdminDashboardDetails(): Promise<{
     userCount: number;
     expertCount: number;
+    slotDetails: object;
   }> {
     const userCount = await this.adminRepository.getUserCount();
     const expertCount = await this.adminRepository.getExpertCount();
-
+    const slotDetails = await this.adminRepository.getSlotDetails();
     return {
       userCount,
       expertCount,
+      slotDetails,
     };
   }
 
@@ -415,6 +418,28 @@ class AdminServices implements IAdminService {
     }
 
     return this.copyFile(filePath, name);
+  }
+
+  // Method to update payOut for admin
+  async editPayOut(payOut: number): Promise<string> {
+    const result = await this.adminRepository.updatePayOut(payOut);
+
+    if (result.modifiedCount === 0) {
+      throw new Error("No records updated");
+    }
+
+    return "Edited Successfully";
+  }
+
+  async getAppointmentDetails(): Promise<IBookedSlot[]> {
+    try {
+      const appointments = await this.adminRepository.getAppointmentDetails();
+      console.log("bookedSlots:", appointments, appointments.length);
+      return appointments;
+    } catch (error) {
+      console.error(error);
+      throw new Error("Failed to fetch appointment details");
+    }
   }
 }
 

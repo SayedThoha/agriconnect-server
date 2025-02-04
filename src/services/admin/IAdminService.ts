@@ -6,7 +6,7 @@ import { IUser } from "../../models/userModel";
 
 export interface IAdminService{
     validateLogin(email: string, password: string): Promise<ILoginResult>;
-    getAdminDashboardDetails(): Promise<{ userCount: number; expertCount: number }>;
+    getAdminDashboardDetails(): Promise<{ userCount: number; expertCount: number; slotDetails: object }>;
     getAllExperts(): Promise<IExpert[]>;
     getAllUsers(): Promise<IUser[]>;
     toggleUserBlockStatus(_id: string): Promise<void>;

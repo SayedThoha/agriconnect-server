@@ -1,5 +1,6 @@
 import { IExpertDocuments } from "../../interfaces/adminInterface";
 import { Admin, IAdmin } from "../../models/adminModel";
+import { BookedSlot, IBookedSlot } from "../../models/bookeSlotModel";
 import { IExpertKyc, ExpertKyc } from "../../models/expertKycModel";
 import { Expert, IExpert } from "../../models/expertModel";
 import {
@@ -10,16 +11,18 @@ import { IUser, User } from "../../models/userModel";
 import BaseRepository from "../base/baseRepository";
 import { IAdminRepository } from "./IAdminRepository";
 
-class AdminRepository extends BaseRepository<IAdmin>  implements IAdminRepository {
+class AdminRepository
+  extends BaseRepository<IAdmin>
+  implements IAdminRepository
+{
   constructor() {
-    super(Admin)
+    super(Admin);
   }
 
   // async findByEmail(email: string): Promise<IAdmin | null> {
   //   return await Admin.findOne({ email });
   // }
 
-  
   async findByEmail(email: string): Promise<IAdmin | null> {
     try {
       return await this.model.findOne({ email });
@@ -29,21 +32,20 @@ class AdminRepository extends BaseRepository<IAdmin>  implements IAdminRepositor
   }
 
   async getUserCount(): Promise<number> {
-    try{
-    return await User.countDocuments({});
-    }catch(error){
+    try {
+      return await User.countDocuments({});
+    } catch (error) {
       throw new Error(`Error getting user count: ${error}`);
     }
   }
 
   async getExpertCount(): Promise<number> {
-    try{
-    return await Expert.countDocuments({});
-    }catch(error){
+    try {
+      return await Expert.countDocuments({});
+    } catch (error) {
       throw new Error(`Error getting expert count: ${error}`);
     }
   }
-
 
   async findAllExperts(): Promise<IExpert[]> {
     try {
@@ -244,27 +246,47 @@ class AdminRepository extends BaseRepository<IAdmin>  implements IAdminRepositor
     }
   }
 
-  async updateExpertKycStatus(expertId: string, verified: boolean): Promise<void> {
+  async updateExpertKycStatus(
+    expertId: string,
+    verified: boolean
+  ): Promise<void> {
     try {
-      await Expert.findByIdAndUpdate(
-        expertId,
-        {
-          $set: { kyc_verification: verified },
-        }
-      );
+      await Expert.findByIdAndUpdate(expertId, {
+        $set: { kyc_verification: verified },
+      });
     } catch (error) {
-      console.error('Error in updateExpertKycStatus repository:', error);
+      console.error("Error in updateExpertKycStatus repository:", error);
       throw error;
     }
   }
 
-  async findByIdForDownload(expertId: string): Promise<IExpertDocuments | null> {
+  async findByIdForDownload(
+    expertId: string
+  ): Promise<IExpertDocuments | null> {
     try {
       return await Expert.findById(expertId);
     } catch (error) {
-      console.error('Error in findById repository:', error);
+      console.error("Error in findById repository:", error);
       throw error;
     }
+  }
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  async updatePayOut(payOut: number): Promise<any> {
+    return await Admin.updateMany({}, { $set: { payOut } });
+  }
+
+  async getAppointmentDetails(): Promise<IBookedSlot[]> {
+    return await BookedSlot.find({})
+      .populate({
+        path: "slotId",
+      })
+      .populate({ path: "expertId" })
+      .populate("userId");
+  }
+
+  async getSlotDetails(): Promise<IBookedSlot[]> {
+    return await BookedSlot.find({}).populate("slotId");
   }
 }
 

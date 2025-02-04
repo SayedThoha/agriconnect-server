@@ -22,3 +22,14 @@ export interface OtpVerificationResult {
     statusCode: number;
     message: string;
   }
+
+
+  export interface SlotServiceResponse<T = void> {
+    success: boolean;
+    statusCode: number;
+    message: string;
+    data?: T;
+  }
+
+
+  

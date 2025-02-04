@@ -1,18 +1,17 @@
 import mongoose, { Schema, Document } from "mongoose";
 
-export interface ISlot extends Document{
-_id: mongoose.Types.ObjectId;
-expertId: mongoose.Schema.Types.ObjectId;
-time:Date;
-booked:boolean;
-bookingAmount:number;
-adminPaymentAmount: number;
-cancelled:boolean;
-created_time:Date;
-} 
+export interface ISlot extends Document {
+  _id: mongoose.Types.ObjectId;
+  expertId: mongoose.Types.ObjectId;
+  time: Date;
+  booked: boolean;
+  bookingAmount: number;
+  adminPaymentAmount: number;
+  cancelled: boolean;
+  created_time: Date;
+}
 
-
-const slotschema:Schema<ISlot> = new mongoose.Schema({
+const slotschema: Schema<ISlot> = new mongoose.Schema({
   expertId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "Expert",
@@ -26,7 +25,7 @@ const slotschema:Schema<ISlot> = new mongoose.Schema({
     type: Boolean,
     default: false,
   },
- 
+
   bookingAmount: {
     type: Number,
     required: true,
@@ -45,5 +44,5 @@ const slotschema:Schema<ISlot> = new mongoose.Schema({
   },
 });
 
-// module.exports = mongoose.model("slotcollection", slotschema);
-export const Slot=mongoose.model("Slot",slotschema)
+
+export const Slot = mongoose.model("Slot", slotschema);

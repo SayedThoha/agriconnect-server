@@ -1,7 +1,12 @@
+/* eslint-disable @typescript-eslint/no-empty-object-type */
 /* eslint-disable  @typescript-eslint/no-explicit-any */
 
 import { Http_Status_Codes } from "../../constants/httpStatusCodes";
-import { ExpertRegistrationDTO, OtpVerificationResult } from "../../interfaces/expertInterface";
+import {
+  ExpertRegistrationDTO,
+  OtpVerificationResult,
+  SlotServiceResponse,
+} from "../../interfaces/expertInterface";
 import { AccessedUser, LoginResponse } from "../../interfaces/userInterface";
 import { IExpert } from "../../models/expertModel";
 import { ISpecialisation } from "../../models/specialisationModel";
@@ -11,20 +16,24 @@ import { generateOtp } from "../../utils/otp";
 import { sentOtpToEmail } from "../../utils/sendOtpToMail";
 
 import { IExpertService } from "./IExpertService";
-import { generateAccessToken, generateRefreshToken, verifyRefreshToken } from "../../utils/token";
+import {
+  generateAccessToken,
+  generateRefreshToken,
+  verifyRefreshToken,
+} from "../../utils/token";
 import { ISlot } from "../../models/slotModel";
+import mongoose from "mongoose";
+import { ISlotData } from "../../interfaces/commonInterface";
+import { IBookedSlot } from "../../models/bookeSlotModel";
+import { IPrescription } from "../../models/prescriptionModel";
 
 export type ExpertResponse = IExpert | null;
 export type ExpertResponeType = IExpert | null | { success?: boolean };
 
-
 class ExpertServices implements IExpertService {
-
   private readonly OTP_EXPIRY_MINUTES = 59;
-  
-  constructor(private expertRepository: ExpertRepository) {}
 
-  
+  constructor(private expertRepository: ExpertRepository) {}
 
   async registerExpert(
     expertData: ExpertRegistrationDTO
@@ -204,7 +213,6 @@ class ExpertServices implements IExpertService {
     }
   }
 
-
   async loginExpert(email: string, password: string): Promise<LoginResponse> {
     try {
       // Find expert
@@ -237,7 +245,7 @@ class ExpertServices implements IExpertService {
         };
       }
 
-      // Check if user is verified
+      // Check if expert is verified
       if (expert.is_verified === false) {
         // Generate and save new OTP
         const otp = generateOtp();
@@ -305,7 +313,6 @@ class ExpertServices implements IExpertService {
     }
   }
 
-  
   async getExpertDetails(id: string): Promise<IExpert | null> {
     const expert = await this.expertRepository.findById(id);
 
@@ -373,7 +380,6 @@ class ExpertServices implements IExpertService {
     return "Profile picture updated successfully";
   }
 
-  
   async checkExpertStatus(expertId: string): Promise<{ blocked: boolean }> {
     try {
       const status = await this.expertRepository.checkExpertStatus(expertId);
@@ -387,28 +393,27 @@ class ExpertServices implements IExpertService {
   async verifyEmailForPasswordReset(email: string): Promise<void> {
     try {
       const expert = await this.expertRepository.findByEmail(email);
-      
+
       if (!expert) {
-        throw new Error('Invalid Email');
+        throw new Error("Invalid Email");
       }
 
-      const otp =generateOtp();
+      const otp = generateOtp();
       // Send OTP
-    const isOtpSent = await sentOtpToEmail(email, otp);
-    
-    if (!isOtpSent) {
-       {
-       console.log("otp not send")
-      };
-    }
+      const isOtpSent = await sentOtpToEmail(email, otp);
+
+      if (!isOtpSent) {
+        {
+          console.log("otp not send");
+        }
+      }
       await this.expertRepository.updateExpertOtp(email, otp);
     } catch (error) {
-      console.log(error)
+      console.log(error);
       throw new Error(`Email verification failed`);
     }
   }
 
-  
   async updatePassword(
     email: string,
     password: string
@@ -430,126 +435,385 @@ class ExpertServices implements IExpertService {
     }
   }
 
-   async refreshToken(refreshToken: string): Promise<LoginResponse> {
-      try {
-        // Validate refresh token
-        const decodedRefreshToken = verifyRefreshToken(refreshToken); // This method will decode and validate the refresh token
-        if (!decodedRefreshToken) {
-          return {
-            success: false,
-            statusCode: Http_Status_Codes.UNAUTHORIZED,
-            message: "Invalid refresh token",
-          };
-        }
-  
-        // Find the user based on decoded token
-        const expert = await this.expertRepository.findById(
-          decodedRefreshToken.userId
-        );
-        if (!expert) {
-          return {
-            success: false,
-            statusCode: Http_Status_Codes.NOT_FOUND,
-            message: "User not found",
-          };
-        }
-  
-        // Generate new access token and refresh token
-        const newAccessToken = generateAccessToken(expert._id);
-        const newRefreshToken = generateRefreshToken(expert._id);
-  
-        return {
-          success: true,
-          statusCode: Http_Status_Codes.OK,
-          message: "Token refreshed successfully",
-          accessToken: newAccessToken,
-          refreshToken: newRefreshToken,
-        };
-      } catch (error) {
-        console.log(error);
+  async refreshToken(refreshToken: string): Promise<LoginResponse> {
+    try {
+      // Validate refresh token
+      const decodedRefreshToken = verifyRefreshToken(refreshToken); // This method will decode and validate the refresh token
+      // console.log(decodedRefreshToken)
+      if (!decodedRefreshToken) {
         return {
           success: false,
-          statusCode: Http_Status_Codes.INTERNAL_SERVER_ERROR,
-          message: "Internal server error",
+          statusCode: Http_Status_Codes.UNAUTHORIZED,
+          message: "Invalid refresh token",
         };
       }
-    }
 
-    //slot
-    private convertToLocalDate(date: Date): Date {
-      const utcDate = new Date(date);
-      return new Date(utcDate.getTime() - utcDate.getTimezoneOffset() * 60000);
-    }
+      // Find the user based on decoded token
+      const expert = await this.expertRepository.findById(
+        decodedRefreshToken.data
+      );
 
-    async createSlot(slotData: { _id: string; time: Date }): Promise<ISlot> {
-      try {
-        // Convert dates
-        const slotLocalDate = this.convertToLocalDate(slotData.time);
-        const currentLocalDate = this.convertToLocalDate(new Date());
-  
-        // Check if slot exists
-        const existingSlot = await this.expertRepository.findSlotByExpertIdAndTime(
+      if (!expert) {
+        return {
+          success: false,
+          statusCode: Http_Status_Codes.NOT_FOUND,
+          message: "User not found",
+        };
+      }
+
+      // Generate new access token and refresh token
+      const newAccessToken = generateAccessToken(expert._id);
+      // console.log("new accesstoken", newAccessToken);
+      const newRefreshToken = generateRefreshToken(expert._id);
+      // console.log("newRefresh token", newRefreshToken);
+      return {
+        success: true,
+        statusCode: Http_Status_Codes.OK,
+        message: "Token refreshed successfully",
+        accessToken: newAccessToken,
+        refreshToken: newRefreshToken,
+      };
+    } catch (error) {
+      console.log(error);
+      return {
+        success: false,
+        statusCode: Http_Status_Codes.INTERNAL_SERVER_ERROR,
+        message: "Internal server error",
+      };
+    }
+  }
+
+  //slot
+  private convertToLocalDate(date: Date): Date {
+    const utcDate = new Date(date);
+    return new Date(utcDate.getTime() - utcDate.getTimezoneOffset() * 60000);
+  }
+
+  async createSlot(slotData: {
+    _id: string;
+    time: Date;
+  }): Promise<SlotServiceResponse<ISlot>> {
+    try {
+      // Convert dates
+      const slotLocalDate = this.convertToLocalDate(slotData.time);
+      const currentLocalDate = this.convertToLocalDate(new Date());
+
+      // Check if slot exists
+      const existingSlot =
+        await this.expertRepository.findSlotByExpertIdAndTime(
           slotData._id,
           slotData.time
         );
-  
-        if (existingSlot) {
-          // throw new ApiError(
-          //   HttpStatusCodes.CONFLICT,
-          //   'Slot already exists'
-          // );
-          return {
-            success: false,
-            statusCode: Http_Status_Codes.CONFLICT,
-            message: "Slot already exists",
-          };
-        }
-  
-        if (slotLocalDate <= currentLocalDate) {
-          // throw new ApiError(
-          //   HttpStatusCodes.CONFLICT,
-          //   'The selected slot is no longer available'
-          // );
-          return {
-            success: false,
-            statusCode: Http_Status_Codes.CONFLICT,
-            message: "Slot already exists",
-          };
-        }
-  
-        // Get required data
-        const [admin, expert] = await Promise.all([
-          this.expertRepository.findAdminSettings(),
-          this.expertRepository.findById(slotData._id)
-        ]);
-  
-        if (!expert) {
-          // throw new ApiError(
-          //   HttpStatusCodes.NOT_FOUND,
-          //   'Expert not found'
-          // );
-          return {
-            success: false,
-            statusCode: Http_Status_Codes.NOT_FOUND,
-            message: "Slot already exists",
-          };
-        }
-  
-        // Create slot data
-        const newSlotData = {
-          expertId: slotData._id,
-          time: slotData.time,
-          adminPaymentAmount: admin[0].payOut,
-          bookingAmount: expert.consultation_fee
+
+      if (existingSlot) {
+        return {
+          success: false,
+          statusCode: Http_Status_Codes.CONFLICT,
+          message: "Slot already exists",
         };
-  
-        // Create and return slot
-        return await this.expertRepository.createSlot(newSlotData);
-      } catch (error) {
-        
-        throw new Error(`Error creating slot: ${error}`);
       }
+
+      if (slotLocalDate <= currentLocalDate) {
+        return {
+          success: false,
+          statusCode: Http_Status_Codes.CONFLICT,
+          message: "The selected slot is no longer available",
+        };
+      }
+
+      // Get required data
+      const [admin, expert] = await Promise.all([
+        this.expertRepository.findAdminSettings(),
+        this.expertRepository.findById(slotData._id),
+      ]);
+
+      if (!expert) {
+        return {
+          success: false,
+          statusCode: Http_Status_Codes.NOT_FOUND,
+          message: "Expert not found",
+        };
+      }
+      // Convert string ID to ObjectId
+      const expertObjectId = new mongoose.Types.ObjectId(slotData._id);
+      // Create slot data
+      const newSlotData: Partial<ISlot> = {
+        expertId: expertObjectId,
+        time: slotData.time,
+        booked: false,
+        cancelled: false,
+        adminPaymentAmount: admin[0].payOut,
+        bookingAmount: expert.consultation_fee,
+        created_time: new Date(),
+      };
+
+      // Create slot
+      const slot = await this.expertRepository.createSlot(newSlotData);
+
+      return {
+        success: true,
+        statusCode: Http_Status_Codes.CREATED,
+        message: "Slot created successfully",
+        data: slot,
+      };
+    } catch (error) {
+      console.error("Error in createSlot:", error);
+      return {
+        success: false,
+        statusCode: Http_Status_Codes.INTERNAL_SERVER_ERROR,
+        message: error instanceof Error ? error.message : "Error creating slot",
+      };
     }
+  }
+
+  async addAllSlots(expertId: string, slots: Date[]): Promise<ISlot[]> {
+    if (!expertId || !slots.length) {
+      throw new Error("Expert ID and slots are required");
+    }
+
+    const [admin, expert] = await Promise.all([
+      this.expertRepository.findAdminSettings(),
+      this.expertRepository.findById(expertId),
+    ]);
+
+    console.log(admin);
+
+    if (!admin || !expert) {
+      throw new Error("Admin or expert not found");
+    }
+    const slotData: ISlotData[] = slots.map((time) => ({
+      expertId: new mongoose.Types.ObjectId(expertId),
+      time,
+      adminPaymentAmount: admin[0].payOut,
+      bookingAmount: expert.consultation_fee,
+      booked: false,
+      cancelled: false,
+      created_time: new Date(),
+    }));
+
+    return this.expertRepository.createMultipleSlots(slotData);
+  }
+
+  async getExpertSlotDetails(expertId: string): Promise<ISlot[]> {
+    const currentTime = new Date();
+    console.log(expertId);
+    try {
+      return await this.expertRepository.findSlotsByExpertId(
+        expertId,
+        currentTime
+      );
+    } catch (error) {
+      throw new Error(`Error fetching expert slot details: ${error}`);
+    }
+  }
+
+  async removeSlot(slotId: string): Promise<SlotServiceResponse<null>> {
+    try {
+      console.log("Removing slot with ID:", slotId);
+
+      // Find slot
+      const slot = await this.expertRepository.findSlotById(slotId);
+      if (!slot) {
+        return {
+          success: false,
+          statusCode: Http_Status_Codes.NOT_FOUND,
+          message: "Slot not found",
+        };
+      }
+
+      // Check if slot is booked
+      if (slot.booked) {
+        return {
+          success: false,
+          statusCode: Http_Status_Codes.BAD_REQUEST,
+          message: "Slot is already booked and cannot be removed.",
+        };
+      }
+
+      // Delete slot
+      await this.expertRepository.deleteSlotById(slotId);
+      return {
+        success: true,
+        statusCode: Http_Status_Codes.OK,
+        message: "Slot successfully deleted",
+      };
+    } catch (error) {
+      console.error("Error in removeSlot:", error);
+      return {
+        success: false,
+        statusCode: Http_Status_Codes.INTERNAL_SERVER_ERROR,
+        message: error instanceof Error ? error.message : "Error deleting slot",
+      };
+    }
+  }
+
+  async getBookingDetails(expertId: string): Promise<IBookedSlot[]> {
+    try {
+      const bookings = await this.expertRepository.getBookingDetails(expertId);
+      console.log("booked slots:", bookings);
+      return bookings;
+    } catch (error) {
+      console.error(error);
+      throw new Error("Failed to fetch booking details");
+    }
+  }
+
+  async getExpertDashboardDetails(expertId: string): Promise<IBookedSlot[]> {
+    try {
+      if (!expertId) {
+        throw new Error("User ID is required");
+      }
+
+      const bookings = await this.expertRepository.getExpertDashboardDetails(
+        expertId
+      );
+      return bookings;
+    } catch (error) {
+      console.error("Error in getBookingDetails service:", error);
+      throw error;
+    }
+  }
+
+  async getUpcomingAppointment(expertId: string): Promise<IBookedSlot | {}> {
+    console.log("Fetching upcoming appointments...");
+
+    const now = new Date();
+    const margin = 15 * 60 * 1000; // 15 minutes in milliseconds
+
+    const bookedSlots =
+      await this.expertRepository.findPendingAppointmentsByExpert(expertId);
+    console.log("Booked Slots:", bookedSlots);
+
+    // Filter appointments that are upcoming
+    const upcomingAppointments = bookedSlots.filter((slot) => {
+      if (
+        !slot.slotId ||
+        typeof slot.slotId !== "object" ||
+        !("time" in slot.slotId)
+      ) {
+        console.error("Invalid slotId:", slot.slotId);
+        return false;
+      }
+
+      const slotTime = new Date((slot.slotId as any).time);
+      return slotTime.getTime() > now.getTime() - margin;
+    });
+
+    // Sort to get the nearest upcoming appointment
+    upcomingAppointments.sort(
+      (a, b) =>
+        new Date((a.slotId as any).time).getTime() -
+        new Date((b.slotId as any).time).getTime()
+    );
+
+    return upcomingAppointments[0] || {};
+  }
+
+  async updateUpcomingSlot(
+    appointmentId: string,
+    roomId: string
+  ): Promise<IBookedSlot> {
+    const data = await this.expertRepository.findSlotByIdAndUpdate(
+      appointmentId,
+      roomId
+    );
+    if (!data) {
+      throw new Error("Appointment not found");
+    }
+    return data;
+  }
+
+  async updateSlotStatus(
+    appointmentId: string,
+    status: string
+  ): Promise<IBookedSlot> {
+    const data = await this.expertRepository.findSlotByIdAndUpdateStatus(
+      appointmentId,
+      status
+    );
+    if (!data) {
+      throw new Error("Appointment not found");
+    }
+    return data;
+  }
+
+  async getExpertBookings(expertId: string): Promise<IBookedSlot[]> {
+    // Validate input
+    if (!expertId) {
+      throw new Error("Expert ID is required");
+    }
+
+    try {
+      // Find booked slots for the expert
+      const slotIds = await this.expertRepository.findBookedSlotsByExpert(
+        expertId
+      );
+
+      console.log("slots to display in slot adding page:", slotIds.length);
+
+      // If no slots, return empty array
+      if (slotIds.length === 0) {
+        return [];
+      }
+
+      
+
+      // Find booked slots for these slots
+      const bookedSlots = await this.expertRepository.findBookedSlotsBySlotIds(
+        slotIds,
+        expertId
+      );
+
+      console.log("Booked slots:", bookedSlots.length);
+      return bookedSlots;
+    } catch (error) {
+      console.error("Error in getDoctorBookings:", error);
+      throw new Error("Failed to retrieve doctor bookings");
+    }
+  }
+
+  async addPrescription(
+    appointmentId: string, 
+    issue: string, 
+    prescription: string,
+  
+  ): Promise<IPrescription> {
+    // Validate input
+    if (!appointmentId || !issue || !prescription) {
+      throw new Error("Missing required fields");
+    }
+
+    try {
+      // Verify the booked slot belongs to the expert
+      const bookedSlot = await this.expertRepository.findBookedSlotById(appointmentId);
+      
+      if (!bookedSlot) {
+        throw new Error("Appointment not found");
+      }
+
+     
+
+      // Create prescription
+      const newPrescription = await this.expertRepository.createPrescription({
+        bookedSlot: appointmentId,
+        issue,
+        prescription
+      });
+
+      console.log('prescription:', newPrescription);
+
+      // Update booked slot with prescription ID
+      await this.expertRepository.updateBookedSlotWithPrescription(
+        appointmentId, 
+        newPrescription._id as string
+      );
+
+      return newPrescription;
+    } catch (error) {
+      console.error("Error adding prescription:", error);
+      throw new Error("Failed to add prescription");
+    }
+  }
 
 }
 

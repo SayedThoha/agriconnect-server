@@ -9,12 +9,16 @@ const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const dotenv_1 = require("dotenv");
 (0, dotenv_1.config)();
 const generateAccessToken = (payload) => {
-    const token = jsonwebtoken_1.default.sign({ data: payload }, `${process.env.JWT_SECRET}`, { expiresIn: "5m" });
+    const token = jsonwebtoken_1.default.sign({ data: payload }, `${process.env.JWT_SECRET}`, {
+        expiresIn: "5m",
+    });
     return token;
 };
 exports.generateAccessToken = generateAccessToken;
 const generateRefreshToken = (payload) => {
-    const token = jsonwebtoken_1.default.sign({ data: payload }, `${process.env.JWT_SECRET}`, { expiresIn: "48h" });
+    const token = jsonwebtoken_1.default.sign({ data: payload }, `${process.env.JWT_SECRET}`, {
+        expiresIn: "48h",
+    });
     return token;
 };
 exports.generateRefreshToken = generateRefreshToken;

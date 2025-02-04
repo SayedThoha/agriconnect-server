@@ -1,5 +1,7 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { IExpertDocuments } from "../../interfaces/adminInterface";
 import { IAdmin } from "../../models/adminModel";
+import { IBookedSlot } from "../../models/bookeSlotModel";
 import { IExpertKyc } from "../../models/expertKycModel";
 import { IExpert } from "../../models/expertModel";
 import { ISpecialisation } from "../../models/specialisationModel";
@@ -25,4 +27,7 @@ export interface IAdminRepository {
   ): Promise<IExpertKyc | null>;
   updateExpertKycStatus(expertId: string, verified: boolean): Promise<void>;
   findByIdForDownload(expertId: string): Promise<IExpertDocuments | null>;
+  updatePayOut(payOut: number): Promise<any>;
+  getAppointmentDetails(): Promise<IBookedSlot[]>;
+  getSlotDetails(): Promise<IBookedSlot[]>;
 }

@@ -16,6 +16,10 @@ const specialisationModel_1 = require("../../models/specialisationModel");
 const expertModel_1 = require("../../models/expertModel");
 const expertKycModel_1 = require("../../models/expertKycModel");
 const baseRepository_1 = __importDefault(require("../base/baseRepository"));
+const slotModel_1 = require("../../models/slotModel");
+const adminModel_1 = require("../../models/adminModel");
+const bookeSlotModel_1 = require("../../models/bookeSlotModel");
+const prescriptionModel_1 = require("../../models/prescriptionModel");
 class ExpertRepository extends baseRepository_1.default {
     constructor() {
         super(expertModel_1.Expert);
@@ -37,10 +41,6 @@ class ExpertRepository extends baseRepository_1.default {
             }
         });
     }
-    // async create(expertData: Partial<IExpert>): Promise<IExpert> {
-    //   const expert = await Expert.create(expertData);
-    //   return await expert.save();
-    // }
     createKyc(expertId, expertDetails) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
@@ -111,65 +111,22 @@ class ExpertRepository extends baseRepository_1.default {
             }
         });
     }
-    // async updateExpertProfile(
-    //   id: string,
-    //   updateData: Partial<IExpert>
-    // ): Promise<IExpert | null> {
-    //   try {
-    //     return await Expert.findOneAndUpdate(
-    //       { _id: id },
-    //       {
-    //         $set: updateData,
-    //       },
-    //       { new: true }
-    //     );
-    //   } catch (error) {
-    //     console.error("Error in expert repository updateExpertProfile:", error);
-    //     throw new Error("Database operation failed");
-    //   }
-    // }
     updateExpertProfile(id, updateData) {
         return __awaiter(this, void 0, void 0, function* () {
             return this.update(id, updateData); // Using base repository method
         });
     }
-    // async updateExpertById(
-    //   expertId: string,
-    //   updateData: Partial<IExpert>
-    // ): Promise<IExpert | null> {
-    //   try {
-    //     return await Expert.findByIdAndUpdate(
-    //       expertId,
-    //       { $set: updateData },
-    //       { new: true }
-    //     );
-    //   } catch (error) {
-    //     console.error("Error in updateExpertById:", error);
-    //     throw new Error("Database operation failed");
-    //   }
-    // }
     updateExpertById(expertId, updateData) {
         return __awaiter(this, void 0, void 0, function* () {
             return this.update(expertId, updateData); // Using base repository method
         });
     }
-    // async updateProfilePicture(
-    //   expertId: string,
-    //   imageUrl: string
-    // ): Promise<void> {
-    //   try {
-    //     await Expert.findByIdAndUpdate(expertId, {
-    //       $set: { profile_picture: imageUrl },
-    //     });
-    //   } catch (error) {
-    //     console.error("Error in updateProfilePicture repository:", error);
-    //     throw new Error("Database operation failed");
-    //   }
-    // }
     updateProfilePicture(expertId, imageUrl) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                yield this.update(expertId, { profile_picture: imageUrl });
+                yield this.update(expertId, {
+                    profile_picture: imageUrl,
+                });
             }
             catch (error) {
                 throw new Error(`Error updating profile picture: ${error}`);
@@ -180,7 +137,6 @@ class ExpertRepository extends baseRepository_1.default {
         return __awaiter(this, void 0, void 0, function* () {
             var _a;
             try {
-                // const expert = await Expert.findById(expertId).select("blocked");
                 const expert = yield this.findById(expertId);
                 if (!expert) {
                     throw new Error("Expert not found");
@@ -206,11 +162,150 @@ class ExpertRepository extends baseRepository_1.default {
     findSlotByExpertIdAndTime(expertId, time) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                return yield Slot.findOne({ expertId, time });
+                return yield slotModel_1.Slot.findOne({ expertId, time });
             }
             catch (error) {
                 throw new Error(`Error finding slot: ${error}`);
             }
+        });
+    }
+    createSlot(slotData) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const slot = yield slotModel_1.Slot.create(slotData);
+                return yield slot.save();
+            }
+            catch (error) {
+                throw new Error(`Error creating slot: ${error}`);
+            }
+        });
+    }
+    findAdminSettings() {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                return yield adminModel_1.Admin.find({});
+            }
+            catch (error) {
+                throw new Error(`Error finding admin settings: ${error}`);
+            }
+        });
+    }
+    createMultipleSlots(slots) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return yield slotModel_1.Slot.insertMany(slots);
+        });
+    }
+    findSlotsByExpertId(expertId, currentTime) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                return yield slotModel_1.Slot.find({
+                    expertId: expertId,
+                    time: { $gte: currentTime },
+                }).sort({ time: 1 });
+            }
+            catch (error) {
+                throw new Error(`Error fetching slots for expert ${expertId}: ${error}`);
+            }
+        });
+    }
+    findSlotById(slotId) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return yield slotModel_1.Slot.findById(slotId);
+        });
+    }
+    deleteSlotById(slotId) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return yield slotModel_1.Slot.findByIdAndDelete(slotId);
+        });
+    }
+    getBookingDetails(expertId) {
+        return __awaiter(this, void 0, void 0, function* () {
+            // const now = new Date().toISOString();
+            // time: { $gte: now }
+            return yield bookeSlotModel_1.BookedSlot.find({
+                expertId: expertId,
+            })
+                .populate("slotId")
+                .populate("userId")
+                .populate("expertId");
+        });
+    }
+    getExpertDashboardDetails(expertId) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const bookedSlots = yield bookeSlotModel_1.BookedSlot.find({
+                    expertId: expertId,
+                }).populate("slotId");
+                return bookedSlots;
+            }
+            catch (error) {
+                console.error("Error in findBookedSlotsByUser:", error);
+                throw error;
+            }
+        });
+    }
+    findPendingAppointmentsByExpert(expertId) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return yield bookeSlotModel_1.BookedSlot.find({ expertId, consultation_status: "pending" })
+                .populate({
+                path: "slotId",
+                model: "Slot",
+            })
+                .populate("userId")
+                .populate("expertId");
+        });
+    }
+    findSlotByIdAndUpdate(slotId, roomId) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return yield bookeSlotModel_1.BookedSlot.findByIdAndUpdate({ _id: slotId }, { $set: { roomId: roomId } });
+        });
+    }
+    findSlotByIdAndUpdateStatus(slotId, status) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return yield bookeSlotModel_1.BookedSlot.findByIdAndUpdate({ _id: slotId }, {
+                $set: { consultation_status: status },
+            });
+        });
+    }
+    findBookedSlotsByExpert(expertId) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const now = new Date().toISOString();
+            const slots = yield slotModel_1.Slot.find({
+                expertId: expertId,
+                booked: true,
+                time: { $gte: now }
+            }).sort({ time: 1 });
+            // Convert ObjectIds to strings
+            return slots.map(slot => slot._id.toString());
+        });
+    }
+    findBookedSlotsBySlotIds(slotIds, expertId) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return yield bookeSlotModel_1.BookedSlot
+                .find({
+                slotId: { $in: slotIds },
+                expertId: expertId,
+                consultation_status: 'pending'
+            })
+                .populate("slotId")
+                .populate("userId")
+                .populate("expertId");
+        });
+    }
+    createPrescription(prescriptionData) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const newPrescription = new prescriptionModel_1.Prescription(prescriptionData);
+            return yield newPrescription.save();
+        });
+    }
+    updateBookedSlotWithPrescription(appointmentId, prescriptionId) {
+        return __awaiter(this, void 0, void 0, function* () {
+            yield bookeSlotModel_1.BookedSlot.findByIdAndUpdate(appointmentId, { $set: { prescription_id: prescriptionId } });
+        });
+    }
+    findBookedSlotById(appointmentId) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return yield bookeSlotModel_1.BookedSlot.findById(appointmentId);
         });
     }
 }

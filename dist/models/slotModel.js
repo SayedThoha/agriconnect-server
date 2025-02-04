@@ -36,5 +36,4 @@ const slotschema = new mongoose_1.default.Schema({
         default: Date.now(),
     },
 });
-// module.exports = mongoose.model("slotcollection", slotschema);
 exports.Slot = mongoose_1.default.model("Slot", slotschema);

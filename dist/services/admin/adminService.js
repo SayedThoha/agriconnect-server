@@ -87,9 +87,11 @@ class AdminServices {
         return __awaiter(this, void 0, void 0, function* () {
             const userCount = yield this.adminRepository.getUserCount();
             const expertCount = yield this.adminRepository.getExpertCount();
+            const slotDetails = yield this.adminRepository.getSlotDetails();
             return {
                 userCount,
                 expertCount,
+                slotDetails,
             };
         });
     }
@@ -379,6 +381,29 @@ class AdminServices {
                 throw new Error("File not found");
             }
             return this.copyFile(filePath, name);
+        });
+    }
+    // Method to update payOut for admin
+    editPayOut(payOut) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const result = yield this.adminRepository.updatePayOut(payOut);
+            if (result.modifiedCount === 0) {
+                throw new Error("No records updated");
+            }
+            return "Edited Successfully";
+        });
+    }
+    getAppointmentDetails() {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const appointments = yield this.adminRepository.getAppointmentDetails();
+                console.log("bookedSlots:", appointments, appointments.length);
+                return appointments;
+            }
+            catch (error) {
+                console.error(error);
+                throw new Error("Failed to fetch appointment details");
+            }
         });
     }
 }

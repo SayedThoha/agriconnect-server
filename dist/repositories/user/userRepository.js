@@ -13,17 +13,17 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+const expertModel_1 = require("../../models/expertModel");
+const specialisationModel_1 = require("../../models/specialisationModel");
 const userModel_1 = require("../../models/userModel");
 const baseRepository_1 = __importDefault(require("../base/baseRepository"));
+const slotModel_1 = require("../../models/slotModel");
+const bookeSlotModel_1 = require("../../models/bookeSlotModel");
+const prescriptionModel_1 = require("../../models/prescriptionModel");
 class UserRepository extends baseRepository_1.default {
     constructor() {
         super(userModel_1.User);
     }
-    // async emailExist(email: string): Promise<IUser | null> {
-    //   // Check if the email exists in the database
-    //   console.log("checK email exist in user repository");
-    //   return await User.findOne({ email });
-    // }
     emailExist(email) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
@@ -34,10 +34,6 @@ class UserRepository extends baseRepository_1.default {
             }
         });
     }
-    // async saveUser(userData: Partial<IUser>): Promise<IUser> {
-    //   const user = new User(userData);
-    //   return await user.save();
-    // }
     saveUser(userData) {
         return __awaiter(this, void 0, void 0, function* () {
             return this.create(userData); // Using base repository create method
@@ -49,10 +45,6 @@ class UserRepository extends baseRepository_1.default {
             return yield userModel_1.User.findById(id);
         });
     }
-    // async checkEmail(email: string): Promise<IUser | null> {
-    //   // Another email check method
-    //   return await User.findOne({ email });
-    // }
     checkEmail(email) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
@@ -63,16 +55,6 @@ class UserRepository extends baseRepository_1.default {
             }
         });
     }
-    // async updateUserOtp(email: string, otp: string): Promise<IUser | null> {
-    //   return await User.findOneAndUpdate(
-    //     { email },
-    //     {
-    //       $set: { otp },
-    //       $currentDate: { otp_update_time: true },
-    //     },
-    //     { new: true }
-    //   );
-    // }
     updateUserOtp(email, otp) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
@@ -86,9 +68,6 @@ class UserRepository extends baseRepository_1.default {
             }
         });
     }
-    // async findUserByEmail(email: string): Promise<IUser | null> {
-    //   return await User.findOne({ email });
-    // }
     findUserByEmail(email) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
@@ -99,23 +78,6 @@ class UserRepository extends baseRepository_1.default {
             }
         });
     }
-    // async updateUserVerification(
-    //   email: string,
-    //   isVerified: boolean,
-    //   newEmail?: string
-    // ): Promise<IUser | null> {
-    //   const updateData: Partial<IUser> = {
-    //     is_verified: isVerified,
-    //   };
-    //   if (newEmail) {
-    //     updateData.email = newEmail;
-    //   }
-    //   return await User.findOneAndUpdate(
-    //     { email },
-    //     { $set: updateData },
-    //     { new: true }
-    //   );
-    // }
     updateUserVerification(email, isVerified, newEmail) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
@@ -132,21 +94,6 @@ class UserRepository extends baseRepository_1.default {
             }
         });
     }
-    // async updateUserOtpDetails(
-    //   userId: string,
-    //   otp: string
-    // ): Promise<IUser | null> {
-    //   return await User.findByIdAndUpdate(
-    //     userId,
-    //     {
-    //       $set: {
-    //         otp,
-    //         otp_update_time: new Date(),
-    //       },
-    //     },
-    //     { new: true }
-    //   );
-    // }
     updateUserOtpDetails(userId, otp) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
@@ -174,21 +121,6 @@ class UserRepository extends baseRepository_1.default {
             }
         });
     }
-    // async updateUserProfile(
-    //   id: string,
-    //   updateData: Partial<IUser>
-    // ): Promise<IUser | null> {
-    //   try {
-    //     return await User.findByIdAndUpdate(
-    //       id,
-    //       { $set: updateData },
-    //       { new: true }
-    //     );
-    //   } catch (error) {
-    //     console.error("Error in user repository updateUserProfile:", error);
-    //     throw new Error("Database operation failed");
-    //   }
-    // }
     updateUserProfile(id, updateData) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
@@ -200,58 +132,23 @@ class UserRepository extends baseRepository_1.default {
             }
         });
     }
-    // async updateUserById(
-    //   userId: string,
-    //   updateData: Partial<IUser>
-    // ): Promise<IUser | null> {
-    //   try {
-    //     return await User.findByIdAndUpdate(
-    //       userId,
-    //       { $set: updateData },
-    //       { new: true }
-    //     );
-    //   } catch (error) {
-    //     console.error("Error in updateUserById:", error);
-    //     throw new Error("Database operation failed");
-    //   }
-    // }
     updateUserById(userId, updateData) {
         return __awaiter(this, void 0, void 0, function* () {
             return this.update(userId, updateData); // Using base repository update method
         });
     }
-    // async updateProfilePicture(userId: string, imageUrl: string): Promise<void> {
-    //   try {
-    //     await User.findByIdAndUpdate(userId, {
-    //       $set: { profile_picture: imageUrl },
-    //     });
-    //   } catch (error) {
-    //     console.error("Error in updateProfilePicture repository:", error);
-    //     throw new Error("Database operation failed");
-    //   }
-    // }
     updateProfilePicture(userId, imageUrl) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                yield this.update(userId, { profile_picture: imageUrl });
+                yield this.update(userId, {
+                    profile_picture: imageUrl,
+                });
             }
             catch (error) {
                 throw new Error(`Error updating profile picture: ${error}`);
             }
         });
     }
-    // async checkUserStatus(userId: string): Promise<{ blocked: boolean }> {
-    //   try {
-    //     const user = await User.findById(userId).select("blocked");
-    //     if (!user) {
-    //       throw new Error("User not found");
-    //     }
-    //     return { blocked: user.blocked ?? false };
-    //   } catch (error) {
-    //     console.error("error for user check status repository", error);
-    //     throw new Error("Data base operation failed");
-    //   }
-    // }
     checkUserStatus(userId) {
         return __awaiter(this, void 0, void 0, function* () {
             var _a;
@@ -275,6 +172,179 @@ class UserRepository extends baseRepository_1.default {
             catch (error) {
                 throw new Error(`Error updating password: ${error}`);
             }
+        });
+    }
+    getSpecialisations() {
+        return __awaiter(this, void 0, void 0, function* () {
+            console.log("get specialisation serverside");
+            return yield specialisationModel_1.Specialisation.find();
+        });
+    }
+    getExperts() {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                console.log("get experts repository");
+                const experts = yield expertModel_1.Expert.find({
+                    kyc_verification: true,
+                    blocked: false,
+                    is_verified: true,
+                });
+                return experts;
+            }
+            catch (error) {
+                console.error("Error in findAllExperts repository:", error);
+                throw error;
+            }
+        });
+    }
+    getExpertDetailsById(expertId) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const expert = yield expertModel_1.Expert.findById(expertId);
+                return expert;
+            }
+            catch (error) {
+                console.error("Error in findExpertDetails repository:", error);
+                throw error;
+            }
+        });
+    }
+    getSlots(expertId) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const now = new Date().toISOString();
+                const slots = yield slotModel_1.Slot.find({
+                    expertId: expertId,
+                    booked: false,
+                    time: { $gte: now }, // Filter slots from the current time onward
+                }).sort({ time: 1 });
+                return slots;
+            }
+            catch (error) {
+                console.error(error);
+                throw error;
+            }
+        });
+    }
+    updateSlotBooking(data) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const updatedSlot = yield slotModel_1.Slot.findByIdAndUpdate(data._id, {
+                    $set: {
+                        bookedUserId: data.userId,
+                        expertId: data.expertId,
+                        booked: true,
+                    },
+                }, { new: true });
+                return updatedSlot;
+            }
+            catch (error) {
+                console.error("Error in slot repository updateSlotBooking:", error);
+                throw error;
+            }
+        });
+    }
+    findSlotById(slotId) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const slot = yield slotModel_1.Slot.findById(slotId).populate("expertId").exec();
+                return slot;
+            }
+            catch (error) {
+                console.error("Error in slot repository findSlotById:", error);
+                throw error;
+            }
+        });
+    }
+    findBookedSlot(slotId) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const slot = yield bookeSlotModel_1.BookedSlot.findOne({ slotId });
+                return slot;
+            }
+            catch (error) {
+                console.error("Error in bookedSlot repository findBookedSlot:", error);
+                throw error;
+            }
+        });
+    }
+    updateSlotBookingStatus(slotId, booked) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                return yield slotModel_1.Slot.findByIdAndUpdate(slotId, { $set: { booked } }, { new: true });
+            }
+            catch (error) {
+                console.error('Error in updateSlotBookingStatus:', error);
+                throw error;
+            }
+        });
+    }
+    createBookedSlot(bookingDetails) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                return yield bookeSlotModel_1.BookedSlot.create(bookingDetails);
+            }
+            catch (error) {
+                console.error('Error in createBookedSlot:', error);
+                throw error;
+            }
+        });
+    }
+    findBookedSlotsByUser(userId) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const bookedSlots = yield bookeSlotModel_1.BookedSlot
+                    .find({ userId })
+                    .populate({
+                    path: "slotId",
+                    populate: {
+                        path: "expertId",
+                    },
+                })
+                    .populate("userId")
+                    .exec();
+                return bookedSlots;
+            }
+            catch (error) {
+                console.error('Error in findBookedSlotsByUser:', error);
+                throw error;
+            }
+        });
+    }
+    updateWallet(userId, amount) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return yield userModel_1.User.findByIdAndUpdate(userId, { $inc: { wallet: amount } });
+        });
+    }
+    findSlotByIdAndUpdate(slotId, updateData) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return yield slotModel_1.Slot.findByIdAndUpdate(slotId, { $set: updateData }, { new: true });
+        });
+    }
+    findOneBookedSlotAndUpdate(filter, updateData) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return yield bookeSlotModel_1.BookedSlot.findOneAndUpdate(filter, { $set: updateData }, { new: true });
+        });
+    }
+    findPendingAppointmentsByUser(userId) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return yield bookeSlotModel_1.BookedSlot.find({ userId, consultation_status: "pending" })
+                .populate({
+                path: "slotId",
+                model: "Slot",
+            })
+                .populate("userId")
+                .populate("expertId");
+        });
+    }
+    findBookedSlotById(appointmentId) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return yield bookeSlotModel_1.BookedSlot.findById(appointmentId);
+        });
+    }
+    findPrescriptionById(prescriptionId) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return yield prescriptionModel_1.Prescription.findById(prescriptionId);
         });
     }
 }

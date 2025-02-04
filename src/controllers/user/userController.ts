@@ -4,6 +4,11 @@ import { Request, Response } from "express";
 
 import { Http_Status_Codes } from "../../constants/httpStatusCodes";
 import UserServices from "../../services/user/userService";
+import {
+  FarmerBookingDetails,
+  PaymentRequest,
+  SlotUpdateData,
+} from "../../interfaces/commonInterface";
 
 class UserController {
   constructor(private userService: UserServices) {}
@@ -282,7 +287,7 @@ class UserController {
     }
   }
 
-  async checkUserStatus(req: Request, res: Response): Promise<void>  {
+  async checkUserStatus(req: Request, res: Response): Promise<void> {
     try {
       const userId = req.params.id;
       console.log(userId);
@@ -293,9 +298,12 @@ class UserController {
 
       res.status(500).json({ message: "Internal server error" });
     }
-  };
+  }
 
-  async verifyEmailForPasswordReset( req: Request,res: Response):Promise<void> {
+  async verifyEmailForPasswordReset(
+    req: Request,
+    res: Response
+  ): Promise<void> {
     try {
       // Input validation
       const requiredFields = ["email"];
@@ -321,9 +329,9 @@ class UserController {
         message: "Internal server error",
       });
     }
-  };
+  }
 
- async updatePassword (req: Request, res: Response): Promise<void> {
+  async updatePassword(req: Request, res: Response): Promise<void> {
     try {
       // Validation
       const requiredFields = ["email", "password"];
@@ -353,7 +361,7 @@ class UserController {
         message: "Internal server error",
       });
     }
-  };
+  }
 
   async refreshToken(req: Request, res: Response): Promise<void> {
     const { refreshToken } = req.body;
@@ -379,6 +387,361 @@ class UserController {
         message: "Internal server error",
       });
       return;
+    }
+  }
+
+  async getSpecialisation(req: Request, res: Response): Promise<void> {
+    try {
+      const specialisation = await this.userService.getSpecialisations();
+      res.status(Http_Status_Codes.OK).json(specialisation);
+    } catch (error) {
+      console.log(error);
+      res.status(Http_Status_Codes.INTERNAL_SERVER_ERROR).json({
+        message: "Internal Server Error",
+      });
+    }
+  }
+
+  async getExperts(req: Request, res: Response): Promise<void> {
+    try {
+      const expert = await this.userService.getExperts();
+      res.status(Http_Status_Codes.OK).json(expert);
+    } catch (error) {
+      console.log(error);
+      res.status(Http_Status_Codes.INTERNAL_SERVER_ERROR).json({
+        message: "Internal Server Error",
+      });
+    }
+  }
+  async getExpertDetails(req: Request, res: Response): Promise<void> {
+    try {
+      const data = req.query;
+      // console.log("hai hello",data);
+
+      if (!data._id) {
+        res.status(Http_Status_Codes.BAD_REQUEST).json({
+          message: "Missing required data",
+        });
+        return;
+      }
+
+      const expert = await this.userService.getExpertDetails(
+        data._id as string
+      );
+      console.log(expert);
+      res.status(Http_Status_Codes.OK).json(expert);
+    } catch (error) {
+      console.error("Error in getExpertDetails controller:", error);
+
+      res.status(Http_Status_Codes.INTERNAL_SERVER_ERROR).json({
+        message: "Internal Server Error",
+      });
+    }
+  }
+
+  async getExpertSlots(req: Request, res: Response): Promise<void> {
+    try {
+      const data = req.query;
+
+      if (!data._id) {
+        res.status(Http_Status_Codes.BAD_REQUEST).json({
+          message: "Missing required data",
+        });
+        return;
+      }
+
+      const expert = await this.userService.getExpertSlots(data._id as string);
+      console.log(expert);
+      res.status(Http_Status_Codes.OK).json(expert);
+    } catch (error) {
+      console.error("Error in getExpertSlotss controller:", error);
+
+      res.status(Http_Status_Codes.INTERNAL_SERVER_ERROR).json({
+        message: "Internal Server Error",
+      });
+    }
+  }
+
+  async addSlots(req: Request, res: Response): Promise<void> {
+    try {
+      console.log("addSlots backend");
+      const slotData: SlotUpdateData = req.body;
+      console.log(slotData);
+
+      const updatedSlot = await this.userService.bookSlot(slotData);
+      console.log("slots after booking:", updatedSlot);
+
+      res.status(Http_Status_Codes.CREATED).json({
+        message: "slot updated",
+        slot: updatedSlot,
+      });
+    } catch (error) {
+      console.error("Error in slot controller addSlots:", error);
+      res
+        .status(Http_Status_Codes.INTERNAL_SERVER_ERROR)
+        .json({ message: "Internal server error" });
+    }
+  }
+
+  async getSlot(req: Request, res: Response): Promise<void> {
+    try {
+      console.log("getSlot backend");
+      const { slotId } = req.query;
+      console.log("Query data:", { slotId });
+
+      const slot = await this.userService.getSlotDetails(slotId as string);
+      console.log("Retrieved slot:", slot);
+
+      res.status(Http_Status_Codes.OK).json(slot);
+    } catch (error) {
+      console.error("Error in slot controller getSlot:", error);
+
+      res
+        .status(Http_Status_Codes.INTERNAL_SERVER_ERROR)
+        .json({ message: "Internal server error" });
+    }
+  }
+
+  async checkSlotAvailability(req: Request, res: Response): Promise<void> {
+    try {
+      console.log("check_if_the_slot_available backend");
+      const { slotId } = req.query;
+
+      if (!slotId) {
+        res
+          .status(Http_Status_Codes.BAD_REQUEST)
+          .json({ message: "slot Id is missing" });
+        return;
+      }
+
+      console.log("slotId:", slotId, req.query);
+
+      const { isAvailable, message } =
+        await this.userService.checkSlotAvailability(slotId as string);
+
+      if (!isAvailable) {
+        res.status(Http_Status_Codes.UNAUTHORIZED).json({ message });
+        return;
+      }
+
+      res.status(Http_Status_Codes.OK).json({ message });
+    } catch (error) {
+      console.error("Error in slot controller checkSlotAvailability:", error);
+      res
+        .status(Http_Status_Codes.INTERNAL_SERVER_ERROR)
+        .json({ message: "Internal server error" });
+    }
+  }
+
+  async createBookingPayment(
+    // eslint-disable-next-line @typescript-eslint/no-empty-object-type
+    req: Request<{}, {}, PaymentRequest>,
+    res: Response
+  ): Promise<void> {
+    try {
+      console.log("booking_payment backend");
+      const { consultation_fee } = req.body;
+
+      if (!consultation_fee || consultation_fee <= 0) {
+        res.status(Http_Status_Codes.BAD_REQUEST).json({
+          success: false,
+          message: "Invalid consultation fee",
+        });
+        return;
+      }
+
+      const paymentOrder = await this.userService.createPaymentOrder(
+        consultation_fee
+      );
+      console.log(paymentOrder);
+      if (!paymentOrder.success) {
+        res.status(Http_Status_Codes.BAD_REQUEST).json(paymentOrder);
+        return;
+      }
+
+      res.status(Http_Status_Codes.OK).json(paymentOrder);
+    } catch (error) {
+      console.error("Error in user controller createBookingPayment:", error);
+
+     
+
+      res
+        .status(Http_Status_Codes.INTERNAL_SERVER_ERROR)
+        .json({ message: "Internal server error" });
+    }
+  }
+
+  async appointmentBooking(
+    // eslint-disable-next-line @typescript-eslint/no-empty-object-type
+    req: Request<{}, {}, FarmerBookingDetails>,
+    res: Response
+  ): Promise<void> {
+    try {
+      console.log("appointmnet_booking backend");
+      const farmerDetails = req.body;
+      console.log(farmerDetails);
+
+      await this.userService.bookAppointment(farmerDetails);
+
+      res
+        .status(Http_Status_Codes.CREATED)
+        .json({ message: "Slot booking completed" });
+    } catch (error) {
+      console.error("Error in appointment booking:", error);
+
+     
+
+      res
+        .status(Http_Status_Codes.INTERNAL_SERVER_ERROR)
+        .json({ message: "Internal server error" });
+    }
+  }
+
+
+
+  async userDetails(req: Request, res: Response): Promise<void> {
+    try {
+      const { userId } = req.query;
+
+      if (!userId) {
+        res
+          .status(Http_Status_Codes.BAD_REQUEST)
+          .json({ message: "User ID is required" });
+        return;
+      }
+
+      const user = await this.userService.getUserDetails(userId as string);
+
+      if (!user) {
+        res
+          .status(Http_Status_Codes.NOT_FOUND)
+          .json({ message: "User not found" });
+        return;
+      }
+
+      res.status(Http_Status_Codes.OK).json(user);
+    } catch (error) {
+      console.error("Error in userDetails controller:", error);
+      res
+        .status(Http_Status_Codes.INTERNAL_SERVER_ERROR)
+        .json({ message: "Internal server error" });
+    }
+  }
+
+  async getBookingDetails(req: Request, res: Response): Promise<void> {
+    try {
+      console.log("get get_booking_details serverside");
+      const { userId } = req.query;
+      console.log("Query data:", { userId });
+
+      if (!userId) {
+        res.status(Http_Status_Codes.BAD_REQUEST).json({
+          message: "User ID is required",
+        });
+        return;
+      }
+
+      const bookedSlots = await this.userService.getBookingDetails(
+        userId as string
+      );
+      res.status(Http_Status_Codes.OK).json(bookedSlots);
+    } catch (error) {
+      console.error("Error in getBookingDetails controller:", error);
+      res
+        .status(Http_Status_Codes.INTERNAL_SERVER_ERROR)
+        .json({ message: "Internal Server Error" });
+    }
+  }
+
+  async cancelSlot(req: Request, res: Response): Promise<void> {
+    try {
+      console.log("get get_booking_details serverside");
+
+      const { slotId } = req.query;
+      console.log("Slot ID:", slotId);
+
+      const response = await this.userService.cancelSlot(slotId as string);
+
+      res.status(Http_Status_Codes.OK).json(response);
+    } catch (error) {
+      console.error(error);
+      res
+        .status(Http_Status_Codes.INTERNAL_SERVER_ERROR)
+        .json("Internal Server Error");
+    }
+  }
+
+  async upcomingAppointment(req: Request, res: Response): Promise<void> {
+    try {
+      console.log("Fetching upcoming appointment from server...");
+
+      const userId = req.query._id as string;
+      console.log("User ID:", userId);
+
+      const appointment = await this.userService.getUpcomingAppointment(userId);
+
+      if (Object.keys(appointment).length) {
+        console.log("Next appointment:", appointment);
+      } else {
+        console.log("No upcoming appointments found.");
+      }
+
+      res.status(Http_Status_Codes.OK).json(appointment);
+    } catch (error) {
+      console.error("Error fetching upcoming appointment:", error);
+      res
+        .status(Http_Status_Codes.INTERNAL_SERVER_ERROR)
+        .json({ message: "Internal Server Error" });
+    }
+  }
+
+  async getUpcomingSlot(req: Request, res: Response): Promise<void> {
+    try {
+      console.log(req.query);
+      const { appointmentId } = req.query;
+
+      if (!appointmentId) {
+        res
+          .status(Http_Status_Codes.BAD_REQUEST)
+          .json({ message: "Appointment ID is required" });
+        return;
+      }
+
+      const data = await this.userService.getUpcomingSlot(
+        appointmentId as string
+      );
+      console.log("data:", data);
+
+      res.status(Http_Status_Codes.OK).json(data);
+    } catch (error) {
+      console.error(error);
+      res
+        .status(Http_Status_Codes.INTERNAL_SERVER_ERROR)
+        .json({ message: "Internal Server Error" });
+    }
+  }
+
+  async getPrescriptionDetails(req: Request, res: Response): Promise<void> {
+    try {
+      console.log("get_prescription_details:", req.query);
+
+      const { _id } = req.query;
+      if (!_id) {
+        res
+          .status(Http_Status_Codes.BAD_REQUEST)
+          .json({ message: "Missing required data" });
+        return;
+      }
+
+      const data = await this.userService.getPrescriptionDetails(_id as string);
+      console.log("Prescription details:", data);
+
+      res.status(Http_Status_Codes.OK).json(data);
+    } catch (error) {
+      console.error(error);
+      res
+        .status(Http_Status_Codes.INTERNAL_SERVER_ERROR)
+        .json({ message: "Internal Server Error" });
     }
   }
 }

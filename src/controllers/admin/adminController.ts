@@ -8,16 +8,11 @@ import { DownloadRequest } from "../../interfaces/adminInterface";
 import { IAdminController } from "./IAdminController";
 import { SearchUserRequest } from "../../interfaces/commonInterface";
 
-
-
-
-
 class AdminController implements IAdminController {
   constructor(private adminService: AdminService) {}
 
   async login(req: Request, res: Response): Promise<void> {
     try {
-      
       const requiredFields = ["email", "password"];
       const missingFields = requiredFields.filter((field) => !req.body[field]);
 
@@ -47,12 +42,12 @@ class AdminController implements IAdminController {
   async getAdminDashboardDetails(req: Request, res: Response): Promise<void> {
     try {
       console.log("getAdminDashboardDetails server-side");
-      const { userCount, expertCount } =
+      const { userCount, expertCount,slotDetails } =
         await this.adminService.getAdminDashboardDetails();
 
       res
         .status(Http_Status_Codes.OK)
-        .json({ user_count: userCount, expert_count: expertCount });
+        .json({ user_count: userCount, expert_count: expertCount,slotDetails:slotDetails });
     } catch (error) {
       console.error("Error in getAdminDashboardDetails:", error);
       res
@@ -420,7 +415,6 @@ class AdminController implements IAdminController {
     }
   }
 
-
   async getExpertKycDetails(
     // eslint-disable-next-line @typescript-eslint/no-empty-object-type
     req: Request<{}, {}, {}, { expertId?: string }>,
@@ -467,7 +461,6 @@ class AdminController implements IAdminController {
     }
   }
 
-  
   async submitKycDetails(
     // eslint-disable-next-line @typescript-eslint/no-empty-object-type
     req: Request<{}, {}, KycUpdateData>,
@@ -511,9 +504,11 @@ class AdminController implements IAdminController {
     }
   }
 
-  
-  // eslint-disable-next-line @typescript-eslint/no-empty-object-type
-  async downloadKycDocuments(req:Request<{}, {}, {}, DownloadRequest>, res: Response): Promise<Response> {
+  async downloadKycDocuments(
+    // eslint-disable-next-line @typescript-eslint/no-empty-object-type
+    req: Request<{}, {}, {}, DownloadRequest>,
+    res: Response
+  ): Promise<Response> {
     try {
       console.log("get download_kyc_documents serverside");
       const { expertId, name, index } = req.query;
@@ -533,14 +528,13 @@ class AdminController implements IAdminController {
       });
 
       console.log("certificate downloaded successfully");
-      
+
       return res
         .status(Http_Status_Codes.OK)
         .json({ message: "Downloaded Successfully", path: destinationPath });
-
     } catch (error: unknown) {
       console.error("Error in downloadKycDocuments:", error);
-      
+
       if (error instanceof Error) {
         switch (error.message) {
           case "Expert not found":
@@ -566,7 +560,49 @@ class AdminController implements IAdminController {
     }
   }
 
+  async editPayOut(req: Request, res: Response): Promise<void> {
+    try {
+      console.log("editPayOut serverside");
+
+      const data = req.body;
+
+      // Validate input data
+      if (!data || !data.payOut) {
+        res
+          .status(Http_Status_Codes.BAD_REQUEST)
+          .json({ message: "Edit payout failed. Invalid data." });
+        return;
+      }
+
+      // Call the service to perform the logic
+      const message = await this.adminService.editPayOut(data.payOut);
+
+      // Respond with success message
+      res.status(Http_Status_Codes.OK).json({ message });
+    } catch (error) {
+      console.error("Error during editPayOut:", error);
+      res
+        .status(Http_Status_Codes.INTERNAL_SERVER_ERROR)
+        .json({ message: "Internal Server Error ." });
+    }
   }
 
+   async getAppointmentDetails (
+    req: Request,
+    res: Response
+  ): Promise<void> {
+    try {
+      console.log("get get_appointment_details serverside");
+      const appointments = await this.adminService.getAppointmentDetails();
+      res.status(Http_Status_Codes.OK).json(appointments);
+    } catch (error) {
+      console.error("Error fetching appointment details:", error);
+      res
+        .status(Http_Status_Codes.INTERNAL_SERVER_ERROR)
+        .json({ message: "Internal Server Error" });
+    }
+  };
+
+}
 
 export default AdminController;

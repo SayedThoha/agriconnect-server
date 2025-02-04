@@ -1,20 +1,59 @@
+/* eslint-disable @typescript-eslint/no-empty-object-type */
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { ExpertRegistrationDTO, OtpVerificationResult } from "../../interfaces/expertInterface";
+import {
+  ExpertRegistrationDTO,
+  OtpVerificationResult,
+  SlotServiceResponse,
+} from "../../interfaces/expertInterface";
 import { LoginResponse } from "../../interfaces/userInterface";
+import { IBookedSlot } from "../../models/bookeSlotModel";
 import { IExpert } from "../../models/expertModel";
+import { IPrescription } from "../../models/prescriptionModel";
+import { ISlot } from "../../models/slotModel";
 import { ISpecialisation } from "../../models/specialisationModel";
 
-export interface IExpertService{
-    registerExpert(expertData: ExpertRegistrationDTO): Promise<{ status: boolean; message: string }>;
-    validateRegistrationData(data: Partial<ExpertRegistrationDTO>): string[];
-    getSpecialisations(): Promise<ISpecialisation[]>;
-    resendOtp(email: string): Promise<Record<string, any>>;
-    verifyOtp(email: string,otp: string,role?: string,newEmail?: string): Promise<OtpVerificationResult>;
-    loginExpert(email: string, password: string): Promise<LoginResponse>;
-    getExpertDetails(id: string): Promise<IExpert | null>;
-    editExpertProfilePicture(expertId: string,imageUrl: string): Promise<string>;
-    checkExpertStatus(expertId: string): Promise<{ blocked: boolean }>;
-    verifyEmailForPasswordReset(email: string): Promise<void>;
-    updatePassword(email: string,password: string): Promise<{ status: boolean; message: string }>;
-    refreshToken(refreshToken: string): Promise<LoginResponse>;
+export interface IExpertService {
+  registerExpert(
+    expertData: ExpertRegistrationDTO
+  ): Promise<{ status: boolean; message: string }>;
+  validateRegistrationData(data: Partial<ExpertRegistrationDTO>): string[];
+  getSpecialisations(): Promise<ISpecialisation[]>;
+  resendOtp(email: string): Promise<Record<string, any>>;
+  verifyOtp(
+    email: string,
+    otp: string,
+    role?: string,
+    newEmail?: string
+  ): Promise<OtpVerificationResult>;
+  loginExpert(email: string, password: string): Promise<LoginResponse>;
+  getExpertDetails(id: string): Promise<IExpert | null>;
+  editExpertProfilePicture(expertId: string, imageUrl: string): Promise<string>;
+  checkExpertStatus(expertId: string): Promise<{ blocked: boolean }>;
+  verifyEmailForPasswordReset(email: string): Promise<void>;
+  updatePassword(
+    email: string,
+    password: string
+  ): Promise<{ status: boolean; message: string }>;
+  refreshToken(refreshToken: string): Promise<LoginResponse>;
+  createSlot(slotData: {
+    _id: string;
+    time: Date;
+  }): Promise<SlotServiceResponse<ISlot>>;
+  addAllSlots(expertId: string, slots: Date[]): Promise<ISlot[]>;
+  getExpertSlotDetails(expertId: string): Promise<ISlot[]>;
+  removeSlot(slotId: string): Promise<SlotServiceResponse<null>>;
+  getBookingDetails(expertId: string): Promise<IBookedSlot[]>;
+  getExpertDashboardDetails(expertId: string): Promise<IBookedSlot[]>;
+  getUpcomingAppointment(expertId: string): Promise<IBookedSlot | {}>;
+  updateUpcomingSlot(
+    appointmentId: string,
+    roomId: string
+  ): Promise<IBookedSlot>;
+  updateSlotStatus(appointmentId: string, status: string): Promise<IBookedSlot>;
+  getExpertBookings(expertId: string): Promise<IBookedSlot[]>;
+  addPrescription(
+    appointmentId: string,
+    issue: string,
+    prescription: string
+  ): Promise<IPrescription>;
 }

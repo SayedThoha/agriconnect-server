@@ -13,6 +13,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const adminModel_1 = require("../../models/adminModel");
+const bookeSlotModel_1 = require("../../models/bookeSlotModel");
 const expertKycModel_1 = require("../../models/expertKycModel");
 const expertModel_1 = require("../../models/expertModel");
 const specialisationModel_1 = require("../../models/specialisationModel");
@@ -269,7 +270,7 @@ class AdminRepository extends baseRepository_1.default {
                 });
             }
             catch (error) {
-                console.error('Error in updateExpertKycStatus repository:', error);
+                console.error("Error in updateExpertKycStatus repository:", error);
                 throw error;
             }
         });
@@ -280,9 +281,30 @@ class AdminRepository extends baseRepository_1.default {
                 return yield expertModel_1.Expert.findById(expertId);
             }
             catch (error) {
-                console.error('Error in findById repository:', error);
+                console.error("Error in findById repository:", error);
                 throw error;
             }
+        });
+    }
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    updatePayOut(payOut) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return yield adminModel_1.Admin.updateMany({}, { $set: { payOut } });
+        });
+    }
+    getAppointmentDetails() {
+        return __awaiter(this, void 0, void 0, function* () {
+            return yield bookeSlotModel_1.BookedSlot.find({})
+                .populate({
+                path: "slotId",
+            })
+                .populate({ path: "expertId" })
+                .populate("userId");
+        });
+    }
+    getSlotDetails() {
+        return __awaiter(this, void 0, void 0, function* () {
+            return yield bookeSlotModel_1.BookedSlot.find({}).populate("slotId");
         });
     }
 }
