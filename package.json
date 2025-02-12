@@ -53,6 +53,7 @@
     "nodemailer": "^6.9.16",
     "razorpay": "^2.9.5",
     "sharp": "^0.33.5",
+    "socket.io": "^4.8.1",
     "uuid": "^11.0.5",
     "whatwg-url": "^14.1.0",
     "winston": "^3.17.0"

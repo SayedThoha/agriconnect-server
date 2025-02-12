@@ -9,10 +9,16 @@ const expertService_1 = __importDefault(require("../services/expert/expertServic
 const expertController_1 = __importDefault(require("../controllers/expert/expertController"));
 const multer_1 = __importDefault(require("../utils/multer"));
 const expertAuth_1 = require("../middlewares/expertAuth");
+const chatRepository_1 = __importDefault(require("../repositories/chat/chatRepository"));
+const chatService_1 = __importDefault(require("../services/chat/chatService"));
+const chatController_1 = __importDefault(require("../controllers/chat/chatController"));
 const expertRouter = express_1.default.Router();
 const expertRepository = new expertRepository_1.default();
 const expertService = new expertService_1.default(expertRepository);
 const expertController = new expertController_1.default(expertService);
+const chatRepository = new chatRepository_1.default();
+const chatService = new chatService_1.default(chatRepository);
+const chatController = new chatController_1.default(chatService);
 expertRouter.post("/registration", multer_1.default.fields([
     { name: "identity_proof", maxCount: 1 },
     { name: "expert_licence", maxCount: 1 },
@@ -46,5 +52,10 @@ expertRouter.get("/upcoming_appointment", expertAuth_1.expertAuth, (req, res) =>
 expertRouter.get("/updateUpcomingSlot", expertAuth_1.expertAuth, (req, res) => expertController.updateUpcomingSlot(req, res));
 expertRouter.get("/update_consultationStatus", expertAuth_1.expertAuth, (req, res) => expertController.updateSlotStatus(req, res));
 expertRouter.get("/get_bookings_of_expert", expertAuth_1.expertAuth, (req, res) => expertController.getExpertBookings(req, res));
+expertRouter.get("/expert_accessed_chats", (req, res) => chatController.getExpertChats(req, res));
+expertRouter.get("/expertFetchAllMessages", (req, res) => chatController.getExpertMessages(req, res));
+expertRouter.post("/expertSendMessage", (req, res) => chatController.expertSendMessage(req, res));
 expertRouter.get("/add_prescription", (req, res) => expertController.addPrescription(req, res));
+expertRouter.get("/share_roomId_through_email", (req, res) => expertController.shareRoomIdThroughEmail(req, res));
+expertRouter.get("/get_prescription_details", (req, res) => expertController.getPrescriptionDetails(req, res));
 exports.default = expertRouter;

@@ -347,5 +347,10 @@ class UserRepository extends baseRepository_1.default {
             return yield prescriptionModel_1.Prescription.findById(prescriptionId);
         });
     }
+    updateUserWallet(userId, amount) {
+        return __awaiter(this, void 0, void 0, function* () {
+            yield userModel_1.User.findByIdAndUpdate(userId, { $inc: { wallet: amount } });
+        });
+    }
 }
 exports.default = UserRepository;

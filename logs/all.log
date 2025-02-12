@@ -1,59 +1,31 @@
-2025-02-05 00:56:01:561 [32minfo[39m: [32mLog files cleared successfully.[39m
-2025-02-05 00:56:36:5636 [35mhttp[39m: [35mGET /user/getuserDetails?_id=6797a9dbbd097d0351f5862b 304 - - 69.690 ms[39m
+2025-02-12 20:51:58:5158 [32minfo[39m: [32mLog files cleared successfully.[39m
+2025-02-12 20:52:27:5227 [35mhttp[39m: [35mGET /expert/specialisation 304 - - 102.999 ms[39m
 [35m[39m
-2025-02-05 00:57:06:576 [35mhttp[39m: [35mPOST /user/login 200 560 - 152.585 ms[39m
+2025-02-12 20:52:32:5232 [35mhttp[39m: [35mGET /expert/specialisation 304 - - 44.713 ms[39m
 [35m[39m
-2025-02-05 00:57:08:578 [35mhttp[39m: [35mGET /user/getuserDetails?_id=6797a9dbbd097d0351f5862b 304 - - 47.720 ms[39m
+2025-02-12 20:52:37:5237 [35mhttp[39m: [35mGET /expert/specialisation 304 - - 44.817 ms[39m
 [35m[39m
-2025-02-05 00:57:35:5735 [35mhttp[39m: [35mGET /user/status/6797a9dbbd097d0351f5862b 304 - - 56.443 ms[39m
+2025-02-12 20:53:23:5323 [35mhttp[39m: [35mPOST /user/login 200 560 - 137.275 ms[39m
 [35m[39m
-2025-02-05 00:58:27:5827 [35mhttp[39m: [35mGET /user/getuserDetails?_id=6797a9dbbd097d0351f5862b 304 - - 44.889 ms[39m
+2025-02-12 20:53:25:5325 [35mhttp[39m: [35mGET /user/getuserDetails?_id=6797a9dbbd097d0351f5862b 304 - - 46.954 ms[39m
 [35m[39m
-2025-02-05 00:58:36:5836 [35mhttp[39m: [35mGET /user/status/6797a9dbbd097d0351f5862b 304 - - 43.411 ms[39m
+2025-02-12 20:53:34:5334 [35mhttp[39m: [35mGET /user/status/6797a9dbbd097d0351f5862b 304 - - 50.964 ms[39m
 [35m[39m
-2025-02-05 00:59:02:592 [35mhttp[39m: [35mGET /user/getuserDetails?_id=6797a9dbbd097d0351f5862b 304 - - 44.427 ms[39m
+2025-02-12 20:54:24:5424 [35mhttp[39m: [35mGET /user/getuserDetails?_id=6797a9dbbd097d0351f5862b 304 - - 47.489 ms[39m
 [35m[39m
-2025-02-05 00:59:43:5943 [35mhttp[39m: [35mGET /user/status/6797a9dbbd097d0351f5862b 304 - - 53.187 ms[39m
+2025-02-12 20:54:35:5435 [35mhttp[39m: [35mGET /user/getuserDetails?_id=6797a9dbbd097d0351f5862b 304 - - 41.585 ms[39m
 [35m[39m
-2025-02-05 01:00:33:033 [35mhttp[39m: [35mGET /user/getuserDetails?_id=6797a9dbbd097d0351f5862b 304 - - 49.295 ms[39m
+2025-02-12 20:54:39:5439 [35mhttp[39m: [35mGET /user/getuserDetails?_id=6797a9dbbd097d0351f5862b 304 - - 47.709 ms[39m
 [35m[39m
-2025-02-05 01:00:34:034 [35mhttp[39m: [35mGET /user/getuserDetails?_id=6797a9dbbd097d0351f5862b 304 - - 47.189 ms[39m
+2025-02-12 20:54:58:5458 [35mhttp[39m: [35mGET /user/getuserDetails?_id=6797a9dbbd097d0351f5862b 200 475 - 42.873 ms[39m
 [35m[39m
-2025-02-05 01:00:35:035 [35mhttp[39m: [35mGET /user/getuserDetails?_id=6797a9dbbd097d0351f5862b 304 - - 48.961 ms[39m
+2025-02-12 20:55:39:5539 [35mhttp[39m: [35mGET /user/getuserDetails?_id=6797a9dbbd097d0351f5862b 200 475 - 41.968 ms[39m
 [35m[39m
-2025-02-05 01:00:37:037 [35mhttp[39m: [35mGET /user/getuserDetails?_id=6797a9dbbd097d0351f5862b 304 - - 47.450 ms[39m
+2025-02-12 20:59:40:5940 [35mhttp[39m: [35mPOST /user/auth/refresh-token 200 455 - 55.289 ms[39m
 [35m[39m
-2025-02-05 01:00:38:038 [35mhttp[39m: [35mGET /user/getuserDetails?_id=6797a9dbbd097d0351f5862b 304 - - 47.666 ms[39m
+2025-02-12 21:02:23:223 [35mhttp[39m: [35mGET /user/getuserDetails?_id=6797a9dbbd097d0351f5862b 200 475 - 46.914 ms[39m
 [35m[39m
-2025-02-05 01:00:39:039 [35mhttp[39m: [35mGET /user/getuserDetails?_id=6797a9dbbd097d0351f5862b 304 - - 45.690 ms[39m
+2025-02-12 21:06:24:624 [35mhttp[39m: [35mPOST /user/auth/refresh-token 200 455 - 52.027 ms[39m
 [35m[39m
-2025-02-05 01:00:41:041 [35mhttp[39m: [35mGET /user/getuserDetails?_id=6797a9dbbd097d0351f5862b 304 - - 41.100 ms[39m
-[35m[39m
-2025-02-05 01:00:42:042 [35mhttp[39m: [35mGET /user/getuserDetails?_id=6797a9dbbd097d0351f5862b 304 - - 72.447 ms[39m
-[35m[39m
-2025-02-05 01:00:43:043 [35mhttp[39m: [35mGET /user/getuserDetails?_id=6797a9dbbd097d0351f5862b 304 - - 63.332 ms[39m
-[35m[39m
-2025-02-05 01:01:33:133 [35mhttp[39m: [35mGET /user/getuserDetails?_id=6797a9dbbd097d0351f5862b 304 - - 46.515 ms[39m
-[35m[39m
-2025-02-05 01:01:38:138 [35mhttp[39m: [35mGET /user/getuserDetails?_id=6797a9dbbd097d0351f5862b 304 - - 42.469 ms[39m
-[35m[39m
-2025-02-05 01:08:59:859 [35mhttp[39m: [35mPOST /user/auth/refresh-token 200 455 - 61.704 ms[39m
-[35m[39m
-2025-02-05 01:09:14:914 [35mhttp[39m: [35mPOST /user/login 200 560 - 215.813 ms[39m
-[35m[39m
-2025-02-05 01:09:16:916 [35mhttp[39m: [35mGET /user/getuserDetails?_id=6797a9dbbd097d0351f5862b 304 - - 49.286 ms[39m
-[35m[39m
-2025-02-05 01:09:59:959 [35mhttp[39m: [35mGET /user/status/6797a9dbbd097d0351f5862b 304 - - 47.019 ms[39m
-[35m[39m
-2025-02-05 01:10:43:1043 [35mhttp[39m: [35mPOST /user/login 200 560 - 176.798 ms[39m
-[35m[39m
-2025-02-05 01:10:44:1044 [35mhttp[39m: [35mGET /user/getuserDetails?_id=6797a9dbbd097d0351f5862b 304 - - 44.326 ms[39m
-[35m[39m
-2025-02-05 01:11:04:114 [35mhttp[39m: [35mGET /user/getuserDetails?_id=6797a9dbbd097d0351f5862b 304 - - 51.627 ms[39m
-[35m[39m
-2025-02-05 01:12:32:1232 [35mhttp[39m: [35mGET /user/getuserDetails?_id=6797a9dbbd097d0351f5862b 304 - - 40.195 ms[39m
-[35m[39m
-2025-02-05 01:12:57:1257 [35mhttp[39m: [35mGET /user/getuserDetails?_id=6797a9dbbd097d0351f5862b 304 - - 45.260 ms[39m
-[35m[39m
-2025-02-05 01:13:06:136 [35mhttp[39m: [35mGET /user/getuserDetails?_id=6797a9dbbd097d0351f5862b 304 - - 42.835 ms[39m
+2025-02-12 22:31:18:3118 [35mhttp[39m: [35mPOST /user/auth/refresh-token - - - - ms[39m
 [35m[39m

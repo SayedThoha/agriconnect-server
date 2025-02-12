@@ -61,4 +61,12 @@ export interface IExpertRepository {
     prescriptionId: string
   ): Promise<void>;
   findBookedSlotById(appointmentId: string): Promise<IBookedSlot | null>;
+
+  updateRoomIdForSlot(
+    slotId: string,
+    roomId: string
+  ): Promise<IBookedSlot | null>;
+
+  getUserEmailFromSlot(slot: any): Promise<string | null>;
+  findPrescriptionById(prescriptionId: string): Promise<IPrescription | null>;
 }

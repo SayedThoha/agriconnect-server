@@ -6,9 +6,13 @@ import { ExpertKyc, IExpertKyc } from "../../models/expertKycModel";
 import BaseRepository from "../base/baseRepository";
 import { ISlot, Slot } from "../../models/slotModel";
 import { Admin } from "../../models/adminModel";
-import { IPrescriptionInput, ISlotData } from "../../interfaces/commonInterface";
+import {
+  IPrescriptionInput,
+  ISlotData,
+} from "../../interfaces/commonInterface";
 import { BookedSlot, IBookedSlot } from "../../models/bookeSlotModel";
 import { IPrescription, Prescription } from "../../models/prescriptionModel";
+import { User } from "../../models/userModel";
 
 class ExpertRepository
   extends BaseRepository<IExpert>
@@ -285,52 +289,71 @@ class ExpertRepository
 
   async findBookedSlotsByExpert(expertId: string): Promise<string[]> {
     const now = new Date().toISOString();
-    
-    const slots= await Slot.find({ 
-      expertId: expertId, 
+
+    const slots = await Slot.find({
+      expertId: expertId,
       booked: true,
-      time: { $gte: now } 
+      time: { $gte: now },
     }).sort({ time: 1 });
 
-      // Convert ObjectIds to strings
-      return slots.map(slot => slot._id.toString());
+    // Convert ObjectIds to strings
+    return slots.map((slot) => slot._id.toString());
   }
 
   async findBookedSlotsBySlotIds(
-    slotIds: string[], 
+    slotIds: string[],
     expertId: string
   ): Promise<IBookedSlot[]> {
-    return await BookedSlot
-      .find({
-        slotId: { $in: slotIds },
-        expertId: expertId,
-        consultation_status: 'pending'
-      })
+    return await BookedSlot.find({
+      slotId: { $in: slotIds },
+      expertId: expertId,
+      consultation_status: "pending",
+    })
       .populate("slotId")
       .populate("userId")
       .populate("expertId");
   }
 
-  async createPrescription(prescriptionData:IPrescriptionInput ): Promise<IPrescription> {
+  async createPrescription(
+    prescriptionData: IPrescriptionInput
+  ): Promise<IPrescription> {
     const newPrescription = new Prescription(prescriptionData);
     return await newPrescription.save();
   }
 
-  
   async updateBookedSlotWithPrescription(
-    appointmentId: string, 
+    appointmentId: string,
     prescriptionId: string
   ): Promise<void> {
-    await BookedSlot.findByIdAndUpdate(
-      appointmentId,
-      { $set: { prescription_id: prescriptionId } }
-    );
+    await BookedSlot.findByIdAndUpdate(appointmentId, {
+      $set: { prescription_id: prescriptionId },
+    });
   }
 
   async findBookedSlotById(appointmentId: string): Promise<IBookedSlot | null> {
     return await BookedSlot.findById(appointmentId);
   }
 
+  async updateRoomIdForSlot(
+    slotId: string,
+    roomId: string
+  ): Promise<IBookedSlot | null> {
+    return await BookedSlot.findByIdAndUpdate(
+      slotId,
+      { $set: { roomId } },
+      { new: true }
+    );
+  }
+
+  async getUserEmailFromSlot(slot: any): Promise<string | null> {
+    const user = await User.findById(slot?.userId);
+    return user ? user.email : null;
+  }
+
+  async findPrescriptionById(prescriptionId: string):Promise<IPrescription|null> {
+    return await Prescription.findById(prescriptionId);
+  }
+  
 }
 
 export default ExpertRepository;

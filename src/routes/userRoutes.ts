@@ -5,17 +5,23 @@ import UserController from "../controllers/user/userController";
 import GoogleAuthRepository from "../repositories/googleAuth/googleAuthRepository";
 import GoogleAuthService from "../services/googleAuthService";
 import GoogleAuthController from "../controllers/googleAuthController";
-import UserServices from "../services/user/userService";
+import UserService from "../services/user/userService";
 import { userAuth } from "../middlewares/userAuth";
-
+import ChatController from "../controllers/chat/chatController";
+import ChatRepository from "../repositories/chat/chatRepository";
+import ChatService from "../services/chat/chatService";
 
 // import { checkUserBlocked } from "../middlewares/userAuth";
 
 const userRouter = express.Router();
 
 const userRepository = new UserRepository();
-const userService = new UserServices(userRepository);
+const userService = new UserService(userRepository);
 const userController = new UserController(userService);
+
+const chatRepository = new ChatRepository();
+const chatService = new ChatService(chatRepository);
+const chatController = new ChatController(chatService);
 
 const googleAuthRepository = new GoogleAuthRepository(
   process.env.GOOGLE_CLIENT_ID!,
@@ -50,7 +56,8 @@ userRouter.post("/opt_for_new_email", (req, res) =>
   userController.optForNewEmail(req, res)
 );
 
-userRouter.post( "/edit_user_profile_picture",(req, res) => userController.editUserProfilePicture(req, res)
+userRouter.post("/edit_user_profile_picture", (req, res) =>
+  userController.editUserProfilePicture(req, res)
 );
 
 userRouter.get("/status/:id", userAuth, (req, res) =>
@@ -103,6 +110,7 @@ userRouter.post("/booking_payment", (req, res) =>
 userRouter.post("/appointment_booking", (req, res) =>
   userController.appointmentBooking(req, res)
 );
+
 userRouter.get("/userDetails", (req, res) =>
   userController.userDetails(req, res)
 );
@@ -122,7 +130,21 @@ userRouter.get("/getUpcomingSlot", (req, res) =>
   userController.getUpcomingSlot(req, res)
 );
 
+userRouter.get("/userAccessChat", (req, res) =>
+  chatController.userAccessChat(req, res)
+);
+userRouter.get("/userFetchAllChat", (req, res) =>
+  chatController.userFetchAllChat(req, res)
+);
+userRouter.post("/sendMessage", (req, res) =>
+  chatController.sendMessage(req, res)
+);
+userRouter.get("/userFetchAllMessages", (req, res) =>
+  chatController.userFetchAllMessages(req, res)
+);
+
 userRouter.get("/get_prescription_details", (req, res) =>
   userController.getPrescriptionDetails(req, res)
 );
+
 export default userRouter;

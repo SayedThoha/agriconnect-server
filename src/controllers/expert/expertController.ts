@@ -1,10 +1,10 @@
 import { Request, Response } from "express";
 import { Http_Status_Codes } from "../../constants/httpStatusCodes";
-import ExpertServices from "../../services/expert/expertService";
+import ExpertService from "../../services/expert/expertService";
 import { IExpertController } from "./IExpertController";
 
 class ExpertController implements IExpertController {
-  constructor(private expertService: ExpertServices) {}
+  constructor(private expertService: ExpertService) {}
 
   async expertRegistration(req: Request, res: Response): Promise<void> {
     try {
@@ -536,12 +536,15 @@ class ExpertController implements IExpertController {
       );
 
       if (Object.keys(appointment).length) {
-        console.log("Next appointment:", appointment);
+        // console.log("Next appointment:", appointment);
+        
       } else {
-        console.log("No upcoming appointments found.");
+        // console.log("No upcoming appointments found.");
+        // res.status(Http_Status_Codes.OK).json({});
       }
 
       res.status(Http_Status_Codes.OK).json(appointment);
+      
     } catch (error) {
       console.error("Error fetching upcoming appointment:", error);
       res
@@ -552,7 +555,7 @@ class ExpertController implements IExpertController {
 
   async updateUpcomingSlot(req: Request, res: Response): Promise<void> {
     try {
-      console.log(req.query);
+      // console.log(req.query);
       const { appointmentId, roomId } = req.query;
 
       if (!appointmentId) {
@@ -579,7 +582,7 @@ class ExpertController implements IExpertController {
 
   async updateSlotStatus(req: Request, res: Response): Promise<void> {
     try {
-      console.log(req.query);
+      // console.log(req.query);
       const { appointmentId, status } = req.query;
 
       if (!appointmentId) {
@@ -637,7 +640,8 @@ class ExpertController implements IExpertController {
 
   async addPrescription(req: Request, res: Response): Promise<void> {
     try {
-      const { appointmentId, issue, prescription } = req.body; 
+      const { appointmentId, issue, prescription } = req.query;
+      // console.log(appointmentId,issue,prescription)
 
       if (!appointmentId || !issue || !prescription) {
         res.status(Http_Status_Codes.BAD_REQUEST).json({
@@ -648,9 +652,9 @@ class ExpertController implements IExpertController {
 
       // Add prescription
       const newPrescription = await this.expertService.addPrescription(
-        appointmentId,
-        issue,
-        prescription
+        appointmentId.toString(),
+        issue.toString(),
+        prescription.toString()
       );
 
       res.status(Http_Status_Codes.CREATED).json({
@@ -665,6 +669,66 @@ class ExpertController implements IExpertController {
       });
     }
   }
+
+  async shareRoomIdThroughEmail(req: Request, res: Response): Promise<void> {
+    try {
+      console.log("shareRoomIdThroughEmail server-side");
+
+      const { roomId, slotId } = req.query;
+      console.log("roomId",roomId);
+      console.log("slotId",slotId)
+      if (!roomId || !slotId) {
+        res
+          .status(Http_Status_Codes.BAD_REQUEST)
+          .json({ message: "Missing required field" });
+        return;
+      }
+
+      const response = await this.expertService.shareRoomIdService(
+        slotId as string,
+        roomId as string
+      );
+
+      console.log("response after sending room id",response)
+
+      res.status(Http_Status_Codes.OK).json(response);
+    } catch (error) {
+      console.error(error);
+      res
+        .status(Http_Status_Codes.INTERNAL_SERVER_ERROR)
+        .json({ message: "Internal Server Error" });
+      return;
+    }
+  }
+
+
+  async getPrescriptionDetails(req: Request, res: Response): Promise<void> {
+    try {
+      console.log("get_prescription_details:", req.query);
+
+      const { _id } = req.query;
+      console.log(_id)
+
+      if (!_id) {
+        res
+          .status(Http_Status_Codes.BAD_REQUEST)
+          .json({ message: "Missing required data" });
+        return;
+      }
+
+      const data = await this.expertService.getPrescriptionDetails(_id as string);
+      console.log("Prescription details:", data);
+
+      res.status(Http_Status_Codes.OK).json(data);
+    } catch (error) {
+      console.error(error);
+      res
+        .status(Http_Status_Codes.INTERNAL_SERVER_ERROR)
+        .json({ message: "Internal Server Error" });
+    }
+  }
+
+
 }
 
 export default ExpertController;

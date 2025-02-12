@@ -56,4 +56,10 @@ export interface IExpertService {
     issue: string,
     prescription: string
   ): Promise<IPrescription>;
+
+  shareRoomIdService(
+    slotId: string,
+    roomId: string
+  ): Promise<{ message: string }>;
+  getPrescriptionDetails(prescriptionId: string): Promise<IPrescription>;
 }

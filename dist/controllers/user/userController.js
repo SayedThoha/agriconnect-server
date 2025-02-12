@@ -17,7 +17,7 @@ class UserController {
     }
     registerUser(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
-            console.log("Registering user...");
+            // console.log("Registering user...");
             try {
                 // Validate required fields
                 const requiredFields = ["firstName", "lastName", "email", "password"];
@@ -39,7 +39,7 @@ class UserController {
                 });
                 // Respond based on service result
                 if (result.success) {
-                    console.log("registration success");
+                    // console.log("registration success");
                     res.status(httpStatusCodes_1.Http_Status_Codes.CREATED).json({ message: result.message });
                 }
                 else {
@@ -128,7 +128,7 @@ class UserController {
                     return;
                 }
                 const { email, password } = req.body;
-                console.log(email, password);
+                // console.log(email, password);
                 const result = yield this.userService.login(email, password);
                 res.status(result.statusCode).json(Object.assign(Object.assign(Object.assign(Object.assign({ success: result.success, message: result.message }, (result.accessToken && { accessToken: result.accessToken })), (result.refreshToken && { refreshToken: result.refreshToken })), (result.accessedUser && { accessedUser: result.accessedUser })), (result.email && { email: result.email })));
             }
@@ -171,7 +171,7 @@ class UserController {
     editUserProfile(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                console.log("editUserProfile backend");
+                // console.log("editUserProfile backend");
                 const { _id, firstName, lastName, email } = req.body;
                 console.log(`id :${_id} firstName:${firstName} secondName:${lastName} email:${email}`);
                 if (!_id || !firstName || !lastName || !email) {
@@ -206,7 +206,7 @@ class UserController {
     optForNewEmail(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                console.log("optForNewEmail backend");
+                // console.log("optForNewEmail backend");
                 const { userId, email } = req.body;
                 if (!userId || !email) {
                     res
@@ -258,7 +258,7 @@ class UserController {
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 const userId = req.params.id;
-                console.log(userId);
+                // console.log(userId);
                 const status = yield this.userService.checkUserStatus(userId);
                 res.status(200).json(status);
             }
@@ -382,7 +382,7 @@ class UserController {
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 const data = req.query;
-                // console.log("hai hello",data);
+                // console.log(data);
                 if (!data._id) {
                     res.status(httpStatusCodes_1.Http_Status_Codes.BAD_REQUEST).json({
                         message: "Missing required data",
@@ -390,7 +390,7 @@ class UserController {
                     return;
                 }
                 const expert = yield this.userService.getExpertDetails(data._id);
-                console.log(expert);
+                // console.log(expert);
                 res.status(httpStatusCodes_1.Http_Status_Codes.OK).json(expert);
             }
             catch (error) {
@@ -426,11 +426,11 @@ class UserController {
     addSlots(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                console.log("addSlots backend");
+                // console.log("addSlots backend");
                 const slotData = req.body;
-                console.log(slotData);
+                // console.log(slotData);
                 const updatedSlot = yield this.userService.bookSlot(slotData);
-                console.log("slots after booking:", updatedSlot);
+                // console.log("slots after booking:", updatedSlot);
                 res.status(httpStatusCodes_1.Http_Status_Codes.CREATED).json({
                     message: "slot updated",
                     slot: updatedSlot,
@@ -447,11 +447,11 @@ class UserController {
     getSlot(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                console.log("getSlot backend");
+                // console.log("getSlot backend");
                 const { slotId } = req.query;
-                console.log("Query data:", { slotId });
+                // console.log("Query data:", { slotId });
                 const slot = yield this.userService.getSlotDetails(slotId);
-                console.log("Retrieved slot:", slot);
+                // console.log("Retrieved slot:", slot);
                 res.status(httpStatusCodes_1.Http_Status_Codes.OK).json(slot);
             }
             catch (error) {
@@ -465,7 +465,7 @@ class UserController {
     checkSlotAvailability(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                console.log("check_if_the_slot_available backend");
+                // console.log("check_if_the_slot_available backend");
                 const { slotId } = req.query;
                 if (!slotId) {
                     res
@@ -473,7 +473,7 @@ class UserController {
                         .json({ message: "slot Id is missing" });
                     return;
                 }
-                console.log("slotId:", slotId, req.query);
+                // console.log("slotId:", slotId, req.query);
                 const { isAvailable, message } = yield this.userService.checkSlotAvailability(slotId);
                 if (!isAvailable) {
                     res.status(httpStatusCodes_1.Http_Status_Codes.UNAUTHORIZED).json({ message });
@@ -494,7 +494,7 @@ class UserController {
     req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                console.log("booking_payment backend");
+                // console.log("booking_payment backend");
                 const { consultation_fee } = req.body;
                 if (!consultation_fee || consultation_fee <= 0) {
                     res.status(httpStatusCodes_1.Http_Status_Codes.BAD_REQUEST).json({
@@ -504,7 +504,7 @@ class UserController {
                     return;
                 }
                 const paymentOrder = yield this.userService.createPaymentOrder(consultation_fee);
-                console.log(paymentOrder);
+                // console.log(paymentOrder);
                 if (!paymentOrder.success) {
                     res.status(httpStatusCodes_1.Http_Status_Codes.BAD_REQUEST).json(paymentOrder);
                     return;
@@ -524,7 +524,7 @@ class UserController {
     req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                console.log("appointmnet_booking backend");
+                // console.log("appointmnet_booking backend");
                 const farmerDetails = req.body;
                 console.log(farmerDetails);
                 yield this.userService.bookAppointment(farmerDetails);
@@ -633,7 +633,7 @@ class UserController {
     getUpcomingSlot(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                console.log(req.query);
+                // console.log(req.query);
                 const { appointmentId } = req.query;
                 if (!appointmentId) {
                     res
@@ -656,8 +656,9 @@ class UserController {
     getPrescriptionDetails(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                console.log("get_prescription_details:", req.query);
+                // console.log("get_prescription_details:", req.query);
                 const { _id } = req.query;
+                // console.log(_id)
                 if (!_id) {
                     res
                         .status(httpStatusCodes_1.Http_Status_Codes.BAD_REQUEST)
@@ -665,7 +666,7 @@ class UserController {
                     return;
                 }
                 const data = yield this.userService.getPrescriptionDetails(_id);
-                console.log("Prescription details:", data);
+                // console.log("Prescription details:", data);
                 res.status(httpStatusCodes_1.Http_Status_Codes.OK).json(data);
             }
             catch (error) {

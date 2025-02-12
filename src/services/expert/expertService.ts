@@ -26,11 +26,12 @@ import mongoose from "mongoose";
 import { ISlotData } from "../../interfaces/commonInterface";
 import { IBookedSlot } from "../../models/bookeSlotModel";
 import { IPrescription } from "../../models/prescriptionModel";
+import { generateMailForRoomId } from "../../utils/sendRoomId";
 
 export type ExpertResponse = IExpert | null;
 export type ExpertResponeType = IExpert | null | { success?: boolean };
 
-class ExpertServices implements IExpertService {
+class ExpertService implements IExpertService {
   private readonly OTP_EXPIRY_MINUTES = 59;
 
   constructor(private expertRepository: ExpertRepository) {}
@@ -756,8 +757,6 @@ class ExpertServices implements IExpertService {
         return [];
       }
 
-      
-
       // Find booked slots for these slots
       const bookedSlots = await this.expertRepository.findBookedSlotsBySlotIds(
         slotIds,
@@ -773,10 +772,9 @@ class ExpertServices implements IExpertService {
   }
 
   async addPrescription(
-    appointmentId: string, 
-    issue: string, 
-    prescription: string,
-  
+    appointmentId: string,
+    issue: string,
+    prescription: string
   ): Promise<IPrescription> {
     // Validate input
     if (!appointmentId || !issue || !prescription) {
@@ -785,26 +783,26 @@ class ExpertServices implements IExpertService {
 
     try {
       // Verify the booked slot belongs to the expert
-      const bookedSlot = await this.expertRepository.findBookedSlotById(appointmentId);
-      
+      const bookedSlot = await this.expertRepository.findBookedSlotById(
+        appointmentId
+      );
+
       if (!bookedSlot) {
         throw new Error("Appointment not found");
       }
-
-     
 
       // Create prescription
       const newPrescription = await this.expertRepository.createPrescription({
         bookedSlot: appointmentId,
         issue,
-        prescription
+        prescription,
       });
 
-      console.log('prescription:', newPrescription);
+      // console.log("prescription:", newPrescription);
 
       // Update booked slot with prescription ID
       await this.expertRepository.updateBookedSlotWithPrescription(
-        appointmentId, 
+        appointmentId,
         newPrescription._id as string
       );
 
@@ -815,6 +813,33 @@ class ExpertServices implements IExpertService {
     }
   }
 
+  async shareRoomIdService(slotId: string, roomId: string): Promise<{ message: string }> {
+    const slot = await this.expertRepository.updateRoomIdForSlot(
+      slotId,
+      roomId
+    );
+    if (!slot) {
+      throw new Error("Slot not found");
+    }
+
+    const userEmail = await this.expertRepository.getUserEmailFromSlot(slot);
+    if (!userEmail) {
+      throw new Error("User email not found");
+    }
+
+    await generateMailForRoomId(userEmail, roomId);
+    return { message: `Room ID sent to user's email.` };
+  }
+
+
+  async getPrescriptionDetails(prescriptionId: string): Promise<IPrescription> {
+    const data = await this.expertRepository.findPrescriptionById(prescriptionId);
+    if (!data) {
+      throw new Error("Prescription not found");
+    }
+    return data;
+  }
+  
 }
 
-export default ExpertServices;
+export default ExpertService;

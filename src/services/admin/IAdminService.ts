@@ -1,4 +1,5 @@
 import { ILoginResult } from "../../interfaces/adminInterface";
+import { IBookedSlot } from "../../models/bookeSlotModel";
 import { IExpertKyc, KycUpdateData } from "../../models/expertKycModel";
 import { IExpert } from "../../models/expertModel";
 import { ISpecialisation } from "../../models/specialisationModel";
@@ -21,5 +22,7 @@ export interface IAdminService{
     getPendingKycData(): Promise<IExpertKyc[]>;
     getExpertKycDetails(expertId: string): Promise<IExpertKyc>;
     submitKycDetails(data: KycUpdateData): Promise<{ message: string }>;
+    editPayOut(payOut: number): Promise<string>;
+    getAppointmentDetails(): Promise<IBookedSlot[]>;
     
 }

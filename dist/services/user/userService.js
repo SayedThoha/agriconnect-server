@@ -20,7 +20,7 @@ const sendOtpToMail_1 = require("../../utils/sendOtpToMail");
 const httpStatusCodes_1 = require("../../constants/httpStatusCodes");
 const token_1 = require("../../utils/token");
 const razorpay_1 = __importDefault(require("razorpay"));
-class UserServices {
+class UserService {
     constructor(userRepository) {
         this.userRepository = userRepository;
         this.OTP_EXPIRY_MINUTES = 59;
@@ -529,9 +529,9 @@ class UserServices {
                     currency: "INR",
                     receipt: "razorUser@gmail.com",
                 };
-                console.log("Razorpay Key ID:", process.env.razorpay_key_id);
+                // console.log("Razorpay Key ID:", process.env.razorpay_key_id);
                 this.razorpayInstance.orders.create(options, (err, order) => {
-                    console.log("Razorpay order creation result:", order);
+                    // console.log("Razorpay order creation result:", order);
                     if (!err) {
                         resolve({
                             success: true,
@@ -553,6 +553,7 @@ class UserServices {
     }
     bookAppointment(farmerDetails) {
         return __awaiter(this, void 0, void 0, function* () {
+            var _a;
             try {
                 // Check if slot exists and is available
                 const slot = yield this.userRepository.findSlotById(farmerDetails.slotId);
@@ -561,6 +562,19 @@ class UserServices {
                 }
                 if (slot.booked) {
                     throw new Error("Slot already booked");
+                }
+                const user = yield this.userRepository.findUserById(farmerDetails.userId);
+                if (!user) {
+                    throw new Error("User not found");
+                }
+                const userWallet = (_a = user.wallet) !== null && _a !== void 0 ? _a : 0;
+                // If payment method is wallet, check balance and deduct amount
+                if (farmerDetails.payment_method === "wallet_payment") {
+                    if (userWallet < slot.bookingAmount) {
+                        throw new Error("Insufficient balance in wallet");
+                    }
+                    // Deduct wallet balance
+                    yield this.userRepository.updateUserWallet(user._id.toString(), -slot.bookingAmount);
                 }
                 // Update slot status
                 yield this.userRepository.updateSlotBookingStatus(farmerDetails.slotId, true);
@@ -610,11 +624,11 @@ class UserServices {
     }
     getUpcomingAppointment(userId) {
         return __awaiter(this, void 0, void 0, function* () {
-            console.log("Fetching upcoming appointments...");
+            // console.log("Fetching upcoming appointments...");
             const now = new Date();
             const margin = 15 * 60 * 1000; // 15 minutes in milliseconds
             const bookedSlots = yield this.userRepository.findPendingAppointmentsByUser(userId);
-            console.log("Booked Slots:", bookedSlots);
+            // console.log("Booked Slots:", bookedSlots);
             // Filter appointments that are upcoming
             const upcomingAppointments = bookedSlots.filter((slot) => {
                 if (!slot.slotId ||
@@ -651,4 +665,4 @@ class UserServices {
         });
     }
 }
-exports.default = UserServices;
+exports.default = UserService;

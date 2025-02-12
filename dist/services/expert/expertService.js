@@ -20,7 +20,8 @@ const otp_1 = require("../../utils/otp");
 const sendOtpToMail_1 = require("../../utils/sendOtpToMail");
 const token_1 = require("../../utils/token");
 const mongoose_1 = __importDefault(require("mongoose"));
-class ExpertServices {
+const sendRoomId_1 = require("../../utils/sendRoomId");
+class ExpertService {
     constructor(expertRepository) {
         this.expertRepository = expertRepository;
         this.OTP_EXPIRY_MINUTES = 59;
@@ -659,9 +660,9 @@ class ExpertServices {
                 const newPrescription = yield this.expertRepository.createPrescription({
                     bookedSlot: appointmentId,
                     issue,
-                    prescription
+                    prescription,
                 });
-                console.log('prescription:', newPrescription);
+                // console.log("prescription:", newPrescription);
                 // Update booked slot with prescription ID
                 yield this.expertRepository.updateBookedSlotWithPrescription(appointmentId, newPrescription._id);
                 return newPrescription;
@@ -672,5 +673,28 @@ class ExpertServices {
             }
         });
     }
+    shareRoomIdService(slotId, roomId) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const slot = yield this.expertRepository.updateRoomIdForSlot(slotId, roomId);
+            if (!slot) {
+                throw new Error("Slot not found");
+            }
+            const userEmail = yield this.expertRepository.getUserEmailFromSlot(slot);
+            if (!userEmail) {
+                throw new Error("User email not found");
+            }
+            yield (0, sendRoomId_1.generateMailForRoomId)(userEmail, roomId);
+            return { message: `Room ID sent to user's email.` };
+        });
+    }
+    getPrescriptionDetails(prescriptionId) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const data = yield this.expertRepository.findPrescriptionById(prescriptionId);
+            if (!data) {
+                throw new Error("Prescription not found");
+            }
+            return data;
+        });
+    }
 }
-exports.default = ExpertServices;
+exports.default = ExpertService;

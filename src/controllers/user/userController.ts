@@ -14,7 +14,7 @@ class UserController {
   constructor(private userService: UserServices) {}
 
   async registerUser(req: Request, res: Response): Promise<void> {
-    console.log("Registering user...");
+    // console.log("Registering user...");
 
     try {
       // Validate required fields
@@ -41,7 +41,7 @@ class UserController {
 
       // Respond based on service result
       if (result.success) {
-        console.log("registration success");
+        // console.log("registration success");
 
         res.status(Http_Status_Codes.CREATED).json({ message: result.message });
       } else {
@@ -140,7 +140,7 @@ class UserController {
       }
 
       const { email, password } = req.body;
-      console.log(email, password);
+      // console.log(email, password);
 
       const result = await this.userService.login(email, password);
 
@@ -193,7 +193,7 @@ class UserController {
 
   async editUserProfile(req: Request, res: Response): Promise<void> {
     try {
-      console.log("editUserProfile backend");
+      // console.log("editUserProfile backend");
       const { _id, firstName, lastName, email } = req.body;
 
       console.log(
@@ -233,7 +233,7 @@ class UserController {
 
   async optForNewEmail(req: Request, res: Response): Promise<void> {
     try {
-      console.log("optForNewEmail backend");
+      // console.log("optForNewEmail backend");
 
       const { userId, email } = req.body;
 
@@ -290,7 +290,7 @@ class UserController {
   async checkUserStatus(req: Request, res: Response): Promise<void> {
     try {
       const userId = req.params.id;
-      console.log(userId);
+      // console.log(userId);
       const status = await this.userService.checkUserStatus(userId);
       res.status(200).json(status);
     } catch (error) {
@@ -416,7 +416,7 @@ class UserController {
   async getExpertDetails(req: Request, res: Response): Promise<void> {
     try {
       const data = req.query;
-      // console.log("hai hello",data);
+      // console.log(data);
 
       if (!data._id) {
         res.status(Http_Status_Codes.BAD_REQUEST).json({
@@ -428,7 +428,7 @@ class UserController {
       const expert = await this.userService.getExpertDetails(
         data._id as string
       );
-      console.log(expert);
+      // console.log(expert);
       res.status(Http_Status_Codes.OK).json(expert);
     } catch (error) {
       console.error("Error in getExpertDetails controller:", error);
@@ -464,12 +464,12 @@ class UserController {
 
   async addSlots(req: Request, res: Response): Promise<void> {
     try {
-      console.log("addSlots backend");
+      // console.log("addSlots backend");
       const slotData: SlotUpdateData = req.body;
-      console.log(slotData);
+      // console.log(slotData);
 
       const updatedSlot = await this.userService.bookSlot(slotData);
-      console.log("slots after booking:", updatedSlot);
+      // console.log("slots after booking:", updatedSlot);
 
       res.status(Http_Status_Codes.CREATED).json({
         message: "slot updated",
@@ -485,12 +485,12 @@ class UserController {
 
   async getSlot(req: Request, res: Response): Promise<void> {
     try {
-      console.log("getSlot backend");
+      // console.log("getSlot backend");
       const { slotId } = req.query;
-      console.log("Query data:", { slotId });
+      // console.log("Query data:", { slotId });
 
       const slot = await this.userService.getSlotDetails(slotId as string);
-      console.log("Retrieved slot:", slot);
+      // console.log("Retrieved slot:", slot);
 
       res.status(Http_Status_Codes.OK).json(slot);
     } catch (error) {
@@ -504,7 +504,7 @@ class UserController {
 
   async checkSlotAvailability(req: Request, res: Response): Promise<void> {
     try {
-      console.log("check_if_the_slot_available backend");
+      // console.log("check_if_the_slot_available backend");
       const { slotId } = req.query;
 
       if (!slotId) {
@@ -514,7 +514,7 @@ class UserController {
         return;
       }
 
-      console.log("slotId:", slotId, req.query);
+      // console.log("slotId:", slotId, req.query);
 
       const { isAvailable, message } =
         await this.userService.checkSlotAvailability(slotId as string);
@@ -539,7 +539,7 @@ class UserController {
     res: Response
   ): Promise<void> {
     try {
-      console.log("booking_payment backend");
+      // console.log("booking_payment backend");
       const { consultation_fee } = req.body;
 
       if (!consultation_fee || consultation_fee <= 0) {
@@ -553,7 +553,7 @@ class UserController {
       const paymentOrder = await this.userService.createPaymentOrder(
         consultation_fee
       );
-      console.log(paymentOrder);
+      // console.log(paymentOrder);
       if (!paymentOrder.success) {
         res.status(Http_Status_Codes.BAD_REQUEST).json(paymentOrder);
         return;
@@ -577,7 +577,7 @@ class UserController {
     res: Response
   ): Promise<void> {
     try {
-      console.log("appointmnet_booking backend");
+      // console.log("appointmnet_booking backend");
       const farmerDetails = req.body;
       console.log(farmerDetails);
 
@@ -697,7 +697,7 @@ class UserController {
 
   async getUpcomingSlot(req: Request, res: Response): Promise<void> {
     try {
-      console.log(req.query);
+      // console.log(req.query);
       const { appointmentId } = req.query;
 
       if (!appointmentId) {
@@ -723,9 +723,11 @@ class UserController {
 
   async getPrescriptionDetails(req: Request, res: Response): Promise<void> {
     try {
-      console.log("get_prescription_details:", req.query);
+      // console.log("get_prescription_details:", req.query);
 
       const { _id } = req.query;
+      // console.log(_id)
+
       if (!_id) {
         res
           .status(Http_Status_Codes.BAD_REQUEST)
@@ -734,7 +736,7 @@ class UserController {
       }
 
       const data = await this.userService.getPrescriptionDetails(_id as string);
-      console.log("Prescription details:", data);
+      // console.log("Prescription details:", data);
 
       res.status(Http_Status_Codes.OK).json(data);
     } catch (error) {

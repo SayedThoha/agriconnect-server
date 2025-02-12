@@ -20,6 +20,7 @@ const slotModel_1 = require("../../models/slotModel");
 const adminModel_1 = require("../../models/adminModel");
 const bookeSlotModel_1 = require("../../models/bookeSlotModel");
 const prescriptionModel_1 = require("../../models/prescriptionModel");
+const userModel_1 = require("../../models/userModel");
 class ExpertRepository extends baseRepository_1.default {
     constructor() {
         super(expertModel_1.Expert);
@@ -273,19 +274,18 @@ class ExpertRepository extends baseRepository_1.default {
             const slots = yield slotModel_1.Slot.find({
                 expertId: expertId,
                 booked: true,
-                time: { $gte: now }
+                time: { $gte: now },
             }).sort({ time: 1 });
             // Convert ObjectIds to strings
-            return slots.map(slot => slot._id.toString());
+            return slots.map((slot) => slot._id.toString());
         });
     }
     findBookedSlotsBySlotIds(slotIds, expertId) {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield bookeSlotModel_1.BookedSlot
-                .find({
+            return yield bookeSlotModel_1.BookedSlot.find({
                 slotId: { $in: slotIds },
                 expertId: expertId,
-                consultation_status: 'pending'
+                consultation_status: "pending",
             })
                 .populate("slotId")
                 .populate("userId")
@@ -300,12 +300,30 @@ class ExpertRepository extends baseRepository_1.default {
     }
     updateBookedSlotWithPrescription(appointmentId, prescriptionId) {
         return __awaiter(this, void 0, void 0, function* () {
-            yield bookeSlotModel_1.BookedSlot.findByIdAndUpdate(appointmentId, { $set: { prescription_id: prescriptionId } });
+            yield bookeSlotModel_1.BookedSlot.findByIdAndUpdate(appointmentId, {
+                $set: { prescription_id: prescriptionId },
+            });
         });
     }
     findBookedSlotById(appointmentId) {
         return __awaiter(this, void 0, void 0, function* () {
             return yield bookeSlotModel_1.BookedSlot.findById(appointmentId);
+        });
+    }
+    updateRoomIdForSlot(slotId, roomId) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return yield bookeSlotModel_1.BookedSlot.findByIdAndUpdate(slotId, { $set: { roomId } }, { new: true });
+        });
+    }
+    getUserEmailFromSlot(slot) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const user = yield userModel_1.User.findById(slot === null || slot === void 0 ? void 0 : slot.userId);
+            return user ? user.email : null;
+        });
+    }
+    findPrescriptionById(prescriptionId) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return yield prescriptionModel_1.Prescription.findById(prescriptionId);
         });
     }
 }

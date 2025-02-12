@@ -361,6 +361,10 @@ class UserRepository extends BaseRepository<IUser> implements IUserRepository {
   async findPrescriptionById(prescriptionId: string):Promise<IPrescription|null> {
     return await Prescription.findById(prescriptionId);
   }
+
+  async updateUserWallet(userId: string, amount: number): Promise<void> {
+    await User.findByIdAndUpdate(userId, { $inc: { wallet: amount } });
+  }
   
 }
 export default UserRepository;

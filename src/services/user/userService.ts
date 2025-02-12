@@ -36,7 +36,7 @@ import { IPrescription } from "../../models/prescriptionModel";
 export type UserResponse = IUser | null;
 export type UserResponeType = IUser | null | { success?: boolean };
 
-class UserServices implements IUserService {
+class UserService implements IUserService {
   private readonly OTP_EXPIRY_MINUTES = 59;
   private razorpayInstance!: Razorpay;
   constructor(private userRepository: UserRepository) {
@@ -604,10 +604,10 @@ class UserServices implements IUserService {
         receipt: "razorUser@gmail.com",
       };
 
-      console.log("Razorpay Key ID:", process.env.razorpay_key_id);
+      // console.log("Razorpay Key ID:", process.env.razorpay_key_id);
 
       this.razorpayInstance.orders.create(options, (err, order) => {
-        console.log("Razorpay order creation result:", order);
+        // console.log("Razorpay order creation result:", order);
 
         if (!err) {
           resolve({
@@ -640,6 +640,26 @@ class UserServices implements IUserService {
         throw new Error("Slot already booked");
       }
 
+      const user = await this.userRepository.findUserById(farmerDetails.userId);
+
+      if (!user) {
+        throw new Error("User not found");
+      }
+      const userWallet = user.wallet ?? 0;
+
+      // If payment method is wallet, check balance and deduct amount
+      if (farmerDetails.payment_method === "wallet_payment") {
+        if (userWallet < slot.bookingAmount) {
+          throw new Error("Insufficient balance in wallet");
+        }
+
+        // Deduct wallet balance
+        await this.userRepository.updateUserWallet(
+          user._id.toString(),
+          -slot.bookingAmount
+        );
+      }
+
       // Update slot status
       await this.userRepository.updateSlotBookingStatus(
         farmerDetails.slotId,
@@ -667,7 +687,7 @@ class UserServices implements IUserService {
     }
   }
 
-  async cancelSlot(slotId: string):Promise<{ message: string }> {
+  async cancelSlot(slotId: string): Promise<{ message: string }> {
     const slot = await this.userRepository.findSlotByIdAndUpdate(slotId, {
       cancelled: true,
     });
@@ -701,7 +721,7 @@ class UserServices implements IUserService {
   }
 
   async getUpcomingAppointment(userId: string): Promise<IBookedSlot | {}> {
-    console.log("Fetching upcoming appointments...");
+    // console.log("Fetching upcoming appointments...");
 
     const now = new Date();
     const margin = 15 * 60 * 1000; // 15 minutes in milliseconds
@@ -709,7 +729,7 @@ class UserServices implements IUserService {
     const bookedSlots = await this.userRepository.findPendingAppointmentsByUser(
       userId
     );
-    console.log("Booked Slots:", bookedSlots);
+    // console.log("Booked Slots:", bookedSlots);
 
     // Filter appointments that are upcoming
     const upcomingAppointments = bookedSlots.filter((slot) => {
@@ -745,14 +765,12 @@ class UserServices implements IUserService {
   }
 
   async getPrescriptionDetails(prescriptionId: string): Promise<IPrescription> {
-
     const data = await this.userRepository.findPrescriptionById(prescriptionId);
     if (!data) {
       throw new Error("Prescription not found");
     }
     return data;
   }
-  
 }
 
-export default UserServices;
+export default UserService;

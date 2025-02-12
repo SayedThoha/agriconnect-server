@@ -42,6 +42,7 @@ export interface FarmerBookingDetails {
         userId:string,
         expertId:string,
         farmer_details:object
+        payment_method:string
   // Add other farmer details fields
 }
 

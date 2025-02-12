@@ -25,4 +25,6 @@ export interface IExpertController{
  updateSlotStatus(req: Request, res: Response): Promise<void>;
  getExpertBookings (req: Request, res: Response): Promise<void>;
  addPrescription(req: Request, res: Response): Promise<void>;
+ shareRoomIdThroughEmail(req: Request, res: Response): Promise<void> ;
+ getPrescriptionDetails(req: Request, res: Response): Promise<void>;
 }

@@ -492,10 +492,11 @@ class ExpertController {
                 console.log("expert ID:", expertId);
                 const appointment = yield this.expertService.getUpcomingAppointment(expertId);
                 if (Object.keys(appointment).length) {
-                    console.log("Next appointment:", appointment);
+                    // console.log("Next appointment:", appointment);
                 }
                 else {
-                    console.log("No upcoming appointments found.");
+                    // console.log("No upcoming appointments found.");
+                    // res.status(Http_Status_Codes.OK).json({});
                 }
                 res.status(httpStatusCodes_1.Http_Status_Codes.OK).json(appointment);
             }
@@ -510,7 +511,7 @@ class ExpertController {
     updateUpcomingSlot(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                console.log(req.query);
+                // console.log(req.query);
                 const { appointmentId, roomId } = req.query;
                 if (!appointmentId) {
                     res
@@ -533,7 +534,7 @@ class ExpertController {
     updateSlotStatus(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                console.log(req.query);
+                // console.log(req.query);
                 const { appointmentId, status } = req.query;
                 if (!appointmentId) {
                     res
@@ -583,7 +584,8 @@ class ExpertController {
     addPrescription(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                const { appointmentId, issue, prescription } = req.body;
+                const { appointmentId, issue, prescription } = req.query;
+                // console.log(appointmentId,issue,prescription)
                 if (!appointmentId || !issue || !prescription) {
                     res.status(httpStatusCodes_1.Http_Status_Codes.BAD_REQUEST).json({
                         message: "Missing required fields",
@@ -591,7 +593,7 @@ class ExpertController {
                     return;
                 }
                 // Add prescription
-                const newPrescription = yield this.expertService.addPrescription(appointmentId, issue, prescription);
+                const newPrescription = yield this.expertService.addPrescription(appointmentId.toString(), issue.toString(), prescription.toString());
                 res.status(httpStatusCodes_1.Http_Status_Codes.CREATED).json({
                     message: "Prescription added",
                     prescription: newPrescription,
@@ -602,6 +604,56 @@ class ExpertController {
                 res.status(httpStatusCodes_1.Http_Status_Codes.INTERNAL_SERVER_ERROR).json({
                     message: error instanceof Error ? error.message : "Internal Server Error",
                 });
+            }
+        });
+    }
+    shareRoomIdThroughEmail(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                console.log("shareRoomIdThroughEmail server-side");
+                const { roomId, slotId } = req.query;
+                console.log("roomId", roomId);
+                console.log("slotId", slotId);
+                if (!roomId || !slotId) {
+                    res
+                        .status(httpStatusCodes_1.Http_Status_Codes.BAD_REQUEST)
+                        .json({ message: "Missing required field" });
+                    return;
+                }
+                const response = yield this.expertService.shareRoomIdService(slotId, roomId);
+                console.log("response after sending room id", response);
+                res.status(httpStatusCodes_1.Http_Status_Codes.OK).json(response);
+            }
+            catch (error) {
+                console.error(error);
+                res
+                    .status(httpStatusCodes_1.Http_Status_Codes.INTERNAL_SERVER_ERROR)
+                    .json({ message: "Internal Server Error" });
+                return;
+            }
+        });
+    }
+    getPrescriptionDetails(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                console.log("get_prescription_details:", req.query);
+                const { _id } = req.query;
+                console.log(_id);
+                if (!_id) {
+                    res
+                        .status(httpStatusCodes_1.Http_Status_Codes.BAD_REQUEST)
+                        .json({ message: "Missing required data" });
+                    return;
+                }
+                const data = yield this.expertService.getPrescriptionDetails(_id);
+                console.log("Prescription details:", data);
+                res.status(httpStatusCodes_1.Http_Status_Codes.OK).json(data);
+            }
+            catch (error) {
+                console.error(error);
+                res
+                    .status(httpStatusCodes_1.Http_Status_Codes.INTERNAL_SERVER_ERROR)
+                    .json({ message: "Internal Server Error" });
             }
         });
     }
