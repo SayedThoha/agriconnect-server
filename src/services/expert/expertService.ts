@@ -27,6 +27,7 @@ import { ISlotData } from "../../interfaces/commonInterface";
 import { IBookedSlot } from "../../models/bookeSlotModel";
 import { IPrescription } from "../../models/prescriptionModel";
 import { generateMailForRoomId } from "../../utils/sendRoomId";
+import { INotification } from "../../models/notificationModel";
 
 export type ExpertResponse = IExpert | null;
 export type ExpertResponeType = IExpert | null | { success?: boolean };
@@ -405,7 +406,7 @@ class ExpertService implements IExpertService {
 
       if (!isOtpSent) {
         {
-          console.log("otp not send");
+          // console.log("otp not send");
         }
       }
       await this.expertRepository.updateExpertOtp(email, otp);
@@ -577,7 +578,7 @@ class ExpertService implements IExpertService {
       this.expertRepository.findById(expertId),
     ]);
 
-    console.log(admin);
+    // console.log(admin);
 
     if (!admin || !expert) {
       throw new Error("Admin or expert not found");
@@ -597,7 +598,7 @@ class ExpertService implements IExpertService {
 
   async getExpertSlotDetails(expertId: string): Promise<ISlot[]> {
     const currentTime = new Date();
-    console.log(expertId);
+    // console.log(expertId);
     try {
       return await this.expertRepository.findSlotsByExpertId(
         expertId,
@@ -610,7 +611,7 @@ class ExpertService implements IExpertService {
 
   async removeSlot(slotId: string): Promise<SlotServiceResponse<null>> {
     try {
-      console.log("Removing slot with ID:", slotId);
+      // console.log("Removing slot with ID:", slotId);
 
       // Find slot
       const slot = await this.expertRepository.findSlotById(slotId);
@@ -651,7 +652,7 @@ class ExpertService implements IExpertService {
   async getBookingDetails(expertId: string): Promise<IBookedSlot[]> {
     try {
       const bookings = await this.expertRepository.getBookingDetails(expertId);
-      console.log("booked slots:", bookings);
+      // console.log("booked slots:", bookings);
       return bookings;
     } catch (error) {
       console.error(error);
@@ -676,14 +677,14 @@ class ExpertService implements IExpertService {
   }
 
   async getUpcomingAppointment(expertId: string): Promise<IBookedSlot | {}> {
-    console.log("Fetching upcoming appointments...");
+    // console.log("Fetching upcoming appointments...");
 
     const now = new Date();
     const margin = 15 * 60 * 1000; // 15 minutes in milliseconds
 
     const bookedSlots =
       await this.expertRepository.findPendingAppointmentsByExpert(expertId);
-    console.log("Booked Slots:", bookedSlots);
+    // console.log("Booked Slots:", bookedSlots);
 
     // Filter appointments that are upcoming
     const upcomingAppointments = bookedSlots.filter((slot) => {
@@ -750,7 +751,7 @@ class ExpertService implements IExpertService {
         expertId
       );
 
-      console.log("slots to display in slot adding page:", slotIds.length);
+      // console.log("slots to display in slot adding page:", slotIds.length);
 
       // If no slots, return empty array
       if (slotIds.length === 0) {
@@ -763,7 +764,7 @@ class ExpertService implements IExpertService {
         expertId
       );
 
-      console.log("Booked slots:", bookedSlots.length);
+      // console.log("Booked slots:", bookedSlots.length);
       return bookedSlots;
     } catch (error) {
       console.error("Error in getDoctorBookings:", error);
@@ -839,6 +840,34 @@ class ExpertService implements IExpertService {
     }
     return data;
   }
+
+  async getNotifications(expertId: string): Promise<INotification[]> {
+      try {
+        const notifications = await this.expertRepository.getNotifications(expertId);
+        return notifications;
+      } catch (error) {
+        console.error("Error in notification service:", error);
+        throw error;
+      }
+    }
+  
+    async markNotificationAsRead(expertId: string): Promise<void> {
+      try {
+        await this.expertRepository.markNotificationAsRead(expertId);
+      } catch (error) {
+        console.error("Error in notification service:", error);
+        throw error;
+      }
+    }
+  
+    async clearNotifications(expertId: string): Promise<void> {
+      try {
+        await this.expertRepository.clearNotifications(expertId);
+      } catch (error) {
+        console.error("Error in clearing notifications (Service):", error);
+        throw error;
+      }
+    }
   
 }
 

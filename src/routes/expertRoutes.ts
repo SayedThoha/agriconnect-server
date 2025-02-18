@@ -141,5 +141,17 @@ expertRouter.get("/get_prescription_details", (req, res) =>
   expertController.getPrescriptionDetails(req, res)
 );
 
+expertRouter.get("/notifications", (req, res) =>
+  expertController.getNotifications(req, res)
+);
+
+expertRouter.put("/notifications/mark-as-read", (req, res) =>
+  expertController.markNotificationAsRead(req, res)
+);
+
+expertRouter.put("/notifications/clear", (req, res) =>
+  expertController.clearNotifications(req, res)
+);
+
 
 export default expertRouter;

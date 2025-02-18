@@ -147,4 +147,17 @@ userRouter.get("/get_prescription_details", (req, res) =>
   userController.getPrescriptionDetails(req, res)
 );
 
+userRouter.get("/notifications", (req, res) =>
+  userController.getNotifications(req, res)
+);
+
+userRouter.put("/notifications/mark-as-read", (req, res) =>
+  userController.markNotificationAsRead(req, res)
+);
+
+userRouter.put("/notifications/clear", (req, res) =>
+  userController.clearNotifications(req, res)
+);
+
+
 export default userRouter;

@@ -8,7 +8,7 @@ class ExpertController implements IExpertController {
 
   async expertRegistration(req: Request, res: Response): Promise<void> {
     try {
-      console.log("expert registration backend", req.body);
+      // console.log("expert registration backend", req.body);
 
       const missingFields = this.expertService.validateRegistrationData(
         req.body
@@ -22,7 +22,7 @@ class ExpertController implements IExpertController {
       }
 
       const result = await this.expertService.registerExpert(req.body);
-      console.log(result);
+      // console.log(result);
 
       if (!result.status) {
         res
@@ -122,7 +122,7 @@ class ExpertController implements IExpertController {
 
   async login(req: Request, res: Response): Promise<void> {
     try {
-      console.log("entering the login in expert");
+      // console.log("entering the login in expert");
       // Validate required fields
       const requiredFields = ["email", "password"];
       const missingFields = requiredFields.filter((field) => !req.body[field]);
@@ -187,7 +187,7 @@ class ExpertController implements IExpertController {
 
   async editExpertProfile(req: Request, res: Response): Promise<void> {
     try {
-      console.log("Edit profile of expert - server side");
+      // console.log("Edit profile of expert - server side");
       const data = req.body;
 
       if (!data._id) {
@@ -228,7 +228,7 @@ class ExpertController implements IExpertController {
 
   async optForNewEmail(req: Request, res: Response): Promise<void> {
     try {
-      console.log("optForNewEmail backend");
+      // console.log("optForNewEmail backend");
 
       const { expertId, email } = req.body;
 
@@ -260,7 +260,7 @@ class ExpertController implements IExpertController {
 
   async editExpertProfilePicture(req: Request, res: Response): Promise<void> {
     try {
-      console.log("Raw Request Body:", req.body);
+      // console.log("Raw Request Body:", req.body);
 
       const { expertId, image_url } = req.body;
 
@@ -287,7 +287,7 @@ class ExpertController implements IExpertController {
   async checkExpertStatus(req: Request, res: Response): Promise<void> {
     try {
       const expertId = req.params.id;
-      console.log(expertId);
+      // console.log(expertId);
       const status = await this.expertService.checkExpertStatus(expertId);
       res.status(200).json(status);
     } catch (error) {
@@ -388,9 +388,9 @@ class ExpertController implements IExpertController {
 
   async createSlot(req: Request, res: Response): Promise<void> {
     try {
-      console.log("add slot serverside");
+      // console.log("add slot serverside");
       const data = req.body;
-      console.log("data from adding slot", data);
+      // console.log("data from adding slot", data);
 
       if (!data) {
         res.status(Http_Status_Codes.BAD_REQUEST).json({
@@ -478,7 +478,7 @@ class ExpertController implements IExpertController {
 
   async getBookingDetails(req: Request, res: Response): Promise<void> {
     try {
-      console.log("get_booking_details serverside");
+      // console.log("get_booking_details serverside");
 
       const { expertId } = req.query;
 
@@ -526,10 +526,10 @@ class ExpertController implements IExpertController {
 
   async upcomingAppointment(req: Request, res: Response): Promise<void> {
     try {
-      console.log("Fetching upcoming appointment from server...");
+      // console.log("Fetching upcoming appointment from server...");
 
       const { expertId } = req.query;
-      console.log("expert ID:", expertId);
+      // console.log("expert ID:", expertId);
 
       const appointment = await this.expertService.getUpcomingAppointment(
         expertId as string
@@ -537,14 +537,12 @@ class ExpertController implements IExpertController {
 
       if (Object.keys(appointment).length) {
         // console.log("Next appointment:", appointment);
-        
       } else {
         // console.log("No upcoming appointments found.");
         // res.status(Http_Status_Codes.OK).json({});
       }
 
       res.status(Http_Status_Codes.OK).json(appointment);
-      
     } catch (error) {
       console.error("Error fetching upcoming appointment:", error);
       res
@@ -569,7 +567,7 @@ class ExpertController implements IExpertController {
         appointmentId as string,
         roomId as string
       );
-      console.log("data:", data);
+      // console.log("data:", data);
 
       res.status(Http_Status_Codes.OK).json(data);
     } catch (error) {
@@ -592,12 +590,13 @@ class ExpertController implements IExpertController {
         return;
       }
 
-      const data = await this.expertService.updateSlotStatus(
+      // const data = 
+      await this.expertService.updateSlotStatus(
         appointmentId as string,
         status as string
       );
 
-      console.log("data:", data);
+      // console.log("data:", data);
 
       res
         .status(Http_Status_Codes.OK)
@@ -612,9 +611,9 @@ class ExpertController implements IExpertController {
 
   async getExpertBookings(req: Request, res: Response): Promise<void> {
     try {
-      console.log("get_bookings_of_details serverside");
+      // console.log("get_bookings_of_details serverside");
       const { expertId } = req.query;
-      console.log(expertId);
+      // console.log(expertId);
 
       // Validate query data
       if (!expertId) {
@@ -672,11 +671,11 @@ class ExpertController implements IExpertController {
 
   async shareRoomIdThroughEmail(req: Request, res: Response): Promise<void> {
     try {
-      console.log("shareRoomIdThroughEmail server-side");
+      // console.log("shareRoomIdThroughEmail server-side");
 
       const { roomId, slotId } = req.query;
-      console.log("roomId",roomId);
-      console.log("slotId",slotId)
+      // console.log("roomId", roomId);
+      // console.log("slotId", slotId);
       if (!roomId || !slotId) {
         res
           .status(Http_Status_Codes.BAD_REQUEST)
@@ -689,7 +688,7 @@ class ExpertController implements IExpertController {
         roomId as string
       );
 
-      console.log("response after sending room id",response)
+      // console.log("response after sending room id", response);
 
       res.status(Http_Status_Codes.OK).json(response);
     } catch (error) {
@@ -701,13 +700,12 @@ class ExpertController implements IExpertController {
     }
   }
 
-
   async getPrescriptionDetails(req: Request, res: Response): Promise<void> {
     try {
-      console.log("get_prescription_details:", req.query);
+      // console.log("get_prescription_details:", req.query);
 
       const { _id } = req.query;
-      console.log(_id)
+      // console.log(_id);
 
       if (!_id) {
         res
@@ -716,8 +714,10 @@ class ExpertController implements IExpertController {
         return;
       }
 
-      const data = await this.expertService.getPrescriptionDetails(_id as string);
-      console.log("Prescription details:", data);
+      const data = await this.expertService.getPrescriptionDetails(
+        _id as string
+      );
+      // console.log("Prescription details:", data);
 
       res.status(Http_Status_Codes.OK).json(data);
     } catch (error) {
@@ -728,7 +728,68 @@ class ExpertController implements IExpertController {
     }
   }
 
+  async getNotifications(req: Request, res: Response): Promise<void> {
+    try {
+      const { expertId } = req.query;
 
+      if (!expertId) {
+        res.status(Http_Status_Codes.BAD_REQUEST).json({
+          message: "User ID is required",
+        });
+        return;
+      }
+      const notification = await this.expertService.getNotifications(
+        expertId as string
+      );
+      res.status(Http_Status_Codes.OK).json(notification);
+    } catch (error) {
+      console.log(error);
+      res.status(Http_Status_Codes.INTERNAL_SERVER_ERROR).json({
+        message: "Internal Server Error",
+      });
+    }
+  }
+
+  async markNotificationAsRead(req: Request, res: Response): Promise<void> {
+    try {
+      const { expertId } = req.body;
+
+      if (!expertId) {
+        res.status(Http_Status_Codes.BAD_REQUEST).json({
+          message: "User ID is required",
+        });
+        return;
+      }
+
+      await this.expertService.markNotificationAsRead(expertId as string);
+
+      res
+        .status(Http_Status_Codes.OK)
+        .json({ message: "Notifications marked as read" });
+    } catch (error) {
+      console.log(error);
+      res.status(Http_Status_Codes.INTERNAL_SERVER_ERROR).json({
+        message: "Internal Server Error",
+      });
+    }
+  }
+
+  async clearNotifications(req: Request, res: Response): Promise<void> {
+    try {
+      const { expertId } = req.body;
+
+      if (!expertId) {
+        res.status(400).json({ message: "Expert ID is required" });
+        return;
+      }
+
+      await this.expertService.clearNotifications(expertId as string);
+      res.status(200).json({ message: "All notifications cleared" });
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ message: "Internal Server Error" });
+    }
+  }
 }
 
 export default ExpertController;

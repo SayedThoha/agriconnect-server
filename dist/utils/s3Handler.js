@@ -22,16 +22,16 @@ const s3 = new aws_sdk_1.default.S3({
     region: process.env.AWS_REGION,
 });
 const uploadToS3 = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    console.log("Upload Request Details:", {
-        file: req.file
-            ? {
-                originalname: req.file.originalname,
-                mimetype: req.file.mimetype,
-                size: req.file.size,
-            }
-            : "No file",
-        body: req.body,
-    });
+    // console.log("Upload Request Details:", {
+    //   file: req.file
+    //     ? {
+    //         originalname: req.file.originalname,
+    //         mimetype: req.file.mimetype,
+    //         size: req.file.size,
+    //       }
+    //     : "No file",
+    //   body: req.body,
+    // });
     try {
         if (!req.file) {
             res.status(400).json({ message: "No file uploaded" });
@@ -63,7 +63,7 @@ const uploadToS3 = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
             ContentType: file.mimetype,
         };
         const result = yield s3.upload(uploadParams).promise();
-        console.log(result);
+        // console.log(result);
         res.json({
             fileUrl: result.Location,
             key: result.Key,

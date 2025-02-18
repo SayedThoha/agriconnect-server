@@ -7,11 +7,11 @@ class ChatController implements IChatController {
 
   async userAccessChat(req: Request, res: Response): Promise<void> {
     try {
-      console.log(req.query)
+      // console.log(req.query)
       const { userId, expertId } = req.query;
 
-      console.log("userId:", userId);
-      console.log("expertId:", expertId);
+      // console.log("userId:", userId);
+      // console.log("expertId:", expertId);
 
       const result = await this.chatService.getUserChat(
         userId as string,
@@ -35,7 +35,7 @@ class ChatController implements IChatController {
     try {
       const { userId } = req.query;
 
-      console.log("req.query.userId:", userId);
+      // console.log("req.query.userId:", userId);
 
       if (!userId || typeof userId !== "string") {
         res
@@ -58,7 +58,7 @@ class ChatController implements IChatController {
 
   async sendMessage(req: Request, res: Response): Promise<void> {
     try {
-      console.log("sendMessage in serverSide");
+      // console.log("sendMessage in serverSide");
       const { content, chatId, userId } = req.body;
 
       const message = await this.chatService.sendMessage(
@@ -78,7 +78,7 @@ class ChatController implements IChatController {
 
   async userFetchAllMessages(req: Request, res: Response): Promise<void> {
     try {
-      console.log("fetchAllMessages in serverSide");
+      // console.log("fetchAllMessages in serverSide");
       const { chatId } = req.query;
 
       if (!chatId) {
@@ -148,7 +148,7 @@ class ChatController implements IChatController {
 
   async expertSendMessage(req: Request, res: Response): Promise<void> {
     try {
-      console.log("expertSendMessage in serverSide");
+      // console.log("expertSendMessage in serverSide");
       const { content, chatId, expertId } = req.body;
 
       if (!content || !chatId || !expertId) {

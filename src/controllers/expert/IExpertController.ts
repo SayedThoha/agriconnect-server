@@ -27,4 +27,7 @@ export interface IExpertController{
  addPrescription(req: Request, res: Response): Promise<void>;
  shareRoomIdThroughEmail(req: Request, res: Response): Promise<void> ;
  getPrescriptionDetails(req: Request, res: Response): Promise<void>;
+ getNotifications(req: Request, res: Response): Promise<void>;
+ markNotificationAsRead(req: Request, res: Response): Promise<void>;
+ clearNotifications(req: Request, res: Response): Promise<void>;
 }

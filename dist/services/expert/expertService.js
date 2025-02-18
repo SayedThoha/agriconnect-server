@@ -332,7 +332,7 @@ class ExpertService {
                 const isOtpSent = yield (0, sendOtpToMail_1.sentOtpToEmail)(email, otp);
                 if (!isOtpSent) {
                     {
-                        console.log("otp not send");
+                        // console.log("otp not send");
                     }
                 }
                 yield this.expertRepository.updateExpertOtp(email, otp);
@@ -482,7 +482,7 @@ class ExpertService {
                 this.expertRepository.findAdminSettings(),
                 this.expertRepository.findById(expertId),
             ]);
-            console.log(admin);
+            // console.log(admin);
             if (!admin || !expert) {
                 throw new Error("Admin or expert not found");
             }
@@ -501,7 +501,7 @@ class ExpertService {
     getExpertSlotDetails(expertId) {
         return __awaiter(this, void 0, void 0, function* () {
             const currentTime = new Date();
-            console.log(expertId);
+            // console.log(expertId);
             try {
                 return yield this.expertRepository.findSlotsByExpertId(expertId, currentTime);
             }
@@ -513,7 +513,7 @@ class ExpertService {
     removeSlot(slotId) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                console.log("Removing slot with ID:", slotId);
+                // console.log("Removing slot with ID:", slotId);
                 // Find slot
                 const slot = yield this.expertRepository.findSlotById(slotId);
                 if (!slot) {
@@ -553,7 +553,7 @@ class ExpertService {
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 const bookings = yield this.expertRepository.getBookingDetails(expertId);
-                console.log("booked slots:", bookings);
+                // console.log("booked slots:", bookings);
                 return bookings;
             }
             catch (error) {
@@ -579,11 +579,11 @@ class ExpertService {
     }
     getUpcomingAppointment(expertId) {
         return __awaiter(this, void 0, void 0, function* () {
-            console.log("Fetching upcoming appointments...");
+            // console.log("Fetching upcoming appointments...");
             const now = new Date();
             const margin = 15 * 60 * 1000; // 15 minutes in milliseconds
             const bookedSlots = yield this.expertRepository.findPendingAppointmentsByExpert(expertId);
-            console.log("Booked Slots:", bookedSlots);
+            // console.log("Booked Slots:", bookedSlots);
             // Filter appointments that are upcoming
             const upcomingAppointments = bookedSlots.filter((slot) => {
                 if (!slot.slotId ||
@@ -628,14 +628,14 @@ class ExpertService {
             try {
                 // Find booked slots for the expert
                 const slotIds = yield this.expertRepository.findBookedSlotsByExpert(expertId);
-                console.log("slots to display in slot adding page:", slotIds.length);
+                // console.log("slots to display in slot adding page:", slotIds.length);
                 // If no slots, return empty array
                 if (slotIds.length === 0) {
                     return [];
                 }
                 // Find booked slots for these slots
                 const bookedSlots = yield this.expertRepository.findBookedSlotsBySlotIds(slotIds, expertId);
-                console.log("Booked slots:", bookedSlots.length);
+                // console.log("Booked slots:", bookedSlots.length);
                 return bookedSlots;
             }
             catch (error) {
@@ -694,6 +694,40 @@ class ExpertService {
                 throw new Error("Prescription not found");
             }
             return data;
+        });
+    }
+    getNotifications(expertId) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const notifications = yield this.expertRepository.getNotifications(expertId);
+                return notifications;
+            }
+            catch (error) {
+                console.error("Error in notification service:", error);
+                throw error;
+            }
+        });
+    }
+    markNotificationAsRead(expertId) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                yield this.expertRepository.markNotificationAsRead(expertId);
+            }
+            catch (error) {
+                console.error("Error in notification service:", error);
+                throw error;
+            }
+        });
+    }
+    clearNotifications(expertId) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                yield this.expertRepository.clearNotifications(expertId);
+            }
+            catch (error) {
+                console.error("Error in clearing notifications (Service):", error);
+                throw error;
+            }
         });
     }
 }

@@ -5,15 +5,6 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 // multer.ts in utils
 const multer_1 = __importDefault(require("multer"));
-// const storage = multer.diskStorage({
-//   destination: function (req, file, cb) {
-//     cb(null, "docs/");
-//   },
-//   filename: function (req, file, cb) {
-//     cb(null, `${Date.now()}-${file.originalname}`);
-//     // cb(null, file.originalname);
-//   },
-// });
 const storage = multer_1.default.memoryStorage();
 const upload = (0, multer_1.default)({ storage: storage });
 exports.default = upload;

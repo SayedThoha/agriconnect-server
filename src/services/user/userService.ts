@@ -32,6 +32,8 @@ import {
 import Razorpay from "razorpay";
 import { IBookedSlot } from "../../models/bookeSlotModel";
 import { IPrescription } from "../../models/prescriptionModel";
+import { NotificationService } from "../../utils/notificationService";
+import { INotification } from "../../models/notificationModel";
 
 export type UserResponse = IUser | null;
 export type UserResponeType = IUser | null | { success?: boolean };
@@ -50,23 +52,23 @@ class UserService implements IUserService {
     password: string;
   }): Promise<any> {
     try {
-      console.log("Registration service started for email:", userData.email);
+      // console.log("Registration service started for email:", userData.email);
 
       // Check if the user already exists
       const existingUser = await this.userRepository.emailExist(userData.email);
-      console.log("Email existence check result:", existingUser);
+      // console.log("Email existence check result:", existingUser);
       if (existingUser) {
         return { success: false, message: "Email already exists" };
       }
 
       // Hash password and generate OTP
-      console.log("Reached password hashing...");
+      // console.log("Reached password hashing...");
       const hashedPassword = await hashedPass(userData.password);
-      console.log("Hashed Password:", hashedPassword);
+      // console.log("Hashed Password:", hashedPassword);
 
-      console.log("Generating OTP...");
+      // console.log("Generating OTP...");
       const otp = generateOtp();
-      console.log("Generated OTP:", otp);
+      // console.log("Generated OTP:", otp);
 
       // Create user data
       const user = await this.userRepository.saveUser({
@@ -178,14 +180,14 @@ class UserService implements IUserService {
         };
       }
 
-      console.log("Updating user verification status...");
+      // console.log("Updating user verification status...");
       // Update user verification status
       const updatedUser = await this.userRepository.updateUserVerification(
         email,
         true,
         role ? newEmail : undefined
       );
-      console.log("Updated user:", updatedUser);
+      // console.log("Updated user:", updatedUser);
       if (!updatedUser) {
         return {
           success: false,
@@ -401,7 +403,8 @@ class UserService implements IUserService {
 
       if (!isOtpSent) {
         {
-          console.log("otp not send");
+          // console.log("otp not send");
+
         }
       }
       await this.userRepository.updateUserOtp(email, otp);
@@ -434,7 +437,7 @@ class UserService implements IUserService {
 
   async refreshToken(refreshToken: string): Promise<LoginResponse> {
     try {
-      console.log("Attempting to refresh access token...");
+      // console.log("Attempting to refresh access token...");
       // Validate refresh token
       const decodedRefreshToken = verifyRefreshToken(refreshToken); // This method will decode and validate the refresh token
       // console.log(decodedRefreshToken);
@@ -668,6 +671,15 @@ class UserService implements IUserService {
 
       // Create booked slot record
       await this.userRepository.createBookedSlot(farmerDetails);
+
+      const expertId = slot.expertId._id;
+      // Send notification about successful booking
+      await NotificationService.sendNotification(
+        user._id.toString(),
+        expertId.toString(),
+        `Your slot booking for ${slot.time} is confirmed!`,
+        "booking_success"
+      );
     } catch (error) {
       console.log(error);
     }
@@ -770,6 +782,34 @@ class UserService implements IUserService {
       throw new Error("Prescription not found");
     }
     return data;
+  }
+
+  async getNotifications(userId: string): Promise<INotification[]> {
+    try {
+      const notifications = await this.userRepository.getNotifications(userId);
+      return notifications;
+    } catch (error) {
+      console.error("Error in notification service:", error);
+      throw error;
+    }
+  }
+
+  async markNotificationAsRead(userId: string): Promise<void> {
+    try {
+      await this.userRepository.markNotificationAsRead(userId);
+    } catch (error) {
+      console.error("Error in notification service:", error);
+      throw error;
+    }
+  }
+
+  async clearNotifications(userId: string): Promise<void> {
+    try {
+      await this.userRepository.clearNotifications(userId);
+    } catch (error) {
+      console.error("Error in clearing notifications (Service):", error);
+      throw error;
+    }
   }
 }
 

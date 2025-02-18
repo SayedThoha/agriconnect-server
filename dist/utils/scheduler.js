@@ -12,13 +12,14 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.update_unattended_slots = exports.delete_unbooked_slots = exports.email_to_notify_booking_time = void 0;
+exports.deleteClearedNotifications = exports.update_unattended_slots = exports.delete_unbooked_slots = exports.email_to_notify_booking_time = void 0;
 /* eslint-disable @typescript-eslint/no-explicit-any */
 const node_cron_1 = __importDefault(require("node-cron"));
 const slotModel_1 = require("../models/slotModel");
 const bookeSlotModel_1 = require("../models/bookeSlotModel");
 const sendNotification_1 = require("./sendNotification");
 const userModel_1 = require("../models/userModel");
+const notificationModel_1 = require("../models/notificationModel");
 const email_to_notify_booking_time = () => __awaiter(void 0, void 0, void 0, function* () {
     // console.log("email_to_notify_booking_time_to user and expert");
     node_cron_1.default.schedule("50,20 8-20 * * *", () => __awaiter(void 0, void 0, void 0, function* () {
@@ -57,13 +58,14 @@ const delete_unbooked_slots = () => __awaiter(void 0, void 0, void 0, function* 
             // Get the current date and time
             const now = new Date();
             // Find and delete slots that have a time in the past
-            const result = yield slotModel_1.Slot.deleteMany({
+            // const result =
+            yield slotModel_1.Slot.deleteMany({
                 time: { $lt: now },
                 booked: false,
                 cancelled: false,
             });
-            console.log("result:", result);
-            console.log(`Deleted ${result.deletedCount} past slots`);
+            // console.log("result:", result);
+            // console.log(`Deleted ${result.deletedCount} past slots`);
         }
         catch (err) {
             console.error("Error cleaning up past slots:", err);
@@ -97,7 +99,7 @@ const update_unattended_slots = () => __awaiter(void 0, void 0, void 0, function
                         yield userModel_1.User.findByIdAndUpdate(user._id, {
                             $inc: { wallet: refundAmount },
                         });
-                        console.log(`Refunded ${refundAmount} to user ${user.email}`);
+                        // console.log(`Refunded ${refundAmount} to user ${user.email}`);
                     }
                     // Update the slot status
                     yield bookeSlotModel_1.BookedSlot.findByIdAndUpdate(slot._id, {
@@ -112,3 +114,23 @@ const update_unattended_slots = () => __awaiter(void 0, void 0, void 0, function
     }));
 });
 exports.update_unattended_slots = update_unattended_slots;
+const deleteClearedNotifications = () => __awaiter(void 0, void 0, void 0, function* () {
+    node_cron_1.default.schedule("0 0 * * *", () => __awaiter(void 0, void 0, void 0, function* () {
+        // Runs every day at midnight
+        try {
+            // console.log("Running scheduled notification cleanup...");
+            // const deletedNotifications =
+            yield notificationModel_1.Notification.deleteMany({
+                isClearedByUser: true,
+                isClearedByExpert: true,
+            });
+            // console.log(
+            //   `Deleted ${deletedNotifications.deletedCount} cleared notifications`
+            // );
+        }
+        catch (error) {
+            console.error("Error deleting cleared notifications:", error);
+        }
+    }));
+});
+exports.deleteClearedNotifications = deleteClearedNotifications;

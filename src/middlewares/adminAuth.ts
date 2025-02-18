@@ -8,8 +8,8 @@ const adminAuth = async (req: Request, res: Response, next: NextFunction) => {
     const token = authHeader.split(" ")[1]; // token from header
     const secret = process.env.JWT_SECRET || "default_secret";
 
-    console.log("Token received:", token);
-    console.log("JWT_SECRET during verification:", secret);
+    // console.log("Token received:", token);
+    // console.log("JWT_SECRET during verification:", secret);
     try {
       jwt.verify(token, secret, (err, admin) => {
         if (err || !admin) {

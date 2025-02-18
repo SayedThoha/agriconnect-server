@@ -4,10 +4,10 @@ export const update_slot_time_through_email = async (
   userEmail: string,
   expertEmail: string
 ) => {
-  console.log("generateMailForRoomId function");
+  // console.log("generateMailForRoomId function");
   // const roomId = roomId;
-  console.log("user email:", userEmail);
-  console.log("expert email:", expertEmail);
+  // console.log("user email:", userEmail);
+  // console.log("expert email:", expertEmail);
 
   const transpoter = nodemailer.createTransport({
     service: "gmail",
@@ -54,23 +54,23 @@ export const update_slot_time_through_email = async (
 
   return new Promise((resolve, reject) => {
     transpoter.sendMail(userMailOptions, (err) => {
-      console.log("get into return");
+      // console.log("get into return");
       if (err) {
-        console.log("error while generating email");
+        // console.log("error while generating email");
         reject(err.message);
       } else {
-        console.log("generated email to user's emailId:", userEmail);
+        // console.log("generated email to user's emailId:", userEmail);
         resolve("resolved email generation for consultation updates");
       }
     });
 
     transpoter.sendMail(expertMailOptions, (err) => {
-      console.log("get into return");
+      // console.log("get into return");
       if (err) {
-        console.log("error while generating email");
+        // console.log("error while generating email");
         reject(err.message);
       } else {
-        console.log("generated email to expert's emailId:", expertEmail);
+        // console.log("generated email to expert's emailId:", expertEmail);
         resolve("resolved email generation for consultation updates");
       }
     });

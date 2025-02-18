@@ -1,8 +1,10 @@
 //userRepository.ts
 
-
 import { Expert, IExpert } from "../../models/expertModel";
-import { ISpecialisation, Specialisation } from "../../models/specialisationModel";
+import {
+  ISpecialisation,
+  Specialisation,
+} from "../../models/specialisationModel";
 import { IUser, User } from "../../models/userModel";
 import BaseRepository from "../base/baseRepository";
 
@@ -11,15 +13,13 @@ import { ISlot, Slot } from "../../models/slotModel";
 import { SlotUpdateData } from "../../interfaces/commonInterface";
 import { BookedSlot, IBookedSlot } from "../../models/bookeSlotModel";
 import { IPrescription, Prescription } from "../../models/prescriptionModel";
-
-
+import { INotification, Notification } from "../../models/notificationModel";
 
 class UserRepository extends BaseRepository<IUser> implements IUserRepository {
   constructor() {
     super(User);
   }
 
-  
   async emailExist(email: string): Promise<IUser | null> {
     try {
       return await this.model.findOne({ email });
@@ -28,7 +28,6 @@ class UserRepository extends BaseRepository<IUser> implements IUserRepository {
     }
   }
 
-  
   async saveUser(userData: Partial<IUser>): Promise<IUser> {
     return this.create(userData); // Using base repository create method
   }
@@ -38,8 +37,6 @@ class UserRepository extends BaseRepository<IUser> implements IUserRepository {
     return await User.findById(id);
   }
 
- 
-
   async checkEmail(email: string): Promise<IUser | null> {
     try {
       return await this.model.findOne({ email });
@@ -47,8 +44,6 @@ class UserRepository extends BaseRepository<IUser> implements IUserRepository {
       throw new Error(`Error checking email: ${error}`);
     }
   }
-
- 
 
   async updateUserOtp(email: string, otp: string): Promise<IUser | null> {
     try {
@@ -65,8 +60,6 @@ class UserRepository extends BaseRepository<IUser> implements IUserRepository {
     }
   }
 
-  
-
   async findUserByEmail(email: string): Promise<IUser | null> {
     try {
       return await this.model.findOne({ email });
@@ -74,8 +67,6 @@ class UserRepository extends BaseRepository<IUser> implements IUserRepository {
       throw new Error(`Error finding user by email: ${error}`);
     }
   }
-
- 
 
   async updateUserVerification(
     email: string,
@@ -100,8 +91,6 @@ class UserRepository extends BaseRepository<IUser> implements IUserRepository {
       throw new Error(`Error updating user verification: ${error}`);
     }
   }
-
-  
 
   async updateUserOtpDetails(
     userId: string,
@@ -134,8 +123,6 @@ class UserRepository extends BaseRepository<IUser> implements IUserRepository {
     }
   }
 
- 
-
   async updateUserProfile(
     id: string,
     updateData: Partial<IUser>
@@ -148,16 +135,12 @@ class UserRepository extends BaseRepository<IUser> implements IUserRepository {
     }
   }
 
- 
-
   async updateUserById(
     userId: string,
     updateData: Partial<IUser>
   ): Promise<IUser | null> {
     return this.update(userId, updateData); // Using base repository update method
   }
-
-  
 
   async updateProfilePicture(userId: string, imageUrl: string): Promise<void> {
     try {
@@ -168,8 +151,6 @@ class UserRepository extends BaseRepository<IUser> implements IUserRepository {
       throw new Error(`Error updating profile picture: ${error}`);
     }
   }
-
-  
 
   async checkUserStatus(userId: string): Promise<{ blocked: boolean }> {
     try {
@@ -199,14 +180,14 @@ class UserRepository extends BaseRepository<IUser> implements IUserRepository {
     }
   }
 
-  async getSpecialisations():Promise<ISpecialisation[]> {
-    console.log("get specialisation serverside");
+  async getSpecialisations(): Promise<ISpecialisation[]> {
+    // console.log("get specialisation serverside");
     return await Specialisation.find();
   }
 
   async getExperts(): Promise<IExpert[]> {
     try {
-      console.log("get experts repository");
+      // console.log("get experts repository");
       const experts = await Expert.find({
         kyc_verification: true,
         blocked: false,
@@ -287,8 +268,10 @@ class UserRepository extends BaseRepository<IUser> implements IUserRepository {
     }
   }
 
- 
-  async updateSlotBookingStatus(slotId: string, booked: boolean): Promise<ISlot | null> {
+  async updateSlotBookingStatus(
+    slotId: string,
+    booked: boolean
+  ): Promise<ISlot | null> {
     try {
       return await Slot.findByIdAndUpdate(
         slotId,
@@ -296,7 +279,7 @@ class UserRepository extends BaseRepository<IUser> implements IUserRepository {
         { new: true }
       );
     } catch (error) {
-      console.error('Error in updateSlotBookingStatus:', error);
+      console.error("Error in updateSlotBookingStatus:", error);
       throw error;
     }
   }
@@ -305,15 +288,14 @@ class UserRepository extends BaseRepository<IUser> implements IUserRepository {
     try {
       return await BookedSlot.create(bookingDetails);
     } catch (error) {
-      console.error('Error in createBookedSlot:', error);
+      console.error("Error in createBookedSlot:", error);
       throw error;
     }
   }
 
   async findBookedSlotsByUser(userId: string): Promise<IBookedSlot[]> {
     try {
-      const bookedSlots = await BookedSlot
-        .find({ userId })
+      const bookedSlots = await BookedSlot.find({ userId })
         .populate({
           path: "slotId",
           populate: {
@@ -325,25 +307,38 @@ class UserRepository extends BaseRepository<IUser> implements IUserRepository {
 
       return bookedSlots;
     } catch (error) {
-      console.error('Error in findBookedSlotsByUser:', error);
+      console.error("Error in findBookedSlotsByUser:", error);
       throw error;
     }
   }
 
-
-  async updateWallet(userId:string, amount:number): Promise<IUser | null> {
+  async updateWallet(userId: string, amount: number): Promise<IUser | null> {
     return await User.findByIdAndUpdate(userId, { $inc: { wallet: amount } });
   }
 
-  async findSlotByIdAndUpdate(slotId:string, updateData:object):Promise<ISlot|null> {
-    return await Slot.findByIdAndUpdate(slotId, { $set: updateData }, { new: true });
-  }
-   
-  async findOneBookedSlotAndUpdate(filter:object, updateData:object):Promise<IBookedSlot|null> {
-    return await BookedSlot.findOneAndUpdate(filter, { $set: updateData }, { new: true });
+  async findSlotByIdAndUpdate(
+    slotId: string,
+    updateData: object
+  ): Promise<ISlot | null> {
+    return await Slot.findByIdAndUpdate(
+      slotId,
+      { $set: updateData },
+      { new: true }
+    );
   }
 
-  async findPendingAppointmentsByUser(userId: string):Promise<IBookedSlot[]> {
+  async findOneBookedSlotAndUpdate(
+    filter: object,
+    updateData: object
+  ): Promise<IBookedSlot | null> {
+    return await BookedSlot.findOneAndUpdate(
+      filter,
+      { $set: updateData },
+      { new: true }
+    );
+  }
+
+  async findPendingAppointmentsByUser(userId: string): Promise<IBookedSlot[]> {
     return await BookedSlot.find({ userId, consultation_status: "pending" })
       .populate({
         path: "slotId",
@@ -353,18 +348,65 @@ class UserRepository extends BaseRepository<IUser> implements IUserRepository {
       .populate("expertId");
   }
 
-  async findBookedSlotById(appointmentId: string):Promise<IBookedSlot|null> {
-
+  async findBookedSlotById(appointmentId: string): Promise<IBookedSlot | null> {
     return await BookedSlot.findById(appointmentId);
   }
 
-  async findPrescriptionById(prescriptionId: string):Promise<IPrescription|null> {
-    return await Prescription.findById(prescriptionId);
+  async findPrescriptionById(
+    prescriptionId: string
+  ): Promise<IPrescription | null> {
+    return await Prescription.findById(prescriptionId).populate({
+      path: "bookedSlot", // Populating the bookedSlot reference
+      populate: {
+        path: "expertId", // Populating the expertId within the bookedSlot
+        select: "firstName lastName specialisation", // Select fields you want from the expert
+      },
+    });
   }
 
   async updateUserWallet(userId: string, amount: number): Promise<void> {
     await User.findByIdAndUpdate(userId, { $inc: { wallet: amount } });
   }
-  
+
+  async getNotifications(userId: string): Promise<INotification[]> {
+    try {
+      // console.log("get notification repository");
+      const notifications = await Notification.find({
+        userId,
+        isClearedByUser: false,
+      }).sort({
+        createdAt: -1,
+      });
+      return notifications;
+    } catch (error) {
+      console.error("Error in notification repository:", error);
+      throw error;
+    }
+  }
+
+  async markNotificationAsRead(userId: string): Promise<void> {
+    try {
+      // await Notification.updateMany({userId,isRead:false},{ $set: { isRead: true } })
+      await Notification.updateMany(
+        { userId, isReadByUser: false },
+        { $set: { isReadByUser: true } }
+      );
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  async clearNotifications(userId: string): Promise<void> {
+    try {
+      // await Notification.deleteMany({ userId });
+      await Notification.updateMany(
+        { userId, isClearedByUser: false },
+        { $set: { isClearedByUser: true } }
+      );
+    } catch (error) {
+      console.error("Error in clearing notifications (Repository):", error);
+      throw error;
+    }
+  }
 }
 export default UserRepository;

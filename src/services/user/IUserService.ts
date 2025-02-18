@@ -10,6 +10,7 @@ import {
 } from "../../interfaces/userInterface";
 import { IBookedSlot } from "../../models/bookeSlotModel";
 import { IExpert } from "../../models/expertModel";
+import { INotification } from "../../models/notificationModel";
 import { IPrescription } from "../../models/prescriptionModel";
 import { ISlot } from "../../models/slotModel";
 import { ISpecialisation } from "../../models/specialisationModel";
@@ -61,4 +62,8 @@ export interface IUserService {
   getUpcomingAppointment(userId: string): Promise<IBookedSlot | {}>;
   getUpcomingSlot(appointmentId: string): Promise<IBookedSlot>;
   getPrescriptionDetails(prescriptionId: string): Promise<IPrescription>;
+  getNotifications(userId: string): Promise<INotification[]>;
+  markNotificationAsRead(userId: string): Promise<void>;
+  clearNotifications(userId: string): Promise<void>;
+
 }

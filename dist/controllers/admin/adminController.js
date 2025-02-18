@@ -44,7 +44,7 @@ class AdminController {
     getAdminDashboardDetails(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                console.log("getAdminDashboardDetails server-side");
+                // console.log("getAdminDashboardDetails server-side");
                 const { userCount, expertCount, slotDetails } = yield this.adminService.getAdminDashboardDetails();
                 res
                     .status(httpStatusCodes_1.Http_Status_Codes.OK)
@@ -62,10 +62,10 @@ class AdminController {
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 const { expert } = req.query;
-                console.log("data:", { expert });
+                // console.log("data:", { expert });
                 if (expert === "all") {
                     const expertData = yield this.adminService.getAllExperts();
-                    console.log("expert Data", expertData);
+                    // console.log("expert Data", expertData);
                     res.status(httpStatusCodes_1.Http_Status_Codes.OK).json(expertData);
                     return;
                 }
@@ -98,9 +98,9 @@ class AdminController {
     getSpecialisations(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                console.log("getSpecialisation serverside");
+                // console.log("getSpecialisation serverside");
                 const specialisationData = yield this.adminService.getAllSpecialisations();
-                console.log(specialisationData);
+                // console.log(specialisationData);
                 res.status(httpStatusCodes_1.Http_Status_Codes.OK).json(specialisationData);
             }
             catch (error) {
@@ -115,14 +115,14 @@ class AdminController {
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 const data = req.body;
-                console.log("addSpecialisation serverside", data);
+                // console.log("addSpecialisation serverside", data);
                 if (!data) {
                     res.status(httpStatusCodes_1.Http_Status_Codes.BAD_REQUEST).json({
                         message: "Submission Failed",
                     });
                     return;
                 }
-                console.log("specialisation to add:", data);
+                // console.log("specialisation to add:", data);
                 yield this.adminService.addSpecialisation(data);
                 res.status(httpStatusCodes_1.Http_Status_Codes.CREATED).json({
                     message: "Specialisation added Successfully",
@@ -139,7 +139,7 @@ class AdminController {
     editSpecialisation(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                console.log("editSpecialisation serverside");
+                // console.log("editSpecialisation serverside");
                 const data = req.body;
                 if (!data) {
                     res.status(httpStatusCodes_1.Http_Status_Codes.BAD_REQUEST).json({
@@ -147,7 +147,7 @@ class AdminController {
                     });
                     return;
                 }
-                console.log("specialisation id to edit:", data._id);
+                // console.log("specialisation id to edit:", data._id);
                 yield this.adminService.editSpecialisation(data);
                 res.status(httpStatusCodes_1.Http_Status_Codes.OK).json({
                     message: "Edit Successfully",
@@ -176,7 +176,7 @@ class AdminController {
     deleteSpecialisation(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                console.log("deleteSpecialisation serverside");
+                // console.log("deleteSpecialisation serverside");
                 const data = req.query;
                 if (!data || !data._id) {
                     res.status(httpStatusCodes_1.Http_Status_Codes.BAD_REQUEST).json({
@@ -184,7 +184,7 @@ class AdminController {
                     });
                     return;
                 }
-                console.log("specialization id to delete:", data._id);
+                // console.log("specialization id to delete:", data._id);
                 yield this.adminService.deleteSpecialisation(data._id);
                 res.status(httpStatusCodes_1.Http_Status_Codes.OK).json({
                     message: "Delete Successfully",
@@ -283,7 +283,7 @@ class AdminController {
     req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                console.log("searchUser serverside");
+                // console.log("searchUser serverside");
                 const { data } = req.body;
                 if (!data) {
                     res.status(httpStatusCodes_1.Http_Status_Codes.BAD_REQUEST).json({
@@ -313,7 +313,7 @@ class AdminController {
     req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                console.log("searchUser serverside");
+                // console.log("searchUser serverside");
                 const { data } = req.body;
                 if (!data) {
                     res.status(httpStatusCodes_1.Http_Status_Codes.BAD_REQUEST).json({
@@ -379,9 +379,9 @@ class AdminController {
     getKycData(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                console.log("kyc data collection serverside");
+                // console.log("kyc data collection serverside");
                 const kycData = yield this.adminService.getPendingKycData();
-                console.log(kycData);
+                // console.log(kycData);
                 res.status(httpStatusCodes_1.Http_Status_Codes.OK).json(kycData);
             }
             catch (error) {
@@ -397,7 +397,7 @@ class AdminController {
     req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                console.log("get get_kyc_details_of_expert serverside");
+                // console.log("get get_kyc_details_of_expert serverside");
                 const { expertId } = req.query;
                 if (!expertId) {
                     res.status(httpStatusCodes_1.Http_Status_Codes.BAD_REQUEST).json({
@@ -405,9 +405,9 @@ class AdminController {
                     });
                     return;
                 }
-                console.log("expert Id:", expertId);
+                // console.log("expert Id:", expertId);
                 const kycDetails = yield this.adminService.getExpertKycDetails(expertId);
-                console.log("kyc_details_with_expertID:", kycDetails);
+                // console.log("kyc_details_with_expertID:", kycDetails);
                 res.status(httpStatusCodes_1.Http_Status_Codes.OK).json(kycDetails);
             }
             catch (error) {
@@ -435,7 +435,7 @@ class AdminController {
     req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                console.log("get submit_kyc_details serverside");
+                // console.log("get submit_kyc_details serverside");
                 const data = req.body;
                 if (!data) {
                     res.status(httpStatusCodes_1.Http_Status_Codes.BAD_REQUEST).json({
@@ -444,7 +444,7 @@ class AdminController {
                     return;
                 }
                 const result = yield this.adminService.submitKycDetails(data);
-                console.log("KYC update result:", result);
+                // console.log("KYC update result:", result);
                 res.status(httpStatusCodes_1.Http_Status_Codes.OK).json(result);
             }
             catch (error) {
@@ -472,20 +472,20 @@ class AdminController {
     req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                console.log("get download_kyc_documents serverside");
+                // console.log("get download_kyc_documents serverside");
                 const { expertId, name, index } = req.query;
                 if (!expertId || !name) {
                     return res
                         .status(httpStatusCodes_1.Http_Status_Codes.BAD_REQUEST)
                         .json({ message: "Fetching data to download failed" });
                 }
-                console.log("name, index:", name, index);
+                // console.log("name, index:", name, index);
                 const destinationPath = yield this.adminService.downloadDocument({
                     expertId,
                     name,
                     index: typeof index === "string" ? parseInt(index, 10) : undefined,
                 });
-                console.log("certificate downloaded successfully");
+                // console.log("certificate downloaded successfully");
                 return res
                     .status(httpStatusCodes_1.Http_Status_Codes.OK)
                     .json({ message: "Downloaded Successfully", path: destinationPath });
@@ -517,7 +517,7 @@ class AdminController {
     editPayOut(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                console.log("editPayOut serverside");
+                // console.log("editPayOut serverside");
                 const data = req.body;
                 // Validate input data
                 if (!data || !data.payOut) {
@@ -542,7 +542,7 @@ class AdminController {
     getAppointmentDetails(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                console.log("get get_appointment_details serverside");
+                // console.log("get get_appointment_details serverside");
                 const appointments = yield this.adminService.getAppointmentDetails();
                 res.status(httpStatusCodes_1.Http_Status_Codes.OK).json(appointments);
             }

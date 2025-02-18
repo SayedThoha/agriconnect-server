@@ -11,6 +11,7 @@ const scheduler_1 = require("./utils/scheduler");
 (0, scheduler_1.email_to_notify_booking_time)();
 (0, scheduler_1.delete_unbooked_slots)();
 (0, scheduler_1.update_unattended_slots)();
+(0, scheduler_1.deleteClearedNotifications)();
 app_1.default.listen(process.env.PORT, () => {
     console.log("server started");
 });

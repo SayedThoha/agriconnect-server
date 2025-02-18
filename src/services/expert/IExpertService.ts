@@ -8,6 +8,7 @@ import {
 import { LoginResponse } from "../../interfaces/userInterface";
 import { IBookedSlot } from "../../models/bookeSlotModel";
 import { IExpert } from "../../models/expertModel";
+import { INotification } from "../../models/notificationModel";
 import { IPrescription } from "../../models/prescriptionModel";
 import { ISlot } from "../../models/slotModel";
 import { ISpecialisation } from "../../models/specialisationModel";
@@ -62,4 +63,7 @@ export interface IExpertService {
     roomId: string
   ): Promise<{ message: string }>;
   getPrescriptionDetails(prescriptionId: string): Promise<IPrescription>;
+  getNotifications(expertId: string): Promise<INotification[]>;
+  markNotificationAsRead(expertId: string): Promise<void>;
+  clearNotifications(expertId: string): Promise<void>;
 }

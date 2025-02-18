@@ -6,6 +6,7 @@ import {
 } from "../../interfaces/commonInterface";
 import { IBookedSlot } from "../../models/bookeSlotModel";
 import { IExpert } from "../../models/expertModel";
+import { INotification } from "../../models/notificationModel";
 import { IPrescription } from "../../models/prescriptionModel";
 import { ISlot } from "../../models/slotModel";
 import { ISpecialisation } from "../../models/specialisationModel";
@@ -69,4 +70,7 @@ export interface IExpertRepository {
 
   getUserEmailFromSlot(slot: any): Promise<string | null>;
   findPrescriptionById(prescriptionId: string): Promise<IPrescription | null>;
+  getNotifications(expertId: string): Promise<INotification[]>;
+  markNotificationAsRead(expertId: string): Promise<void>;
+  clearNotifications(expertId: string): Promise<void>;
 }

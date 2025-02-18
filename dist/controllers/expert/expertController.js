@@ -17,7 +17,7 @@ class ExpertController {
     expertRegistration(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                console.log("expert registration backend", req.body);
+                // console.log("expert registration backend", req.body);
                 const missingFields = this.expertService.validateRegistrationData(req.body);
                 if (missingFields.length > 0) {
                     res.status(httpStatusCodes_1.Http_Status_Codes.BAD_REQUEST).json({
@@ -26,7 +26,7 @@ class ExpertController {
                     return;
                 }
                 const result = yield this.expertService.registerExpert(req.body);
-                console.log(result);
+                // console.log(result);
                 if (!result.status) {
                     res
                         .status(httpStatusCodes_1.Http_Status_Codes.BAD_REQUEST)
@@ -118,7 +118,7 @@ class ExpertController {
     login(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                console.log("entering the login in expert");
+                // console.log("entering the login in expert");
                 // Validate required fields
                 const requiredFields = ["email", "password"];
                 const missingFields = requiredFields.filter((field) => !req.body[field]);
@@ -172,7 +172,7 @@ class ExpertController {
     editExpertProfile(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                console.log("Edit profile of expert - server side");
+                // console.log("Edit profile of expert - server side");
                 const data = req.body;
                 if (!data._id) {
                     res
@@ -208,7 +208,7 @@ class ExpertController {
     optForNewEmail(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                console.log("optForNewEmail backend");
+                // console.log("optForNewEmail backend");
                 const { expertId, email } = req.body;
                 if (!expertId || !email) {
                     res
@@ -238,7 +238,7 @@ class ExpertController {
     editExpertProfilePicture(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                console.log("Raw Request Body:", req.body);
+                // console.log("Raw Request Body:", req.body);
                 const { expertId, image_url } = req.body;
                 if (!expertId || !image_url) {
                     res
@@ -261,7 +261,7 @@ class ExpertController {
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 const expertId = req.params.id;
-                console.log(expertId);
+                // console.log(expertId);
                 const status = yield this.expertService.checkExpertStatus(expertId);
                 res.status(200).json(status);
             }
@@ -355,9 +355,9 @@ class ExpertController {
     createSlot(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                console.log("add slot serverside");
+                // console.log("add slot serverside");
                 const data = req.body;
-                console.log("data from adding slot", data);
+                // console.log("data from adding slot", data);
                 if (!data) {
                     res.status(httpStatusCodes_1.Http_Status_Codes.BAD_REQUEST).json({
                         success: false,
@@ -444,7 +444,7 @@ class ExpertController {
     getBookingDetails(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                console.log("get_booking_details serverside");
+                // console.log("get_booking_details serverside");
                 const { expertId } = req.query;
                 if (!expertId) {
                     res.status(httpStatusCodes_1.Http_Status_Codes.BAD_REQUEST).json({
@@ -487,9 +487,9 @@ class ExpertController {
     upcomingAppointment(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                console.log("Fetching upcoming appointment from server...");
+                // console.log("Fetching upcoming appointment from server...");
                 const { expertId } = req.query;
-                console.log("expert ID:", expertId);
+                // console.log("expert ID:", expertId);
                 const appointment = yield this.expertService.getUpcomingAppointment(expertId);
                 if (Object.keys(appointment).length) {
                     // console.log("Next appointment:", appointment);
@@ -520,7 +520,7 @@ class ExpertController {
                     return;
                 }
                 const data = yield this.expertService.updateUpcomingSlot(appointmentId, roomId);
-                console.log("data:", data);
+                // console.log("data:", data);
                 res.status(httpStatusCodes_1.Http_Status_Codes.OK).json(data);
             }
             catch (error) {
@@ -542,8 +542,9 @@ class ExpertController {
                         .json({ message: "Appointment ID is required" });
                     return;
                 }
-                const data = yield this.expertService.updateSlotStatus(appointmentId, status);
-                console.log("data:", data);
+                // const data = 
+                yield this.expertService.updateSlotStatus(appointmentId, status);
+                // console.log("data:", data);
                 res
                     .status(httpStatusCodes_1.Http_Status_Codes.OK)
                     .json({ message: "consultation status updated" });
@@ -559,9 +560,9 @@ class ExpertController {
     getExpertBookings(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                console.log("get_bookings_of_details serverside");
+                // console.log("get_bookings_of_details serverside");
                 const { expertId } = req.query;
-                console.log(expertId);
+                // console.log(expertId);
                 // Validate query data
                 if (!expertId) {
                     res.status(httpStatusCodes_1.Http_Status_Codes.BAD_REQUEST).json({
@@ -610,10 +611,10 @@ class ExpertController {
     shareRoomIdThroughEmail(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                console.log("shareRoomIdThroughEmail server-side");
+                // console.log("shareRoomIdThroughEmail server-side");
                 const { roomId, slotId } = req.query;
-                console.log("roomId", roomId);
-                console.log("slotId", slotId);
+                // console.log("roomId", roomId);
+                // console.log("slotId", slotId);
                 if (!roomId || !slotId) {
                     res
                         .status(httpStatusCodes_1.Http_Status_Codes.BAD_REQUEST)
@@ -621,7 +622,7 @@ class ExpertController {
                     return;
                 }
                 const response = yield this.expertService.shareRoomIdService(slotId, roomId);
-                console.log("response after sending room id", response);
+                // console.log("response after sending room id", response);
                 res.status(httpStatusCodes_1.Http_Status_Codes.OK).json(response);
             }
             catch (error) {
@@ -636,9 +637,9 @@ class ExpertController {
     getPrescriptionDetails(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                console.log("get_prescription_details:", req.query);
+                // console.log("get_prescription_details:", req.query);
                 const { _id } = req.query;
-                console.log(_id);
+                // console.log(_id);
                 if (!_id) {
                     res
                         .status(httpStatusCodes_1.Http_Status_Codes.BAD_REQUEST)
@@ -646,7 +647,7 @@ class ExpertController {
                     return;
                 }
                 const data = yield this.expertService.getPrescriptionDetails(_id);
-                console.log("Prescription details:", data);
+                // console.log("Prescription details:", data);
                 res.status(httpStatusCodes_1.Http_Status_Codes.OK).json(data);
             }
             catch (error) {
@@ -654,6 +655,67 @@ class ExpertController {
                 res
                     .status(httpStatusCodes_1.Http_Status_Codes.INTERNAL_SERVER_ERROR)
                     .json({ message: "Internal Server Error" });
+            }
+        });
+    }
+    getNotifications(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const { expertId } = req.query;
+                if (!expertId) {
+                    res.status(httpStatusCodes_1.Http_Status_Codes.BAD_REQUEST).json({
+                        message: "User ID is required",
+                    });
+                    return;
+                }
+                const notification = yield this.expertService.getNotifications(expertId);
+                res.status(httpStatusCodes_1.Http_Status_Codes.OK).json(notification);
+            }
+            catch (error) {
+                console.log(error);
+                res.status(httpStatusCodes_1.Http_Status_Codes.INTERNAL_SERVER_ERROR).json({
+                    message: "Internal Server Error",
+                });
+            }
+        });
+    }
+    markNotificationAsRead(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const { expertId } = req.body;
+                if (!expertId) {
+                    res.status(httpStatusCodes_1.Http_Status_Codes.BAD_REQUEST).json({
+                        message: "User ID is required",
+                    });
+                    return;
+                }
+                yield this.expertService.markNotificationAsRead(expertId);
+                res
+                    .status(httpStatusCodes_1.Http_Status_Codes.OK)
+                    .json({ message: "Notifications marked as read" });
+            }
+            catch (error) {
+                console.log(error);
+                res.status(httpStatusCodes_1.Http_Status_Codes.INTERNAL_SERVER_ERROR).json({
+                    message: "Internal Server Error",
+                });
+            }
+        });
+    }
+    clearNotifications(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const { expertId } = req.body;
+                if (!expertId) {
+                    res.status(400).json({ message: "Expert ID is required" });
+                    return;
+                }
+                yield this.expertService.clearNotifications(expertId);
+                res.status(200).json({ message: "All notifications cleared" });
+            }
+            catch (error) {
+                console.error(error);
+                res.status(500).json({ message: "Internal Server Error" });
             }
         });
     }

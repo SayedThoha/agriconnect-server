@@ -10,7 +10,7 @@ class GoogleAuthController {
   }
 
   async login(req: Request, res: Response): Promise<void> {
-    console.log("enteerin google login")
+    // console.log("enteerin google login")
     const { token } = req.body;
 
     if (!token) {

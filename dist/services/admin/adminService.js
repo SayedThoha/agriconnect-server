@@ -65,8 +65,8 @@ class AdminServices {
                 throw new Error("JWT_SECRET is not defined. Please set it in your environment.");
             }
             const accessToken = jsonwebtoken_1.default.sign({ adminId: adminData._id }, this.jwtSecret);
-            console.log("secret in adminlogin", this.jwtSecret);
-            console.log("accessToken in login admin", accessToken);
+            // console.log("secret in adminlogin", this.jwtSecret);
+            // console.log("accessToken in login admin", accessToken);
             const accessedUser = {
                 email: adminData.email,
                 role: adminData.role,
@@ -397,7 +397,7 @@ class AdminServices {
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 const appointments = yield this.adminRepository.getAppointmentDetails();
-                console.log("bookedSlots:", appointments, appointments.length);
+                // console.log("bookedSlots:", appointments, appointments.length);
                 return appointments;
             }
             catch (error) {

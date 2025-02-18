@@ -69,8 +69,8 @@ class AdminServices implements IAdminService {
 
     const accessToken = jwt.sign({ adminId: adminData._id }, this.jwtSecret);
 
-    console.log("secret in adminlogin", this.jwtSecret);
-    console.log("accessToken in login admin", accessToken);
+    // console.log("secret in adminlogin", this.jwtSecret);
+    // console.log("accessToken in login admin", accessToken);
     const accessedUser: IAdminResponse = {
       email: adminData.email,
       role: adminData.role,
@@ -434,7 +434,7 @@ class AdminServices implements IAdminService {
   async getAppointmentDetails(): Promise<IBookedSlot[]> {
     try {
       const appointments = await this.adminRepository.getAppointmentDetails();
-      console.log("bookedSlots:", appointments, appointments.length);
+      // console.log("bookedSlots:", appointments, appointments.length);
       return appointments;
     } catch (error) {
       console.error(error);

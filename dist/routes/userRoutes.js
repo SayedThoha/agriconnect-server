@@ -57,4 +57,7 @@ userRouter.get("/userFetchAllChat", (req, res) => chatController.userFetchAllCha
 userRouter.post("/sendMessage", (req, res) => chatController.sendMessage(req, res));
 userRouter.get("/userFetchAllMessages", (req, res) => chatController.userFetchAllMessages(req, res));
 userRouter.get("/get_prescription_details", (req, res) => userController.getPrescriptionDetails(req, res));
+userRouter.get("/notifications", (req, res) => userController.getNotifications(req, res));
+userRouter.put("/notifications/mark-as-read", (req, res) => userController.markNotificationAsRead(req, res));
+userRouter.put("/notifications/clear", (req, res) => userController.clearNotifications(req, res));
 exports.default = userRouter;

@@ -4,6 +4,7 @@
 import { SlotUpdateData } from "../../interfaces/commonInterface";
 import { IBookedSlot } from "../../models/bookeSlotModel";
 import { IExpert } from "../../models/expertModel";
+import { INotification } from "../../models/notificationModel";
 import { IPrescription } from "../../models/prescriptionModel";
 import { ISlot } from "../../models/slotModel";
 import { ISpecialisation } from "../../models/specialisationModel";
@@ -35,5 +36,9 @@ export interface IUserRepository {
      findPendingAppointmentsByUser(userId: string):Promise<IBookedSlot[]>;
      findBookedSlotById(appointmentId: string):Promise<IBookedSlot|null>;
      findPrescriptionById(prescriptionId: string):Promise<IPrescription|null>;
+     updateUserWallet(userId: string, amount: number): Promise<void>;
+     getNotifications(userId: string): Promise<INotification[]>;
+     markNotificationAsRead(userId: string): Promise<void>;
+     clearNotifications(userId: string): Promise<void>;
 }
 

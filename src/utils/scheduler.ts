@@ -4,6 +4,7 @@ import { Slot } from "../models/slotModel";
 import { BookedSlot } from "../models/bookeSlotModel";
 import { update_slot_time_through_email } from "./sendNotification";
 import { User } from "../models/userModel";
+import { Notification } from "../models/notificationModel";
 
 export const email_to_notify_booking_time = async () => {
   // console.log("email_to_notify_booking_time_to user and expert");
@@ -48,19 +49,19 @@ export const delete_unbooked_slots = async () => {
       // Get the current date and time
       const now = new Date();
       // Find and delete slots that have a time in the past
-      const result = await Slot.deleteMany({
+      // const result =
+      await Slot.deleteMany({
         time: { $lt: now },
         booked: false,
         cancelled: false,
       });
-      console.log("result:", result);
-      console.log(`Deleted ${result.deletedCount} past slots`);
+      // console.log("result:", result);
+      // console.log(`Deleted ${result.deletedCount} past slots`);
     } catch (err) {
       console.error("Error cleaning up past slots:", err);
     }
   });
 };
-
 
 export const update_unattended_slots = async () => {
   cron.schedule("0,30 * * * *", async () => {
@@ -94,7 +95,7 @@ export const update_unattended_slots = async () => {
               $inc: { wallet: refundAmount },
             });
 
-            console.log(`Refunded ${refundAmount} to user ${user.email}`);
+            // console.log(`Refunded ${refundAmount} to user ${user.email}`);
           }
 
           // Update the slot status
@@ -105,6 +106,27 @@ export const update_unattended_slots = async () => {
       }
     } catch (err) {
       console.error("Error updating unattended booked slots:", err);
+    }
+  });
+};
+
+export const deleteClearedNotifications = async () => {
+  cron.schedule("0 0 * * *", async () => {
+    // Runs every day at midnight
+    try {
+      // console.log("Running scheduled notification cleanup...");
+
+      // const deletedNotifications =
+      await Notification.deleteMany({
+        isClearedByUser: true,
+        isClearedByExpert: true,
+      });
+
+      // console.log(
+      //   `Deleted ${deletedNotifications.deletedCount} cleared notifications`
+      // );
+    } catch (error) {
+      console.error("Error deleting cleared notifications:", error);
     }
   });
 };

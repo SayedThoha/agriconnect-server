@@ -77,9 +77,6 @@ class ChatRepository extends baseRepository_1.default {
                 .sort({ updatedAt: -1 });
         });
     }
-    // async findMessagesByChatId(chatId: string): Promise<IMessage[]> {
-    //   return await Message.find({ chat: chatId }).sort({ updatedAt: -1 });
-    // }
     createMessage(content, chatId, senderId, senderModel) {
         return __awaiter(this, void 0, void 0, function* () {
             const newMessage = yield messageModel_1.Message.create({

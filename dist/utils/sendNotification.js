@@ -15,10 +15,10 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.update_slot_time_through_email = void 0;
 const nodemailer_1 = __importDefault(require("nodemailer"));
 const update_slot_time_through_email = (userEmail, expertEmail) => __awaiter(void 0, void 0, void 0, function* () {
-    console.log("generateMailForRoomId function");
+    // console.log("generateMailForRoomId function");
     // const roomId = roomId;
-    console.log("user email:", userEmail);
-    console.log("expert email:", expertEmail);
+    // console.log("user email:", userEmail);
+    // console.log("expert email:", expertEmail);
     const transpoter = nodemailer_1.default.createTransport({
         service: "gmail",
         auth: {
@@ -59,24 +59,24 @@ const update_slot_time_through_email = (userEmail, expertEmail) => __awaiter(voi
     //   console.log("mailoptions:", mailOptions);
     return new Promise((resolve, reject) => {
         transpoter.sendMail(userMailOptions, (err) => {
-            console.log("get into return");
+            // console.log("get into return");
             if (err) {
-                console.log("error while generating email");
+                // console.log("error while generating email");
                 reject(err.message);
             }
             else {
-                console.log("generated email to user's emailId:", userEmail);
+                // console.log("generated email to user's emailId:", userEmail);
                 resolve("resolved email generation for consultation updates");
             }
         });
         transpoter.sendMail(expertMailOptions, (err) => {
-            console.log("get into return");
+            // console.log("get into return");
             if (err) {
-                console.log("error while generating email");
+                // console.log("error while generating email");
                 reject(err.message);
             }
             else {
-                console.log("generated email to expert's emailId:", expertEmail);
+                // console.log("generated email to expert's emailId:", expertEmail);
                 resolve("resolved email generation for consultation updates");
             }
         });

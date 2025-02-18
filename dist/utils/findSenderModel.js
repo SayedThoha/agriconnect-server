@@ -14,12 +14,12 @@ const userModel_1 = require("../models/userModel");
 const findSenderModel = (id) => __awaiter(void 0, void 0, void 0, function* () {
     const user = yield userModel_1.User.findById(id);
     if (user) {
-        console.log("sender is from usercollection");
+        // console.log("sender is from usercollection");
         return "User";
     }
     const expert = yield expertModel_1.Expert.findById(id);
     if (expert) {
-        console.log("sender is from expertcollection");
+        // console.log("sender is from expertcollection");
         return "Expert";
     }
     return null;

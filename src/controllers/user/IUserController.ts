@@ -30,4 +30,7 @@ export interface IUserController{
     upcomingAppointment(req: Request, res: Response): Promise<void>;
     getUpcomingSlot(req: Request, res: Response): Promise<void>;
     getPrescriptionDetails(req: Request, res: Response): Promise<void>;
+    getNotifications(req: Request, res: Response): Promise<void>;
+    markNotificationAsRead(req: Request, res: Response): Promise<void>;
+    clearNotifications(req: Request, res: Response): Promise<void>;
 }

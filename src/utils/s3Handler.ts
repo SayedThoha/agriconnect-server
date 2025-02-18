@@ -14,16 +14,16 @@ export const uploadToS3 = async (
   req: Request,
   res: Response
 ): Promise<void> => {
-  console.log("Upload Request Details:", {
-    file: req.file
-      ? {
-          originalname: req.file.originalname,
-          mimetype: req.file.mimetype,
-          size: req.file.size,
-        }
-      : "No file",
-    body: req.body,
-  });
+  // console.log("Upload Request Details:", {
+  //   file: req.file
+  //     ? {
+  //         originalname: req.file.originalname,
+  //         mimetype: req.file.mimetype,
+  //         size: req.file.size,
+  //       }
+  //     : "No file",
+  //   body: req.body,
+  // });
 
   try {
     if (!req.file) {
@@ -65,7 +65,7 @@ export const uploadToS3 = async (
     };
 
     const result = await s3.upload(uploadParams).promise();
-    console.log(result);
+    // console.log(result);
 
     res.json({
       fileUrl: result.Location,

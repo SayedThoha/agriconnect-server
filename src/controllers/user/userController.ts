@@ -563,8 +563,6 @@ class UserController {
     } catch (error) {
       console.error("Error in user controller createBookingPayment:", error);
 
-     
-
       res
         .status(Http_Status_Codes.INTERNAL_SERVER_ERROR)
         .json({ message: "Internal server error" });
@@ -579,7 +577,7 @@ class UserController {
     try {
       // console.log("appointmnet_booking backend");
       const farmerDetails = req.body;
-      console.log(farmerDetails);
+      // console.log(farmerDetails);
 
       await this.userService.bookAppointment(farmerDetails);
 
@@ -589,15 +587,11 @@ class UserController {
     } catch (error) {
       console.error("Error in appointment booking:", error);
 
-     
-
       res
         .status(Http_Status_Codes.INTERNAL_SERVER_ERROR)
         .json({ message: "Internal server error" });
     }
   }
-
-
 
   async userDetails(req: Request, res: Response): Promise<void> {
     try {
@@ -630,9 +624,9 @@ class UserController {
 
   async getBookingDetails(req: Request, res: Response): Promise<void> {
     try {
-      console.log("get get_booking_details serverside");
+      // console.log("get get_booking_details serverside");
       const { userId } = req.query;
-      console.log("Query data:", { userId });
+      // console.log("Query data:", { userId });
 
       if (!userId) {
         res.status(Http_Status_Codes.BAD_REQUEST).json({
@@ -655,10 +649,10 @@ class UserController {
 
   async cancelSlot(req: Request, res: Response): Promise<void> {
     try {
-      console.log("get get_booking_details serverside");
+      // console.log("get get_booking_details serverside");
 
       const { slotId } = req.query;
-      console.log("Slot ID:", slotId);
+      // console.log("Slot ID:", slotId);
 
       const response = await this.userService.cancelSlot(slotId as string);
 
@@ -673,17 +667,17 @@ class UserController {
 
   async upcomingAppointment(req: Request, res: Response): Promise<void> {
     try {
-      console.log("Fetching upcoming appointment from server...");
+      // console.log("Fetching upcoming appointment from server...");
 
       const userId = req.query._id as string;
-      console.log("User ID:", userId);
+      // console.log("User ID:", userId);
 
       const appointment = await this.userService.getUpcomingAppointment(userId);
 
       if (Object.keys(appointment).length) {
-        console.log("Next appointment:", appointment);
+        // console.log("Next appointment:", appointment);
       } else {
-        console.log("No upcoming appointments found.");
+        // console.log("No upcoming appointments found.");
       }
 
       res.status(Http_Status_Codes.OK).json(appointment);
@@ -710,7 +704,7 @@ class UserController {
       const data = await this.userService.getUpcomingSlot(
         appointmentId as string
       );
-      console.log("data:", data);
+      // console.log("data:", data);
 
       res.status(Http_Status_Codes.OK).json(data);
     } catch (error) {
@@ -746,6 +740,71 @@ class UserController {
         .json({ message: "Internal Server Error" });
     }
   }
+
+  async getNotifications(req: Request, res: Response): Promise<void> {
+    try {
+      const { userId } = req.query;
+
+      if (!userId) {
+        res.status(Http_Status_Codes.BAD_REQUEST).json({
+          message: "User ID is required",
+        });
+        return;
+      }
+      const notification = await this.userService.getNotifications(
+        userId as string
+      );
+      res.status(Http_Status_Codes.OK).json(notification);
+    } catch (error) {
+      console.log(error);
+      res.status(Http_Status_Codes.INTERNAL_SERVER_ERROR).json({
+        message: "Internal Server Error",
+      });
+    }
+  }
+
+  async markNotificationAsRead(req: Request, res: Response): Promise<void> {
+    try {
+      const { userId } = req.body;
+
+      if (!userId) {
+        res.status(Http_Status_Codes.BAD_REQUEST).json({
+          message: "User ID is required",
+        });
+        return;
+      }
+
+      await this.userService.markNotificationAsRead(userId as string);
+
+      res
+        .status(Http_Status_Codes.OK)
+        .json({ message: "Notifications marked as read" });
+    } catch (error) {
+      console.log(error);
+      res.status(Http_Status_Codes.INTERNAL_SERVER_ERROR).json({
+        message: "Internal Server Error",
+      });
+    }
+  }
+
+  async clearNotifications(req: Request, res: Response): Promise<void> {
+    try {
+      const { userId } = req.body;
+
+      if (!userId) {
+        res.status(400).json({ message: "User ID is required" });
+        return;
+      }
+
+      await this.userService.clearNotifications(userId as string);
+      res.status(200).json({ message: "All notifications cleared" });
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ message: "Internal Server Error" });
+    }
+  }
+
+
 }
 
 export default UserController;

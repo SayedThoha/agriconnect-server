@@ -526,7 +526,7 @@ class UserController {
             try {
                 // console.log("appointmnet_booking backend");
                 const farmerDetails = req.body;
-                console.log(farmerDetails);
+                // console.log(farmerDetails);
                 yield this.userService.bookAppointment(farmerDetails);
                 res
                     .status(httpStatusCodes_1.Http_Status_Codes.CREATED)
@@ -570,9 +570,9 @@ class UserController {
     getBookingDetails(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                console.log("get get_booking_details serverside");
+                // console.log("get get_booking_details serverside");
                 const { userId } = req.query;
-                console.log("Query data:", { userId });
+                // console.log("Query data:", { userId });
                 if (!userId) {
                     res.status(httpStatusCodes_1.Http_Status_Codes.BAD_REQUEST).json({
                         message: "User ID is required",
@@ -593,9 +593,9 @@ class UserController {
     cancelSlot(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                console.log("get get_booking_details serverside");
+                // console.log("get get_booking_details serverside");
                 const { slotId } = req.query;
-                console.log("Slot ID:", slotId);
+                // console.log("Slot ID:", slotId);
                 const response = yield this.userService.cancelSlot(slotId);
                 res.status(httpStatusCodes_1.Http_Status_Codes.OK).json(response);
             }
@@ -610,15 +610,15 @@ class UserController {
     upcomingAppointment(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                console.log("Fetching upcoming appointment from server...");
+                // console.log("Fetching upcoming appointment from server...");
                 const userId = req.query._id;
-                console.log("User ID:", userId);
+                // console.log("User ID:", userId);
                 const appointment = yield this.userService.getUpcomingAppointment(userId);
                 if (Object.keys(appointment).length) {
-                    console.log("Next appointment:", appointment);
+                    // console.log("Next appointment:", appointment);
                 }
                 else {
-                    console.log("No upcoming appointments found.");
+                    // console.log("No upcoming appointments found.");
                 }
                 res.status(httpStatusCodes_1.Http_Status_Codes.OK).json(appointment);
             }
@@ -642,7 +642,7 @@ class UserController {
                     return;
                 }
                 const data = yield this.userService.getUpcomingSlot(appointmentId);
-                console.log("data:", data);
+                // console.log("data:", data);
                 res.status(httpStatusCodes_1.Http_Status_Codes.OK).json(data);
             }
             catch (error) {
@@ -674,6 +674,67 @@ class UserController {
                 res
                     .status(httpStatusCodes_1.Http_Status_Codes.INTERNAL_SERVER_ERROR)
                     .json({ message: "Internal Server Error" });
+            }
+        });
+    }
+    getNotifications(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const { userId } = req.query;
+                if (!userId) {
+                    res.status(httpStatusCodes_1.Http_Status_Codes.BAD_REQUEST).json({
+                        message: "User ID is required",
+                    });
+                    return;
+                }
+                const notification = yield this.userService.getNotifications(userId);
+                res.status(httpStatusCodes_1.Http_Status_Codes.OK).json(notification);
+            }
+            catch (error) {
+                console.log(error);
+                res.status(httpStatusCodes_1.Http_Status_Codes.INTERNAL_SERVER_ERROR).json({
+                    message: "Internal Server Error",
+                });
+            }
+        });
+    }
+    markNotificationAsRead(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const { userId } = req.body;
+                if (!userId) {
+                    res.status(httpStatusCodes_1.Http_Status_Codes.BAD_REQUEST).json({
+                        message: "User ID is required",
+                    });
+                    return;
+                }
+                yield this.userService.markNotificationAsRead(userId);
+                res
+                    .status(httpStatusCodes_1.Http_Status_Codes.OK)
+                    .json({ message: "Notifications marked as read" });
+            }
+            catch (error) {
+                console.log(error);
+                res.status(httpStatusCodes_1.Http_Status_Codes.INTERNAL_SERVER_ERROR).json({
+                    message: "Internal Server Error",
+                });
+            }
+        });
+    }
+    clearNotifications(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const { userId } = req.body;
+                if (!userId) {
+                    res.status(400).json({ message: "User ID is required" });
+                    return;
+                }
+                yield this.userService.clearNotifications(userId);
+                res.status(200).json({ message: "All notifications cleared" });
+            }
+            catch (error) {
+                console.error(error);
+                res.status(500).json({ message: "Internal Server Error" });
             }
         });
     }

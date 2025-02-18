@@ -20,6 +20,7 @@ const sendOtpToMail_1 = require("../../utils/sendOtpToMail");
 const httpStatusCodes_1 = require("../../constants/httpStatusCodes");
 const token_1 = require("../../utils/token");
 const razorpay_1 = __importDefault(require("razorpay"));
+const notificationService_1 = require("../../utils/notificationService");
 class UserService {
     constructor(userRepository) {
         this.userRepository = userRepository;
@@ -29,20 +30,20 @@ class UserService {
     registerUser(userData) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                console.log("Registration service started for email:", userData.email);
+                // console.log("Registration service started for email:", userData.email);
                 // Check if the user already exists
                 const existingUser = yield this.userRepository.emailExist(userData.email);
-                console.log("Email existence check result:", existingUser);
+                // console.log("Email existence check result:", existingUser);
                 if (existingUser) {
                     return { success: false, message: "Email already exists" };
                 }
                 // Hash password and generate OTP
-                console.log("Reached password hashing...");
+                // console.log("Reached password hashing...");
                 const hashedPassword = yield (0, hashPassword_1.hashedPass)(userData.password);
-                console.log("Hashed Password:", hashedPassword);
-                console.log("Generating OTP...");
+                // console.log("Hashed Password:", hashedPassword);
+                // console.log("Generating OTP...");
                 const otp = (0, otp_1.generateOtp)();
-                console.log("Generated OTP:", otp);
+                // console.log("Generated OTP:", otp);
                 // Create user data
                 const user = yield this.userRepository.saveUser({
                     firstName: userData.firstName,
@@ -136,10 +137,10 @@ class UserService {
                         message: "OTP Expired",
                     };
                 }
-                console.log("Updating user verification status...");
+                // console.log("Updating user verification status...");
                 // Update user verification status
                 const updatedUser = yield this.userRepository.updateUserVerification(email, true, role ? newEmail : undefined);
-                console.log("Updated user:", updatedUser);
+                // console.log("Updated user:", updatedUser);
                 if (!updatedUser) {
                     return {
                         success: false,
@@ -331,7 +332,7 @@ class UserService {
                 const isOtpSent = yield (0, sendOtpToMail_1.sentOtpToEmail)(email, otp);
                 if (!isOtpSent) {
                     {
-                        console.log("otp not send");
+                        // console.log("otp not send");
                     }
                 }
                 yield this.userRepository.updateUserOtp(email, otp);
@@ -360,7 +361,7 @@ class UserService {
     refreshToken(refreshToken) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                console.log("Attempting to refresh access token...");
+                // console.log("Attempting to refresh access token...");
                 // Validate refresh token
                 const decodedRefreshToken = (0, token_1.verifyRefreshToken)(refreshToken); // This method will decode and validate the refresh token
                 // console.log(decodedRefreshToken);
@@ -580,6 +581,9 @@ class UserService {
                 yield this.userRepository.updateSlotBookingStatus(farmerDetails.slotId, true);
                 // Create booked slot record
                 yield this.userRepository.createBookedSlot(farmerDetails);
+                const expertId = slot.expertId._id;
+                // Send notification about successful booking
+                yield notificationService_1.NotificationService.sendNotification(user._id.toString(), expertId.toString(), `Your slot booking for ${slot.time} is confirmed!`, "booking_success");
             }
             catch (error) {
                 console.log(error);
@@ -662,6 +666,40 @@ class UserService {
                 throw new Error("Prescription not found");
             }
             return data;
+        });
+    }
+    getNotifications(userId) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const notifications = yield this.userRepository.getNotifications(userId);
+                return notifications;
+            }
+            catch (error) {
+                console.error("Error in notification service:", error);
+                throw error;
+            }
+        });
+    }
+    markNotificationAsRead(userId) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                yield this.userRepository.markNotificationAsRead(userId);
+            }
+            catch (error) {
+                console.error("Error in notification service:", error);
+                throw error;
+            }
+        });
+    }
+    clearNotifications(userId) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                yield this.userRepository.clearNotifications(userId);
+            }
+            catch (error) {
+                console.error("Error in clearing notifications (Service):", error);
+                throw error;
+            }
         });
     }
 }

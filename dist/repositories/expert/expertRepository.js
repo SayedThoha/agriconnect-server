@@ -21,13 +21,14 @@ const adminModel_1 = require("../../models/adminModel");
 const bookeSlotModel_1 = require("../../models/bookeSlotModel");
 const prescriptionModel_1 = require("../../models/prescriptionModel");
 const userModel_1 = require("../../models/userModel");
+const notificationModel_1 = require("../../models/notificationModel");
 class ExpertRepository extends baseRepository_1.default {
     constructor() {
         super(expertModel_1.Expert);
     }
     getSpecialisations() {
         return __awaiter(this, void 0, void 0, function* () {
-            console.log("get specialisation serverside");
+            // console.log("get specialisation serverside");
             return yield specialisationModel_1.Specialisation.find();
         });
     }
@@ -324,6 +325,47 @@ class ExpertRepository extends baseRepository_1.default {
     findPrescriptionById(prescriptionId) {
         return __awaiter(this, void 0, void 0, function* () {
             return yield prescriptionModel_1.Prescription.findById(prescriptionId);
+        });
+    }
+    getNotifications(expertId) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                // console.log("get notification repository");
+                const notifications = yield notificationModel_1.Notification.find({
+                    expertId,
+                    isClearedByExpert: false,
+                }).sort({
+                    createdAt: -1,
+                });
+                return notifications;
+            }
+            catch (error) {
+                console.error("Error in notification repository:", error);
+                throw error;
+            }
+        });
+    }
+    markNotificationAsRead(expertId) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                // await Notification.updateMany({expertId,isRead:false},{ $set: { isRead: true } })
+                yield notificationModel_1.Notification.updateMany({ expertId, isReadByExpert: false }, { $set: { isReadByExpert: true } });
+            }
+            catch (error) {
+                console.log(error);
+            }
+        });
+    }
+    clearNotifications(expertId) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                // await Notification.deleteMany({ expertId });
+                yield notificationModel_1.Notification.updateMany({ expertId, isClearedByExpert: false }, { $set: { isClearedByExpert: true } });
+            }
+            catch (error) {
+                console.error("Error in clearing notifications (Repository):", error);
+                throw error;
+            }
         });
     }
 }
