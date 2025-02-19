@@ -26,14 +26,14 @@ dotenv_1.default.config();
 const io = new socket_io_1.Server(server, {
     pingTimeout: 10000,
     cors: {
-        origin: ["http://localhost:4200"],
+        origin: ["http://localhost:4200", "https://agriconnect-zeta.vercel.app"],
         methods: ["GET", "POST"],
         credentials: true,
     },
 });
 notificationService_1.NotificationService.initialize(io);
 app.use((0, cors_1.default)({
-    origin: "http://localhost:4200",
+    origin: ["http://localhost:4200", "https://agriconnect-zeta.vercel.app"],
     methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
     allowedHeaders: ["Content-Type", "Authorization"],
     credentials: true,
