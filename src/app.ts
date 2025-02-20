@@ -29,7 +29,7 @@ clearLogs();
 const io = new Server(server, {
   pingTimeout: 10000,
   cors: {
-    origin: ["http://localhost:4200", process.env.FRONTEND_URL || ""],
+    origin: ["http://localhost:4200", "https://agriconnect-zeta.vercel.app"],
     methods: ["GET", "POST"],
     credentials: true,
   },
@@ -39,7 +39,7 @@ NotificationService.initialize(io);
 
 app.use(
   cors({
-    origin: ["http://localhost:4200", process.env.FRONTEND_URL || ""],
+    origin: ["http://localhost:4200","https://agriconnect-zeta.vercel.app"],
     methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
     allowedHeaders: ["Content-Type", "Authorization"],
     credentials: true,
