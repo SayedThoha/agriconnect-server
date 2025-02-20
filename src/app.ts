@@ -39,7 +39,7 @@ NotificationService.initialize(io);
 
 app.use(
   cors({
-    origin: ["http://localhost:4200","https://agriconnect-zeta.vercel.app"],
+    origin: ["http://localhost:4200", "https://agriconnect-zeta.vercel.app"],
     methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
     allowedHeaders: ["Content-Type", "Authorization"],
     credentials: true,
