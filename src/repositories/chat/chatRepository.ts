@@ -58,6 +58,7 @@ class ChatRepository extends BaseRepository<IChat> implements IChatRepository {
   async findMessagesByChatId(chatId: string): Promise<IMessage[]> {
     return await Message.find({ chat: chatId }).sort({ updatedAt: -1 });
   }
+  
 
   async findChatsByExpertId(expertId: string): Promise<IChat[]> {
     return await this.model

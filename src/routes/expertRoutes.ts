@@ -27,11 +27,6 @@ expertRouter.post(
     { name: "qualification_certificate" },
     { name: "experience_certificate" },
   ]),
-  (req, res, next) => {
-    console.log("Incoming request:", req.body);
-    console.log("Incoming files:", req.files);
-    next();
-  },
   (req, res) => expertController.expertRegistration(req, res)
 );
 expertRouter.get("/specialisation", (req, res) =>
@@ -152,6 +147,5 @@ expertRouter.put("/notifications/mark-as-read", (req, res) =>
 expertRouter.put("/notifications/clear", (req, res) =>
   expertController.clearNotifications(req, res)
 );
-
 
 export default expertRouter;

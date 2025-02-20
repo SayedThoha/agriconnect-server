@@ -137,6 +137,7 @@ class ChatController implements IChatController {
       const messages = await this.chatService.fetchMessagesByChatId(
         chatId as string
       );
+      console.log(messages)
       res.status(Http_Status_Codes.OK).json(messages);
     } catch (error) {
       console.error("Error fetching messages:", error);
@@ -150,6 +151,8 @@ class ChatController implements IChatController {
     try {
       // console.log("expertSendMessage in serverSide");
       const { content, chatId, expertId } = req.body;
+
+      // console.log(content,chatId,expertId)
 
       if (!content || !chatId || !expertId) {
         res

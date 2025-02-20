@@ -130,6 +130,7 @@ class ChatController {
                     return;
                 }
                 const messages = yield this.chatService.fetchMessagesByChatId(chatId);
+                console.log(messages);
                 res.status(httpStatusCodes_1.Http_Status_Codes.OK).json(messages);
             }
             catch (error) {
@@ -145,6 +146,7 @@ class ChatController {
             try {
                 // console.log("expertSendMessage in serverSide");
                 const { content, chatId, expertId } = req.body;
+                // console.log(content,chatId,expertId)
                 if (!content || !chatId || !expertId) {
                     res
                         .status(httpStatusCodes_1.Http_Status_Codes.BAD_REQUEST)
