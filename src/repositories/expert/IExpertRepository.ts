@@ -1,14 +1,11 @@
 /* eslint-disable  @typescript-eslint/no-explicit-any */
 
-import {
-  IPrescriptionInput,
-  ISlotData,
-} from "../../interfaces/commonInterface";
+import { IPrescriptionInput } from "../../interfaces/commonInterface";
 import { IBookedSlot } from "../../models/bookeSlotModel";
 import { IExpert } from "../../models/expertModel";
 import { INotification } from "../../models/notificationModel";
 import { IPrescription } from "../../models/prescriptionModel";
-import { ISlot } from "../../models/slotModel";
+
 import { ISpecialisation } from "../../models/specialisationModel";
 
 export interface IExpertRepository {
@@ -27,16 +24,7 @@ export interface IExpertRepository {
   ): Promise<IExpert | null>;
   updateProfilePicture(expertId: string, imageUrl: string): Promise<void>;
   checkExpertStatus(expertId: string): Promise<{ blocked: boolean }>;
-  findSlotByExpertIdAndTime(
-    expertId: string,
-    time: Date
-  ): Promise<ISlot | null>;
-  createSlot(slotData: Partial<ISlot>): Promise<ISlot>;
-  findAdminSettings(): Promise<any[]>;
-  createMultipleSlots(slots: ISlotData[]): Promise<ISlot[]>;
-  findSlotsByExpertId(expertId: string, currentTime: Date): Promise<ISlot[]>;
-  findSlotById(slotId: string): Promise<ISlot | null>;
-  deleteSlotById(slotId: string): Promise<ISlot | null>;
+
   getBookingDetails(expertId: string): Promise<IBookedSlot[]>;
   getExpertDashboardDetails(expertId: string): Promise<IBookedSlot[]>;
   findPendingAppointmentsByExpert(expertId: string): Promise<IBookedSlot[]>;

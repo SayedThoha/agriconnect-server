@@ -3,14 +3,13 @@
 import {
   ExpertRegistrationDTO,
   OtpVerificationResult,
-  SlotServiceResponse,
 } from "../../interfaces/expertInterface";
 import { LoginResponse } from "../../interfaces/userInterface";
 import { IBookedSlot } from "../../models/bookeSlotModel";
 import { IExpert } from "../../models/expertModel";
 import { INotification } from "../../models/notificationModel";
 import { IPrescription } from "../../models/prescriptionModel";
-import { ISlot } from "../../models/slotModel";
+
 import { ISpecialisation } from "../../models/specialisationModel";
 
 export interface IExpertService {
@@ -36,13 +35,6 @@ export interface IExpertService {
     password: string
   ): Promise<{ status: boolean; message: string }>;
   refreshToken(refreshToken: string): Promise<LoginResponse>;
-  createSlot(slotData: {
-    _id: string;
-    time: Date;
-  }): Promise<SlotServiceResponse<ISlot>>;
-  addAllSlots(expertId: string, slots: Date[]): Promise<ISlot[]>;
-  getExpertSlotDetails(expertId: string): Promise<ISlot[]>;
-  removeSlot(slotId: string): Promise<SlotServiceResponse<null>>;
   getBookingDetails(expertId: string): Promise<IBookedSlot[]>;
   getExpertDashboardDetails(expertId: string): Promise<IBookedSlot[]>;
   getUpcomingAppointment(expertId: string): Promise<IBookedSlot | {}>;
