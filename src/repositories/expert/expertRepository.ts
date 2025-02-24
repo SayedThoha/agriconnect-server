@@ -357,6 +357,32 @@ class ExpertRepository
     return await Prescription.findById(prescriptionId);
   }
 
+  async getPrescriptionsByExpert(): Promise<IPrescription[]> {
+    try {
+      const prescriptions = await Prescription.find()
+        .populate({
+          path: "bookedSlot",
+          populate: {
+            path: "userId",
+            select: "firstName lastName email",
+          },
+        })
+        .populate({
+          path: "bookedSlot",
+          populate: {
+            path: "expertId",
+            select: "firstName lastName",
+          },
+        });
+
+        console.log("prescriptions",prescriptions)
+      return prescriptions
+    } catch (error) {
+      console.log(error);
+      throw new Error("Error fetching prescriptions");
+    }
+  }
+
   async getNotifications(expertId: string): Promise<INotification[]> {
     try {
       // console.log("get notification repository");
@@ -365,7 +391,10 @@ class ExpertRepository
         isClearedByExpert: false,
       }).sort({
         createdAt: -1,
-      });
+      }).populate({
+        path: "userId",
+        select: "firstName lastName",
+      });;
       return notifications;
     } catch (error) {
       console.error("Error in notification repository:", error);

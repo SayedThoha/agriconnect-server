@@ -542,7 +542,7 @@ class ExpertController {
                         .json({ message: "Appointment ID is required" });
                     return;
                 }
-                // const data = 
+                // const data =
                 yield this.expertService.updateSlotStatus(appointmentId, status);
                 // console.log("data:", data);
                 res
@@ -655,6 +655,19 @@ class ExpertController {
                 res
                     .status(httpStatusCodes_1.Http_Status_Codes.INTERNAL_SERVER_ERROR)
                     .json({ message: "Internal Server Error" });
+            }
+        });
+    }
+    getAllPrescriptions(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const prescriptions = yield this.expertService.getAllPrescriptions();
+                console.log("prescrsiptions from the controller", prescriptions);
+                res.status(httpStatusCodes_1.Http_Status_Codes.OK).json(prescriptions);
+            }
+            catch (error) {
+                console.log(error);
+                res.status(500).json({ message: "internal server Error" });
             }
         });
     }

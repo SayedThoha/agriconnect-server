@@ -374,9 +374,14 @@ class UserRepository extends BaseRepository<IUser> implements IUserRepository {
       const notifications = await Notification.find({
         userId,
         isClearedByUser: false,
-      }).sort({
-        createdAt: -1,
-      });
+      })
+        .sort({
+          createdAt: -1,
+        })
+        .populate({
+          path: "expertId",
+          select: "firstName lastName",
+        });
       return notifications;
     } catch (error) {
       console.error("Error in notification repository:", error);

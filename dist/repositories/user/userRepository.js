@@ -365,8 +365,13 @@ class UserRepository extends baseRepository_1.default {
                 const notifications = yield notificationModel_1.Notification.find({
                     userId,
                     isClearedByUser: false,
-                }).sort({
+                })
+                    .sort({
                     createdAt: -1,
+                })
+                    .populate({
+                    path: "expertId",
+                    select: "firstName lastName",
                 });
                 return notifications;
             }

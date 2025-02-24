@@ -27,5 +27,5 @@ const prescriptionSchema:Schema<IPrescription> = new mongoose.Schema(
   }
 );
 
-// module.exports = mongoose.model("prescriptionCollection", prescriptionSchema);
+
 export const Prescription=mongoose.model("Prescription",prescriptionSchema)

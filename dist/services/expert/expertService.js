@@ -696,6 +696,16 @@ class ExpertService {
             return data;
         });
     }
+    getAllPrescriptions() {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                return yield this.expertRepository.getPrescriptionsByExpert();
+            }
+            catch (error) {
+                console.log(error);
+            }
+        });
+    }
     getNotifications(expertId) {
         return __awaiter(this, void 0, void 0, function* () {
             try {

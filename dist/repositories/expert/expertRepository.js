@@ -327,6 +327,33 @@ class ExpertRepository extends baseRepository_1.default {
             return yield prescriptionModel_1.Prescription.findById(prescriptionId);
         });
     }
+    getPrescriptionsByExpert() {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const prescriptions = yield prescriptionModel_1.Prescription.find()
+                    .populate({
+                    path: "bookedSlot",
+                    populate: {
+                        path: "userId",
+                        select: "firstName lastName email",
+                    },
+                })
+                    .populate({
+                    path: "bookedSlot",
+                    populate: {
+                        path: "expertId",
+                        select: "firstName lastName",
+                    },
+                });
+                console.log("prescriptions", prescriptions);
+                return prescriptions;
+            }
+            catch (error) {
+                console.log(error);
+                throw new Error("Error fetching prescriptions");
+            }
+        });
+    }
     getNotifications(expertId) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
@@ -336,7 +363,11 @@ class ExpertRepository extends baseRepository_1.default {
                     isClearedByExpert: false,
                 }).sort({
                     createdAt: -1,
+                }).populate({
+                    path: "userId",
+                    select: "firstName lastName",
                 });
+                ;
                 return notifications;
             }
             catch (error) {

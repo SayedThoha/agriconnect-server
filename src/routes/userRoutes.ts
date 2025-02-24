@@ -23,6 +23,8 @@ const chatRepository = new ChatRepository();
 const chatService = new ChatService(chatRepository);
 const chatController = new ChatController(chatService);
 
+
+
 const googleAuthRepository = new GoogleAuthRepository(
   process.env.GOOGLE_CLIENT_ID!,
   userRepository
@@ -68,9 +70,10 @@ userRouter.post("/verifyEmail", (req, res) =>
   userController.verifyEmailForPasswordReset(req, res)
 );
 
-userRouter.post("/updatePassword", (req, res) =>
+userRouter.patch("/updatePassword", (req, res) =>
   userController.updatePassword(req, res)
 );
+
 
 userRouter.post("/auth/refresh-token", (req, res) =>
   userController.refreshToken(req, res)
@@ -158,6 +161,5 @@ userRouter.put("/notifications/mark-as-read", (req, res) =>
 userRouter.put("/notifications/clear", (req, res) =>
   userController.clearNotifications(req, res)
 );
-
 
 export default userRouter;

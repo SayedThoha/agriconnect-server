@@ -486,6 +486,7 @@ class ExpertService implements IExpertService {
   }
 
   //slot
+  
   private convertToLocalDate(date: Date): Date {
     const utcDate = new Date(date);
     return new Date(utcDate.getTime() - utcDate.getTimezoneOffset() * 60000);
@@ -814,7 +815,10 @@ class ExpertService implements IExpertService {
     }
   }
 
-  async shareRoomIdService(slotId: string, roomId: string): Promise<{ message: string }> {
+  async shareRoomIdService(
+    slotId: string,
+    roomId: string
+  ): Promise<{ message: string }> {
     const slot = await this.expertRepository.updateRoomIdForSlot(
       slotId,
       roomId
@@ -832,43 +836,54 @@ class ExpertService implements IExpertService {
     return { message: `Room ID sent to user's email.` };
   }
 
-
   async getPrescriptionDetails(prescriptionId: string): Promise<IPrescription> {
-    const data = await this.expertRepository.findPrescriptionById(prescriptionId);
+    const data = await this.expertRepository.findPrescriptionById(
+      prescriptionId
+    );
     if (!data) {
       throw new Error("Prescription not found");
     }
     return data;
   }
 
+  async getAllPrescriptions() {
+    try {
+      return await this.expertRepository.getPrescriptionsByExpert();
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
   async getNotifications(expertId: string): Promise<INotification[]> {
-      try {
-        const notifications = await this.expertRepository.getNotifications(expertId);
-        return notifications;
-      } catch (error) {
-        console.error("Error in notification service:", error);
-        throw error;
-      }
+    try {
+      const notifications = await this.expertRepository.getNotifications(
+        expertId
+      );
+
+      return notifications;
+    } catch (error) {
+      console.error("Error in notification service:", error);
+      throw error;
     }
-  
-    async markNotificationAsRead(expertId: string): Promise<void> {
-      try {
-        await this.expertRepository.markNotificationAsRead(expertId);
-      } catch (error) {
-        console.error("Error in notification service:", error);
-        throw error;
-      }
+  }
+
+  async markNotificationAsRead(expertId: string): Promise<void> {
+    try {
+      await this.expertRepository.markNotificationAsRead(expertId);
+    } catch (error) {
+      console.error("Error in notification service:", error);
+      throw error;
     }
-  
-    async clearNotifications(expertId: string): Promise<void> {
-      try {
-        await this.expertRepository.clearNotifications(expertId);
-      } catch (error) {
-        console.error("Error in clearing notifications (Service):", error);
-        throw error;
-      }
+  }
+
+  async clearNotifications(expertId: string): Promise<void> {
+    try {
+      await this.expertRepository.clearNotifications(expertId);
+    } catch (error) {
+      console.error("Error in clearing notifications (Service):", error);
+      throw error;
     }
-  
+  }
 }
 
 export default ExpertService;

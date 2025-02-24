@@ -590,7 +590,7 @@ class ExpertController implements IExpertController {
         return;
       }
 
-      // const data = 
+      // const data =
       await this.expertService.updateSlotStatus(
         appointmentId as string,
         status as string
@@ -725,6 +725,17 @@ class ExpertController implements IExpertController {
       res
         .status(Http_Status_Codes.INTERNAL_SERVER_ERROR)
         .json({ message: "Internal Server Error" });
+    }
+  }
+
+  async getAllPrescriptions(req: Request, res: Response): Promise<void> {
+    try {
+      const prescriptions = await this.expertService.getAllPrescriptions();
+      console.log("prescrsiptions from the controller",prescriptions);
+      res.status(Http_Status_Codes.OK).json(prescriptions);
+    } catch (error) {
+      console.log(error);
+      res.status(500).json({ message: "internal server Error" });
     }
   }
 

@@ -7,6 +7,9 @@ import { expertAuth } from "../middlewares/expertAuth";
 import ChatRepository from "../repositories/chat/chatRepository";
 import ChatService from "../services/chat/chatService";
 import ChatController from "../controllers/chat/chatController";
+import SlotRepository from "../repositories/slot/slotRepository";
+import SlotService from "../services/slot/slotService";
+import SlotController from "../controllers/slot/slotController";
 
 const expertRouter = express.Router();
 
@@ -17,6 +20,11 @@ const expertController = new ExpertController(expertService);
 const chatRepository = new ChatRepository();
 const chatService = new ChatService(chatRepository);
 const chatController = new ChatController(chatService);
+
+const slotRepository= new SlotRepository();
+const slotService= new SlotService(slotRepository);
+const slotController = new SlotController(slotService)
+
 
 expertRouter.post(
   "/registration",
@@ -67,7 +75,7 @@ expertRouter.post("/verifyEmail", (req, res) =>
   expertController.verifyEmailForPasswordReset(req, res)
 );
 
-expertRouter.post("/updatePassword", (req, res) =>
+expertRouter.patch("/updatePassword", (req, res) =>
   expertController.updatePassword(req, res)
 );
 
@@ -75,21 +83,38 @@ expertRouter.post("/auth/refresh-token", (req, res) =>
   expertController.refreshToken(req, res)
 );
 
+// expertRouter.post("/slotCreation", expertAuth, (req, res) =>
+//   expertController.createSlot(req, res)
+// );
+
 expertRouter.post("/slotCreation", expertAuth, (req, res) =>
-  expertController.createSlot(req, res)
+  slotController.createSlot(req, res)
 );
+
+// expertRouter.post("/add_all_slots", (req, res) =>
+//   expertController.addAllSlots(req, res)
+// );
 
 expertRouter.post("/add_all_slots", (req, res) =>
-  expertController.addAllSlots(req, res)
+  slotController.addAllSlots(req, res)
 );
+
+// expertRouter.get("/expertSlotDetails", expertAuth, (req, res) =>
+//   expertController.expertSlotDetails(req, res)
+// );
 
 expertRouter.get("/expertSlotDetails", expertAuth, (req, res) =>
-  expertController.expertSlotDetails(req, res)
+  slotController.expertSlotDetails(req, res)
 );
 
+// expertRouter.delete("/removeSlot", expertAuth, (req, res) =>
+//   expertController.removeSlot(req, res)
+// );
+
 expertRouter.delete("/removeSlot", expertAuth, (req, res) =>
-  expertController.removeSlot(req, res)
+  slotController.removeSlot(req, res)
 );
+
 
 expertRouter.get("/get_booking_details", expertAuth, (req, res) =>
   expertController.getBookingDetails(req, res)
@@ -126,6 +151,10 @@ expertRouter.post("/expertSendMessage", (req, res) =>
 
 expertRouter.get("/add_prescription", (req, res) =>
   expertController.addPrescription(req, res)
+);
+
+expertRouter.get("/prescriptions", (req, res) =>
+  expertController.getAllPrescriptions(req, res)
 );
 
 expertRouter.get("/share_roomId_through_email", (req, res) =>
