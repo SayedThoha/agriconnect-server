@@ -1,1 +1,123 @@
-2025-02-25 20:06:39:639 [32minfo[39m: [32mLog files cleared successfully.[39m
+2025-02-25 23:23:38:2338 [32minfo[39m: [32mLog files cleared successfully.[39m
+2025-02-25 23:26:39:2639 [35mhttp[39m: [35mPOST /expert/login 200 568 - 381.246 ms[39m
+[35m[39m
+2025-02-25 23:26:39:2639 [35mhttp[39m: [35mGET /expert/notifications?expertId=67bab34fa505596a12bbad25 200 2 - 98.599 ms[39m
+[35m[39m
+2025-02-25 23:26:42:2642 [35mhttp[39m: [35mGET /expert/notifications?expertId=67bab34fa505596a12bbad25 304 - - 82.478 ms[39m
+[35m[39m
+2025-02-25 23:26:42:2642 [35mhttp[39m: [35mGET /expert/get_expert_dashboard_details?expertId=67bab34fa505596a12bbad25 200 1419 - 183.972 ms[39m
+[35m[39m
+2025-02-25 23:26:45:2645 [35mhttp[39m: [35mGET /expert/expertSlotDetails?_id=67bab34fa505596a12bbad25 200 235 - 75.961 ms[39m
+[35m[39m
+2025-02-25 23:26:49:2649 [35mhttp[39m: [35mPOST /expert/slotCreation 201 313 - 335.030 ms[39m
+[35m[39m
+2025-02-25 23:27:10:2710 [35mhttp[39m: [35mGET /expert/status/67bab34fa505596a12bbad25 304 - - 74.861 ms[39m
+[35m[39m
+2025-02-25 23:27:21:2721 [35mhttp[39m: [35mPOST /user/login 200 560 - 340.973 ms[39m
+[35m[39m
+2025-02-25 23:27:21:2721 [35mhttp[39m: [35mGET /user/notifications?userId=6797a9dbbd097d0351f5862b 200 2 - 76.170 ms[39m
+[35m[39m
+2025-02-25 23:27:24:2724 [35mhttp[39m: [35mGET /user/notifications?userId=6797a9dbbd097d0351f5862b 304 - - 83.230 ms[39m
+[35m[39m
+2025-02-25 23:27:24:2724 [35mhttp[39m: [35mGET /user/getuserDetails?_id=6797a9dbbd097d0351f5862b 200 558 - 74.074 ms[39m
+[35m[39m
+2025-02-25 23:27:27:2727 [35mhttp[39m: [35mGET /user/getExperts 200 2598 - 72.045 ms[39m
+[35m[39m
+2025-02-25 23:27:27:2727 [35mhttp[39m: [35mGET /user/getSpecialisation 200 1000 - 80.350 ms[39m
+[35m[39m
+2025-02-25 23:27:27:2727 [35mhttp[39m: [35mGET /user/notifications?userId=6797a9dbbd097d0351f5862b 304 - - 76.295 ms[39m
+[35m[39m
+2025-02-25 23:27:30:2730 [35mhttp[39m: [35mGET /user/getExpertDetails?_id=67bab34fa505596a12bbad25 200 1325 - 78.591 ms[39m
+[35m[39m
+2025-02-25 23:27:30:2730 [35mhttp[39m: [35mGET /user/getSlots?_id=67bab34fa505596a12bbad25 200 236 - 79.523 ms[39m
+[35m[39m
+2025-02-25 23:27:30:2730 [35mhttp[39m: [35mGET /user/notifications?userId=6797a9dbbd097d0351f5862b 304 - - 78.578 ms[39m
+[35m[39m
+2025-02-25 23:27:36:2736 [35mhttp[39m: [35mGET /user/notifications?userId=6797a9dbbd097d0351f5862b 304 - - 94.834 ms[39m
+[35m[39m
+2025-02-25 23:27:36:2736 [35mhttp[39m: [35mGET /user/getSlot?slotId=67be0461425736a82bef04fe 200 1533 - 146.325 ms[39m
+[35m[39m
+2025-02-25 23:28:01:281 [35mhttp[39m: [35mGET /user/status/6797a9dbbd097d0351f5862b 200 17 - 75.986 ms[39m
+[35m[39m
+2025-02-25 23:28:04:284 [35mhttp[39m: [35mGET /user/check_if_the_slot_available?slotId=67be0461425736a82bef04fe 200 35 - 72.857 ms[39m
+[35m[39m
+2025-02-25 23:28:04:284 [35mhttp[39m: [35mGET /user/userDetails?userId=6797a9dbbd097d0351f5862b 200 558 - 71.989 ms[39m
+[35m[39m
+2025-02-25 23:28:05:285 [35mhttp[39m: [35mPOST /user/appointment_booking 201 36 - 540.298 ms[39m
+[35m[39m
+2025-02-25 23:28:05:285 [35mhttp[39m: [35mGET /user/notifications?userId=6797a9dbbd097d0351f5862b 200 434 - 187.188 ms[39m
+[35m[39m
+2025-02-25 23:28:07:287 [35mhttp[39m: [35mGET /user/notifications?userId=6797a9dbbd097d0351f5862b 304 - - 154.882 ms[39m
+[35m[39m
+2025-02-25 23:28:10:2810 [35mhttp[39m: [35mGET /expert/status/67bab34fa505596a12bbad25 304 - - 76.975 ms[39m
+[35m[39m
+2025-02-25 23:28:29:2829 [35mhttp[39m: [35mGET /expert/expertSlotDetails?_id=67bab34fa505596a12bbad25 200 469 - 66.798 ms[39m
+[35m[39m
+2025-02-25 23:28:29:2829 [35mhttp[39m: [35mGET /expert/notifications?expertId=67bab34fa505596a12bbad25 200 427 - 147.992 ms[39m
+[35m[39m
+2025-02-25 23:28:29:2829 [35mhttp[39m: [35mGET /expert/get_expert_dashboard_details?expertId=67bab34fa505596a12bbad25 200 2063 - 170.991 ms[39m
+[35m[39m
+2025-02-25 23:28:38:2838 [35mhttp[39m: [35mGET /expert/notifications?expertId=67bab34fa505596a12bbad25 304 - - 170.153 ms[39m
+[35m[39m
+2025-02-25 23:28:38:2838 [35mhttp[39m: [35mGET /expert/get_bookings_of_expert?expertId=67bab34fa505596a12bbad25 200 2476 - 245.711 ms[39m
+[35m[39m
+2025-02-25 23:28:40:2840 [35mhttp[39m: [35mGET /expert/notifications?expertId=67bab34fa505596a12bbad25 304 - - 146.468 ms[39m
+[35m[39m
+2025-02-25 23:28:40:2840 [35mhttp[39m: [35mGET /expert/get_expert_dashboard_details?expertId=67bab34fa505596a12bbad25 304 - - 141.007 ms[39m
+[35m[39m
+2025-02-25 23:28:42:2842 [35mhttp[39m: [35mGET /expert/upcoming_appointment?expertId=67bab34fa505596a12bbad25 200 2474 - 200.693 ms[39m
+[35m[39m
+2025-02-25 23:28:46:2846 [35mhttp[39m: [35mGET /expert/notifications?expertId=67bab34fa505596a12bbad25 304 - - 150.414 ms[39m
+[35m[39m
+2025-02-25 23:28:49:2849 [35mhttp[39m: [35mGET /expert/share_roomId_through_email?roomId=abcd1234&slotId=67be04ad425736a82bef0517 200 43 - 3748.193 ms[39m
+[35m[39m
+2025-02-25 23:28:55:2855 [35mhttp[39m: [35mGET /user/getuserDetails?_id=6797a9dbbd097d0351f5862b 200 558 - 72.112 ms[39m
+[35m[39m
+2025-02-25 23:28:55:2855 [35mhttp[39m: [35mGET /user/notifications?userId=6797a9dbbd097d0351f5862b 304 - - 151.436 ms[39m
+[35m[39m
+2025-02-25 23:28:58:2858 [35mhttp[39m: [35mGET /user/upcoming_appointment?_id=6797a9dbbd097d0351f5862b 200 2494 - 150.158 ms[39m
+[35m[39m
+2025-02-25 23:29:01:291 [35mhttp[39m: [35mGET /user/status/6797a9dbbd097d0351f5862b 304 - - 66.527 ms[39m
+[35m[39m
+2025-02-25 23:29:06:296 [35mhttp[39m: [35mGET /user/getUpcomingSlot?appointmentId=67be04ad425736a82bef0517&roomId=abcd1234 200 456 - 73.540 ms[39m
+[35m[39m
+2025-02-25 23:29:06:296 [35mhttp[39m: [35mGET /user/notifications?userId=6797a9dbbd097d0351f5862b 304 - - 154.693 ms[39m
+[35m[39m
+2025-02-25 23:29:31:2931 [35mhttp[39m: [35mGET /expert/update_consultationStatus?appointmentId=67be04ad425736a82bef0517&status=consulted 200 41 - 85.797 ms[39m
+[35m[39m
+2025-02-25 23:29:31:2931 [35mhttp[39m: [35mGET /expert/notifications?expertId=67bab34fa505596a12bbad25 304 - - 137.064 ms[39m
+[35m[39m
+2025-02-25 23:29:48:2948 [35mhttp[39m: [35mGET /expert/add_prescription?appointmentId=67be04ad425736a82bef0517&issue=iisue%20with%20fertiliser&prescription=proper%20fertiliser 201 275 - 217.330 ms[39m
+[35m[39m
+2025-02-25 23:29:48:2948 [35mhttp[39m: [35mGET /expert/notifications?expertId=67bab34fa505596a12bbad25 304 - - 157.492 ms[39m
+[35m[39m
+2025-02-25 23:29:48:2948 [35mhttp[39m: [35mGET /expert/get_expert_dashboard_details?expertId=67bab34fa505596a12bbad25 200 2130 - 156.406 ms[39m
+[35m[39m
+2025-02-25 23:29:56:2956 [35mhttp[39m: [35mGET /user/getExperts 304 - - 77.304 ms[39m
+[35m[39m
+2025-02-25 23:29:56:2956 [35mhttp[39m: [35mGET /user/userFetchAllChat?userId=6797a9dbbd097d0351f5862b 200 2 - 100.807 ms[39m
+[35m[39m
+2025-02-25 23:29:56:2956 [35mhttp[39m: [35mGET /user/notifications?userId=6797a9dbbd097d0351f5862b 304 - - 149.479 ms[39m
+[35m[39m
+2025-02-25 23:29:58:2958 [35mhttp[39m: [35mGET /user/userAccessChat?userId=6797a9dbbd097d0351f5862b&expertId=67bab34fa505596a12bbad25 200 2818 - 221.495 ms[39m
+[35m[39m
+2025-02-25 23:29:58:2958 [35mhttp[39m: [35mGET /user/userFetchAllMessages?chatId=67bdfa99430a40c1856b2bb4 200 1640 - 77.490 ms[39m
+[35m[39m
+2025-02-25 23:30:01:301 [35mhttp[39m: [35mGET /user/status/6797a9dbbd097d0351f5862b 304 - - 72.646 ms[39m
+[35m[39m
+2025-02-25 23:30:02:302 [35mhttp[39m: [35mPOST /user/sendMessage 201 759 - 295.989 ms[39m
+[35m[39m
+2025-02-25 23:30:07:307 [35mhttp[39m: [35mPOST /user/sendMessage 201 761 - 289.568 ms[39m
+[35m[39m
+2025-02-25 23:30:16:3016 [35mhttp[39m: [35mGET /expert/notifications?expertId=67bab34fa505596a12bbad25 304 - - 162.045 ms[39m
+[35m[39m
+2025-02-25 23:30:18:3018 [35mhttp[39m: [35mGET /expert/expert_accessed_chats?expertId=67bab34fa505596a12bbad25 200 2289 - 146.993 ms[39m
+[35m[39m
+2025-02-25 23:30:18:3018 [35mhttp[39m: [35mGET /expert/notifications?expertId=67bab34fa505596a12bbad25 304 - - 146.996 ms[39m
+[35m[39m
+2025-02-25 23:30:19:3019 [35mhttp[39m: [35mGET /expert/expertFetchAllMessages?chatId=67bdfa99430a40c1856b2bb4 200 2098 - 69.750 ms[39m
+[35m[39m
+2025-02-25 23:30:24:3024 [35mhttp[39m: [35mPOST /expert/expertSendMessage 201 1530 - 302.526 ms[39m
+[35m[39m
+2025-02-25 23:30:28:3028 [35mhttp[39m: [35mGET /expert/notifications?expertId=67bab34fa505596a12bbad25 304 - - 142.130 ms[39m
+[35m[39m

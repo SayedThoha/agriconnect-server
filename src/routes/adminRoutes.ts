@@ -71,8 +71,7 @@ adminRouter.get("/get_kyc_details_of_expert", adminAuth, (req, res) =>
 adminRouter.post("/submit_kyc_details", adminAuth, (req, res) =>
   adminController.submitKycDetails(req, res)
 );
-// adminRouter.get("/download_kyc_documents",
-//   (req,res)=>adminController.downloadKycDocuments(req,res))
+
 
 adminRouter.post("/editpayOut", (req, res) =>
   adminController.editPayOut(req, res)

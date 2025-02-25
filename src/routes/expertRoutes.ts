@@ -142,42 +142,47 @@ expertRouter.get("/get_bookings_of_expert", expertAuth, (req, res) =>
   expertController.getExpertBookings(req, res)
 );
 
-expertRouter.get("/expert_accessed_chats", (req, res) =>
+
+//chats
+expertRouter
+.use(expertAuth)
+.get("/expert_accessed_chats", (req, res) =>
   chatController.getExpertChats(req, res)
-);
-expertRouter.get("/expertFetchAllMessages", (req, res) =>
+)
+.get("/expertFetchAllMessages", (req, res) =>
   chatController.getExpertMessages(req, res)
-);
-expertRouter.post("/expertSendMessage", (req, res) =>
+)
+.post("/expertSendMessage", (req, res) =>
   chatController.expertSendMessage(req, res)
 );
 
-expertRouter.get("/add_prescription", (req, res) =>
+// prescription
+expertRouter
+.use(expertAuth)
+.get("/add_prescription", (req, res) =>
   prescriptionController.addPrescription(req, res)
-);
-
-expertRouter.get("/prescriptions", (req, res) =>
+).get("/prescriptions", (req, res) =>
   prescriptionController.getAllPrescriptions(req, res)
-);
-
-expertRouter.get("/share_roomId_through_email", (req, res) =>
-  expertController.shareRoomIdThroughEmail(req, res)
-);
-
-expertRouter.get("/get_prescription_details", (req, res) =>
+).get("/get_prescription_details", (req, res) =>
   prescriptionController.getPrescriptionDetailsByExpert(req, res)
 );
 
-expertRouter.get("/notifications", (req, res) =>
+
+// notification
+expertRouter
+.use(expertAuth)
+.get("/notifications", (req, res) =>
   notificationController.getNotificationsForExpert(req, res)
-);
-
-expertRouter.put("/notifications/mark-as-read", (req, res) =>
+).put("/notifications/mark-as-read", (req, res) =>
   notificationController.markNotificationAsReadForExpert(req, res)
+).put("/notifications/clear", (req, res) =>
+  notificationController.clearNotificationsForExpert(req, res)
 );
 
-expertRouter.put("/notifications/clear", (req, res) =>
-  notificationController.clearNotificationsForExpert(req, res)
+
+
+expertRouter.get("/share_roomId_through_email", (req, res) =>
+  expertController.shareRoomIdThroughEmail(req, res)
 );
 
 export default expertRouter;

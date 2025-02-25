@@ -141,48 +141,64 @@ userRouter.get("/userDetails", (req, res) =>
   userController.userDetails(req, res)
 );
 
-userRouter.get("/get_booking_details", (req, res) =>
-  bookedSlotController.getBookingDetails(req, res)
-);
-
 userRouter.get("/cancelSlot", (req, res) =>
   userController.cancelSlot(req, res)
 );
 
-userRouter.get("/upcoming_appointment", (req, res) =>
-  bookedSlotController.upcomingAppointment(req, res)
-);
+//bookedSlot
+userRouter
+.use(userAuth)
+.get("/get_booking_details", (req, res) =>
+  bookedSlotController.getBookingDetails(req, res)
+)
 
-userRouter.get("/getUpcomingSlot", (req, res) =>
+.get("/upcoming_appointment", (req, res) =>
+  bookedSlotController.upcomingAppointment(req, res)
+)
+
+.get("/getUpcomingSlot", (req, res) =>
   bookedSlotController.getUpcomingSlot(req, res)
 );
 
-userRouter.get("/userAccessChat", (req, res) =>
+
+
+//chats
+userRouter
+.use(userAuth)
+.get("/userAccessChat", (req, res) =>
   chatController.userAccessChat(req, res)
-);
-userRouter.get("/userFetchAllChat", (req, res) =>
+)
+.get("/userFetchAllChat", (req, res) =>
   chatController.userFetchAllChat(req, res)
-);
-userRouter.post("/sendMessage", (req, res) =>
+)
+.post("/sendMessage", (req, res) =>
   chatController.sendMessage(req, res)
-);
-userRouter.get("/userFetchAllMessages", (req, res) =>
+)
+.get("/userFetchAllMessages", (req, res) =>
   chatController.userFetchAllMessages(req, res)
 );
 
-userRouter.get("/get_prescription_details", (req, res) =>
+
+userRouter
+.use(userAuth)
+.get("/get_prescription_details", (req, res) =>
   prescriptionController.getPrescriptionDetails(req, res)
 );
 
-userRouter.get("/notifications", (req, res) =>
-  notificationController.getNotificationsForUser(req, res)
-);
-userRouter.put("/notifications/mark-as-read", (req, res) =>
-  notificationController.markNotificationAsReadForUser(req, res)
-);
 
-userRouter.put("/notifications/clear", (req, res) =>
-  notificationController.clearNotificationsForUser(req, res)
-);
+//notification
+userRouter
+  .use(userAuth)
+  .get("/notifications", (req, res) =>
+    notificationController.getNotificationsForUser(req, res)
+  )
+  .put("/notifications/mark-as-read", (req, res) =>
+    notificationController.markNotificationAsReadForUser(req, res)
+  )
+  .put("/notifications/clear", (req, res) =>
+    notificationController.clearNotificationsForUser(req, res)
+  );
+
+  
 
 export default userRouter;
