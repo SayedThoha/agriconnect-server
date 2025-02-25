@@ -18,19 +18,13 @@ export interface IUserController{
     getSpecialisation(req: Request, res: Response): Promise<void>;
     getExperts(req: Request, res: Response): Promise<void>;
     getExpertDetails(req: Request, res: Response): Promise<void>;
-    getExpertSlots(req: Request, res: Response): Promise<void>;
-    addSlots(req: Request, res: Response): Promise<void>;
-    getSlot(req: Request, res: Response): Promise<void>;
     checkSlotAvailability(req: Request, res: Response): Promise<void>;
     createBookingPayment(req: Request<{}, {}, PaymentRequest>,res: Response): Promise<void>;
     appointmentBooking(req: Request<{}, {}, FarmerBookingDetails>,res: Response): Promise<void>;
-    userDetails(req: Request, res: Response): Promise<void>
-    getBookingDetails(req: Request, res: Response): Promise<void>;
+    userDetails(req: Request, res: Response): Promise<void>;
     cancelSlot(req: Request, res: Response): Promise<void>;
-    upcomingAppointment(req: Request, res: Response): Promise<void>;
-    getUpcomingSlot(req: Request, res: Response): Promise<void>;
-    getPrescriptionDetails(req: Request, res: Response): Promise<void>;
-    getNotifications(req: Request, res: Response): Promise<void>;
-    markNotificationAsRead(req: Request, res: Response): Promise<void>;
-    clearNotifications(req: Request, res: Response): Promise<void>;
+    
+    
+    
+   
 }

@@ -1,5 +1,4 @@
 "use strict";
-/* eslint-disable @typescript-eslint/no-empty-object-type */
 /* eslint-disable  @typescript-eslint/no-explicit-any */
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
@@ -30,20 +29,13 @@ class UserService {
     registerUser(userData) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                // console.log("Registration service started for email:", userData.email);
                 // Check if the user already exists
                 const existingUser = yield this.userRepository.emailExist(userData.email);
-                // console.log("Email existence check result:", existingUser);
                 if (existingUser) {
                     return { success: false, message: "Email already exists" };
                 }
-                // Hash password and generate OTP
-                // console.log("Reached password hashing...");
                 const hashedPassword = yield (0, hashPassword_1.hashedPass)(userData.password);
-                // console.log("Hashed Password:", hashedPassword);
-                // console.log("Generating OTP...");
                 const otp = (0, otp_1.generateOtp)();
-                // console.log("Generated OTP:", otp);
                 // Create user data
                 const user = yield this.userRepository.saveUser({
                     firstName: userData.firstName,
@@ -73,7 +65,6 @@ class UserService {
             try {
                 // Generate new OTP
                 const otp = (0, otp_1.generateOtp)();
-                // Update user with new OTP
                 const updatedUser = yield this.userRepository.updateUserOtp(email, otp);
                 if (!updatedUser) {
                     return {
@@ -110,7 +101,6 @@ class UserService {
     verifyOtp(email, otp, role, newEmail) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                // Find user
                 const user = yield this.userRepository.findUserByEmail(email);
                 if (!user) {
                     return {
@@ -137,10 +127,7 @@ class UserService {
                         message: "OTP Expired",
                     };
                 }
-                // console.log("Updating user verification status...");
-                // Update user verification status
                 const updatedUser = yield this.userRepository.updateUserVerification(email, true, role ? newEmail : undefined);
-                // console.log("Updated user:", updatedUser);
                 if (!updatedUser) {
                     return {
                         success: false,
@@ -167,7 +154,6 @@ class UserService {
     login(email, password) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                // Find user
                 const user = yield this.userRepository.findUserByEmail(email);
                 if (!user) {
                     return {
@@ -176,7 +162,6 @@ class UserService {
                         message: "Invalid username",
                     };
                 }
-                // Verify password
                 const passwordMatch = yield (0, hashPassword_1.comparePass)(password, user.password);
                 if (!passwordMatch) {
                     return {
@@ -185,7 +170,6 @@ class UserService {
                         message: "Incorrect password",
                     };
                 }
-                // Check if user is blocked
                 if (user.blocked === true) {
                     return {
                         success: false,
@@ -193,9 +177,7 @@ class UserService {
                         message: "Your account is blocked by Admin",
                     };
                 }
-                // Check if user is verified
                 if (user.is_verified === false) {
-                    // Generate and save new OTP
                     const otp = (0, otp_1.generateOtp)();
                     const updatedUser = yield this.userRepository.updateUserOtpDetails(user._id.toString(), otp);
                     if (!updatedUser) {
@@ -205,7 +187,6 @@ class UserService {
                             message: "Failed to update OTP",
                         };
                     }
-                    // Send OTP
                     const isOtpSent = yield (0, sendOtpToMail_1.sentOtpToEmail)(email, otp);
                     if (!isOtpSent) {
                         return {
@@ -221,11 +202,8 @@ class UserService {
                         email: email,
                     };
                 }
-                // Generate JWT token
-                // const accessToken = jwt.sign({ userId: user._id }, this.jwtSecret);
                 const accessToken = (0, token_1.generateAccessToken)(user._id);
                 const refreshToken = (0, token_1.generateRefreshToken)(user._id);
-                // Create user object for response
                 const accessedUser = {
                     _id: user._id,
                     firstName: user.firstName,
@@ -282,7 +260,6 @@ class UserService {
                 throw new Error("Existing email. Try another");
             }
             const otp = (0, otp_1.generateOtp)();
-            // Send OTP
             const isOtpSent = yield (0, sendOtpToMail_1.sentOtpToEmail)(email, otp);
             if (!isOtpSent) {
                 return {
@@ -291,7 +268,6 @@ class UserService {
                     message: "Failed to send OTP",
                 };
             }
-            // const otp = await generateMail(email);
             yield this.userRepository.updateUserById(userId, {
                 otp: otp,
                 otp_update_time: new Date(),
@@ -361,10 +337,7 @@ class UserService {
     refreshToken(refreshToken) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                // console.log("Attempting to refresh access token...");
-                // Validate refresh token
-                const decodedRefreshToken = (0, token_1.verifyRefreshToken)(refreshToken); // This method will decode and validate the refresh token
-                // console.log(decodedRefreshToken);
+                const decodedRefreshToken = (0, token_1.verifyRefreshToken)(refreshToken);
                 if (!decodedRefreshToken) {
                     return {
                         success: false,
@@ -372,7 +345,6 @@ class UserService {
                         message: "Invalid refresh token",
                     };
                 }
-                // Find the user based on decoded token
                 const user = yield this.userRepository.findUserById(decodedRefreshToken.data);
                 if (!user) {
                     return {
@@ -381,11 +353,8 @@ class UserService {
                         message: "User not found",
                     };
                 }
-                // Generate new access token and refresh token
                 const newAccessToken = (0, token_1.generateAccessToken)(user._id);
-                // console.log("new accesstoken", newAccessToken);
                 const newRefreshToken = (0, token_1.generateRefreshToken)(user._id);
-                // console.log("newRefresh token", newRefreshToken);
                 return {
                     success: true,
                     statusCode: httpStatusCodes_1.Http_Status_Codes.OK,
@@ -439,48 +408,6 @@ class UserService {
             }
         });
     }
-    getExpertSlots(expertId) {
-        return __awaiter(this, void 0, void 0, function* () {
-            try {
-                const slots = yield this.userRepository.getSlots(expertId);
-                return slots;
-            }
-            catch (error) {
-                console.error("Error in getExpertSlots service:", error);
-                throw error;
-            }
-        });
-    }
-    bookSlot(slotData) {
-        return __awaiter(this, void 0, void 0, function* () {
-            try {
-                const updatedSlot = yield this.userRepository.updateSlotBooking(slotData);
-                if (!updatedSlot) {
-                    throw new Error("Slot not found or could not be updated");
-                }
-                return updatedSlot;
-            }
-            catch (error) {
-                console.error("Error in slot service bookSlot:", error);
-                throw error;
-            }
-        });
-    }
-    getSlotDetails(slotId) {
-        return __awaiter(this, void 0, void 0, function* () {
-            try {
-                const slot = yield this.userRepository.findSlotById(slotId);
-                if (!slot) {
-                    throw new Error("Slot not found");
-                }
-                return slot;
-            }
-            catch (error) {
-                console.error("Error in slot service getSlotDetails:", error);
-                throw error;
-            }
-        });
-    }
     checkSlotAvailability(slotId) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
@@ -516,7 +443,6 @@ class UserService {
         }
         catch (error) {
             console.error("Failed to initialize Razorpay:", error);
-            // Even with the error, TypeScript knows the property is assigned
         }
     }
     createPaymentOrder(fee) {
@@ -530,9 +456,7 @@ class UserService {
                     currency: "INR",
                     receipt: "razorUser@gmail.com",
                 };
-                // console.log("Razorpay Key ID:", process.env.razorpay_key_id);
                 this.razorpayInstance.orders.create(options, (err, order) => {
-                    // console.log("Razorpay order creation result:", order);
                     if (!err) {
                         resolve({
                             success: true,
@@ -556,7 +480,6 @@ class UserService {
         return __awaiter(this, void 0, void 0, function* () {
             var _a;
             try {
-                // Check if slot exists and is available
                 const slot = yield this.userRepository.findSlotById(farmerDetails.slotId);
                 if (!slot) {
                     throw new Error("Slot not found");
@@ -569,17 +492,13 @@ class UserService {
                     throw new Error("User not found");
                 }
                 const userWallet = (_a = user.wallet) !== null && _a !== void 0 ? _a : 0;
-                // If payment method is wallet, check balance and deduct amount
                 if (farmerDetails.payment_method === "wallet_payment") {
                     if (userWallet < slot.bookingAmount) {
                         throw new Error("Insufficient balance in wallet");
                     }
-                    // Deduct wallet balance
                     yield this.userRepository.updateUserWallet(user._id.toString(), -slot.bookingAmount);
                 }
-                // Update slot status
                 yield this.userRepository.updateSlotBookingStatus(farmerDetails.slotId, true);
-                // Create booked slot record
                 yield this.userRepository.createBookedSlot(farmerDetails);
                 const expertId = slot.expertId._id;
                 // Send notification about successful booking
@@ -587,21 +506,6 @@ class UserService {
             }
             catch (error) {
                 console.log(error);
-            }
-        });
-    }
-    getBookingDetails(userId) {
-        return __awaiter(this, void 0, void 0, function* () {
-            try {
-                if (!userId) {
-                    throw new Error("User ID is required");
-                }
-                const bookings = yield this.userRepository.findBookedSlotsByUser(userId);
-                return bookings;
-            }
-            catch (error) {
-                console.error("Error in getBookingDetails service:", error);
-                throw error;
             }
         });
     }
@@ -624,82 +528,6 @@ class UserService {
             }
             yield this.userRepository.updateWallet(user._id.toString(), slot.bookingAmount);
             return { message: "Slot cancelled" };
-        });
-    }
-    getUpcomingAppointment(userId) {
-        return __awaiter(this, void 0, void 0, function* () {
-            // console.log("Fetching upcoming appointments...");
-            const now = new Date();
-            const margin = 15 * 60 * 1000; // 15 minutes in milliseconds
-            const bookedSlots = yield this.userRepository.findPendingAppointmentsByUser(userId);
-            // console.log("Booked Slots:", bookedSlots);
-            // Filter appointments that are upcoming
-            const upcomingAppointments = bookedSlots.filter((slot) => {
-                if (!slot.slotId ||
-                    typeof slot.slotId !== "object" ||
-                    !("time" in slot.slotId)) {
-                    console.error("Invalid slotId:", slot.slotId);
-                    return false;
-                }
-                const slotTime = new Date(slot.slotId.time);
-                return slotTime.getTime() > now.getTime() - margin;
-            });
-            // Sort to get the nearest upcoming appointment
-            upcomingAppointments.sort((a, b) => new Date(a.slotId.time).getTime() -
-                new Date(b.slotId.time).getTime());
-            return upcomingAppointments[0] || {};
-        });
-    }
-    getUpcomingSlot(appointmentId) {
-        return __awaiter(this, void 0, void 0, function* () {
-            const data = yield this.userRepository.findBookedSlotById(appointmentId);
-            if (!data) {
-                throw new Error("Appointment not found");
-            }
-            return data;
-        });
-    }
-    getPrescriptionDetails(prescriptionId) {
-        return __awaiter(this, void 0, void 0, function* () {
-            const data = yield this.userRepository.findPrescriptionById(prescriptionId);
-            if (!data) {
-                throw new Error("Prescription not found");
-            }
-            return data;
-        });
-    }
-    getNotifications(userId) {
-        return __awaiter(this, void 0, void 0, function* () {
-            try {
-                const notifications = yield this.userRepository.getNotifications(userId);
-                return notifications;
-            }
-            catch (error) {
-                console.error("Error in notification service:", error);
-                throw error;
-            }
-        });
-    }
-    markNotificationAsRead(userId) {
-        return __awaiter(this, void 0, void 0, function* () {
-            try {
-                yield this.userRepository.markNotificationAsRead(userId);
-            }
-            catch (error) {
-                console.error("Error in notification service:", error);
-                throw error;
-            }
-        });
-    }
-    clearNotifications(userId) {
-        return __awaiter(this, void 0, void 0, function* () {
-            try {
-                yield this.userRepository.clearNotifications(userId);
-            }
-            catch (error) {
-                console.error("Error in clearing notifications (Service):", error);
-                throw error;
-            }
         });
     }
 }

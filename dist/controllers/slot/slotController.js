@@ -101,5 +101,67 @@ class SlotController {
             }
         });
     }
+    //user
+    getExpertSlots(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const data = req.query;
+                if (!data._id) {
+                    res.status(httpStatusCodes_1.Http_Status_Codes.BAD_REQUEST).json({
+                        message: "Missing required data",
+                    });
+                    return;
+                }
+                const expert = yield this.slotService.getExpertSlots(data._id);
+                console.log(expert);
+                res.status(httpStatusCodes_1.Http_Status_Codes.OK).json(expert);
+            }
+            catch (error) {
+                console.error("Error in getExpertSlotss controller:", error);
+                res.status(httpStatusCodes_1.Http_Status_Codes.INTERNAL_SERVER_ERROR).json({
+                    message: "Internal Server Error",
+                });
+            }
+        });
+    }
+    addSlots(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                // console.log("addSlots backend");
+                const slotData = req.body;
+                // console.log(slotData);
+                const updatedSlot = yield this.slotService.bookSlot(slotData);
+                // console.log("slots after booking:", updatedSlot);
+                res.status(httpStatusCodes_1.Http_Status_Codes.CREATED).json({
+                    message: "slot updated",
+                    slot: updatedSlot,
+                });
+            }
+            catch (error) {
+                console.error("Error in slot controller addSlots:", error);
+                res
+                    .status(httpStatusCodes_1.Http_Status_Codes.INTERNAL_SERVER_ERROR)
+                    .json({ message: "Internal server error" });
+            }
+        });
+    }
+    getSlot(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                // console.log("getSlot backend");
+                const { slotId } = req.query;
+                // console.log("Query data:", { slotId });
+                const slot = yield this.slotService.getSlotDetails(slotId);
+                // console.log("Retrieved slot:", slot);
+                res.status(httpStatusCodes_1.Http_Status_Codes.OK).json(slot);
+            }
+            catch (error) {
+                console.error("Error in slot controller getSlot:", error);
+                res
+                    .status(httpStatusCodes_1.Http_Status_Codes.INTERNAL_SERVER_ERROR)
+                    .json({ message: "Internal server error" });
+            }
+        });
+    }
 }
 exports.default = SlotController;

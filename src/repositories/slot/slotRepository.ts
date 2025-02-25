@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { ISlotData } from "../../interfaces/commonInterface";
+import { ISlotData, SlotUpdateData } from "../../interfaces/commonInterface";
 import { Admin } from "../../models/adminModel";
 import { Expert, IExpert } from "../../models/expertModel";
 import { ISlot, Slot } from "../../models/slotModel";
@@ -11,7 +11,7 @@ class SlotRepository extends BaseRepository<ISlot> implements ISlotRepository {
   constructor() {
     super(Slot);
   }
-
+// expert
   async findSlotByExpertIdAndTime(
     expertId: string,
     time: Date
@@ -76,6 +76,56 @@ class SlotRepository extends BaseRepository<ISlot> implements ISlotRepository {
     return await Slot.findByIdAndDelete(slotId);
   }
 
+// user
+  async getSlots(expertId: string): Promise<ISlot[]> {
+    try {
+      const now = new Date().toISOString();
+      const slots = await Slot.find({
+        expertId: expertId,
+        booked: false,
+        time: { $gte: now }, 
+      }).sort({ time: 1 });
+
+      return slots;
+    } catch (error) {
+      console.error(error);
+      throw error;
+    }
+  }
+
+ async updateSlotBooking(data: SlotUpdateData): Promise<ISlot | null> {
+    try {
+      const updatedSlot = await Slot.findByIdAndUpdate(
+        data._id,
+        {
+          $set: {
+            bookedUserId: data.userId,
+            expertId: data.expertId,
+            booked: true,
+          },
+        },
+        { new: true }
+      );
+
+      return updatedSlot;
+    } catch (error) {
+      console.error("Error in slot repository updateSlotBooking:", error);
+      throw error;
+    }
+  }
+
+  async userFindSlotById(slotId: string): Promise<ISlot | null> {
+    try {
+      const slot = await Slot.findById(slotId).populate("expertId").exec();
+
+      return slot;
+    } catch (error) {
+      console.error("Error in slot repository findSlotById:", error);
+      throw error;
+    }
+  }
+
+  
 
 }
 

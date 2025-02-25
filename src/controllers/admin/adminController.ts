@@ -15,7 +15,6 @@ class AdminController implements IAdminController {
     try {
       const requiredFields = ["email", "password"];
       const missingFields = requiredFields.filter((field) => !req.body[field]);
-
       if (missingFields.length > 0) {
         res.status(Http_Status_Codes.BAD_REQUEST).json({
           success: false,
@@ -23,11 +22,8 @@ class AdminController implements IAdminController {
         });
         return;
       }
-
       const { email, password } = req.body;
-
       const result = await this.adminService.validateLogin(email, password);
-
       res
         .status(result.status)
         .json(result.success ? result.data : { message: result.message });
@@ -41,13 +37,14 @@ class AdminController implements IAdminController {
 
   async getAdminDashboardDetails(req: Request, res: Response): Promise<void> {
     try {
-      // console.log("getAdminDashboardDetails server-side");
-      const { userCount, expertCount,slotDetails } =
+      const { userCount, expertCount, slotDetails } =
         await this.adminService.getAdminDashboardDetails();
 
-      res
-        .status(Http_Status_Codes.OK)
-        .json({ user_count: userCount, expert_count: expertCount,slotDetails:slotDetails });
+      res.status(Http_Status_Codes.OK).json({
+        user_count: userCount,
+        expert_count: expertCount,
+        slotDetails: slotDetails,
+      });
     } catch (error) {
       console.error("Error in getAdminDashboardDetails:", error);
       res
@@ -59,15 +56,12 @@ class AdminController implements IAdminController {
   async getExperts(req: Request, res: Response): Promise<void> {
     try {
       const { expert } = req.query;
-      // console.log("data:", { expert });
 
       if (expert === "all") {
         const expertData = await this.adminService.getAllExperts();
-        // console.log("expert Data", expertData);
         res.status(Http_Status_Codes.OK).json(expertData);
         return;
       }
-
       res.status(Http_Status_Codes.BAD_REQUEST).json({
         message: "Invalid expert type specified",
       });
@@ -93,10 +87,8 @@ class AdminController implements IAdminController {
 
   async getSpecialisations(req: Request, res: Response): Promise<void> {
     try {
-      // console.log("getSpecialisation serverside");
       const specialisationData =
         await this.adminService.getAllSpecialisations();
-      // console.log(specialisationData);
       res.status(Http_Status_Codes.OK).json(specialisationData);
     } catch (error) {
       console.error("Error in getSpecializations controller:", error);
@@ -109,16 +101,12 @@ class AdminController implements IAdminController {
   async addSpecialisation(req: Request, res: Response): Promise<void> {
     try {
       const data = req.body;
-      // console.log("addSpecialisation serverside", data);
-
       if (!data) {
         res.status(Http_Status_Codes.BAD_REQUEST).json({
           message: "Submission Failed",
         });
         return;
       }
-
-      // console.log("specialisation to add:", data);
       await this.adminService.addSpecialisation(data);
 
       res.status(Http_Status_Codes.CREATED).json({
@@ -134,7 +122,6 @@ class AdminController implements IAdminController {
 
   async editSpecialisation(req: Request, res: Response): Promise<void> {
     try {
-      // console.log("editSpecialisation serverside");
       const data = req.body;
 
       if (!data) {
@@ -143,8 +130,6 @@ class AdminController implements IAdminController {
         });
         return;
       }
-
-      // console.log("specialisation id to edit:", data._id);
       await this.adminService.editSpecialisation(data);
 
       res.status(Http_Status_Codes.OK).json({
@@ -152,21 +137,18 @@ class AdminController implements IAdminController {
       });
     } catch (error: any) {
       console.error("Error in editSpecialization controller:", error);
-
       if (error.message === "Specialization not found") {
         res.status(Http_Status_Codes.NOT_FOUND).json({
           message: "Specialization not found",
         });
         return;
       }
-
       if (error.message === "Invalid specialization data") {
         res.status(Http_Status_Codes.BAD_REQUEST).json({
           message: "Invalid data provided",
         });
         return;
       }
-
       res.status(Http_Status_Codes.INTERNAL_SERVER_ERROR).json({
         message: "Internal Server Error",
       });
@@ -175,39 +157,31 @@ class AdminController implements IAdminController {
 
   async deleteSpecialisation(req: Request, res: Response): Promise<void> {
     try {
-      // console.log("deleteSpecialisation serverside");
       const data = req.query;
-
       if (!data || !data._id) {
         res.status(Http_Status_Codes.BAD_REQUEST).json({
           message: "Delete Failed - ID is required",
         });
         return;
       }
-
-      // console.log("specialization id to delete:", data._id);
       await this.adminService.deleteSpecialisation(data._id as string);
-
       res.status(Http_Status_Codes.OK).json({
         message: "Delete Successfully",
       });
     } catch (error: any) {
       console.error("Error in deleteSpecialization controller:", error);
-
       if (error.message === "Specialization not found") {
         res.status(Http_Status_Codes.NOT_FOUND).json({
           message: "Specialization not found",
         });
         return;
       }
-
       if (error.message === "Specialization ID is required") {
         res.status(Http_Status_Codes.BAD_REQUEST).json({
           message: "Invalid specialization ID",
         });
         return;
       }
-
       res.status(Http_Status_Codes.INTERNAL_SERVER_ERROR).json({
         message: "Internal Server Error",
       });
@@ -217,36 +191,30 @@ class AdminController implements IAdminController {
   async toggleBlockStatus(req: Request, res: Response): Promise<void> {
     try {
       const data = req.body;
-
       if (!data._id) {
         res.status(Http_Status_Codes.BAD_REQUEST).json({
           message: "Missing required data",
         });
         return;
       }
-
       await this.adminService.toggleUserBlockStatus(data._id);
-
       res.status(Http_Status_Codes.OK).json({
         message: "Status changed successfully",
       });
     } catch (error: any) {
       console.error("Error in toggleBlockStatus controller:", error);
-
       if (error.message === "User not found") {
         res.status(Http_Status_Codes.NOT_FOUND).json({
           message: "User not found",
         });
         return;
       }
-
       if (error.message === "User ID is required") {
         res.status(Http_Status_Codes.BAD_REQUEST).json({
           message: "User ID is required",
         });
         return;
       }
-
       res.status(Http_Status_Codes.INTERNAL_SERVER_ERROR).json({
         message: "Internal Server Error",
       });
@@ -263,26 +231,22 @@ class AdminController implements IAdminController {
         });
         return;
       }
-
       const user = await this.adminService.getUserDetails(data._id);
       res.status(Http_Status_Codes.OK).json(user);
     } catch (error: any) {
       console.error("Error in getUserDetails controller:", error);
-
       if (error.message === "User not found") {
         res.status(Http_Status_Codes.NOT_FOUND).json({
           message: "User not found",
         });
         return;
       }
-
       if (error.message === "User ID is required") {
         res.status(Http_Status_Codes.BAD_REQUEST).json({
           message: "User ID is required",
         });
         return;
       }
-
       res.status(Http_Status_Codes.INTERNAL_SERVER_ERROR).json({
         message: "Internal Server Error",
       });
@@ -295,7 +259,6 @@ class AdminController implements IAdminController {
     res: Response
   ): Promise<void> {
     try {
-      // console.log("searchUser serverside");
       const { data } = req.body;
 
       if (!data) {
@@ -304,19 +267,16 @@ class AdminController implements IAdminController {
         });
         return;
       }
-
       const results = await this.adminService.searchUsers(data);
       res.status(Http_Status_Codes.OK).json(results);
     } catch (error: any) {
       console.error("Error in searchUsers controller:", error);
-
       if (error.message === "Search term is required") {
         res.status(Http_Status_Codes.BAD_REQUEST).json({
           message: "Search term is required",
         });
         return;
       }
-
       res.status(Http_Status_Codes.INTERNAL_SERVER_ERROR).json({
         message: "Internal Server Error",
       });
@@ -329,7 +289,6 @@ class AdminController implements IAdminController {
     res: Response
   ): Promise<void> {
     try {
-      // console.log("searchUser serverside");
       const { data } = req.body;
 
       if (!data) {
@@ -338,19 +297,16 @@ class AdminController implements IAdminController {
         });
         return;
       }
-
       const results = await this.adminService.searchExperts(data);
       res.status(Http_Status_Codes.OK).json(results);
     } catch (error: any) {
       console.error("Error in searchUsers controller:", error);
-
       if (error.message === "Search term is required") {
         res.status(Http_Status_Codes.BAD_REQUEST).json({
           message: "Search term is required",
         });
         return;
       }
-
       res.status(Http_Status_Codes.INTERNAL_SERVER_ERROR).json({
         message: "Internal Server Error",
       });
@@ -359,7 +315,6 @@ class AdminController implements IAdminController {
 
   async toggleExpertStatus(req: Request, res: Response): Promise<void> {
     try {
-      // Validation of input
       const requiredFields = ["_id"];
       const missingFields = requiredFields.filter((field) => !req.body[field]);
 
@@ -369,7 +324,6 @@ class AdminController implements IAdminController {
         });
         return;
       }
-
       const { _id } = req.body;
       await this.adminService.toggleExpertStatus(_id);
 
@@ -378,21 +332,18 @@ class AdminController implements IAdminController {
       });
     } catch (error: any) {
       console.error("Error in toggleExpertStatus controller:", error);
-
       if (error.message === "Expert not found") {
         res.status(Http_Status_Codes.NOT_FOUND).json({
           message: "Expert not found",
         });
         return;
       }
-
       if (error.message === "Expert ID is required") {
         res.status(Http_Status_Codes.BAD_REQUEST).json({
           message: "Expert ID is required",
         });
         return;
       }
-
       res.status(Http_Status_Codes.INTERNAL_SERVER_ERROR).json({
         message: "Internal Server Error",
       });
@@ -401,11 +352,7 @@ class AdminController implements IAdminController {
 
   async getKycData(req: Request, res: Response): Promise<void> {
     try {
-      // console.log("kyc data collection serverside");
-
       const kycData = await this.adminService.getPendingKycData();
-      // console.log(kycData);
-
       res.status(Http_Status_Codes.OK).json(kycData);
     } catch (error) {
       console.error("Error in getKycData controller:", error);
@@ -421,8 +368,6 @@ class AdminController implements IAdminController {
     res: Response
   ): Promise<void> {
     try {
-      // console.log("get get_kyc_details_of_expert serverside");
-
       const { expertId } = req.query;
 
       if (!expertId) {
@@ -431,12 +376,7 @@ class AdminController implements IAdminController {
         });
         return;
       }
-
-      // console.log("expert Id:", expertId);
-
       const kycDetails = await this.adminService.getExpertKycDetails(expertId);
-      // console.log("kyc_details_with_expertID:", kycDetails);
-
       res.status(Http_Status_Codes.OK).json(kycDetails);
     } catch (error: any) {
       console.error("Error in getExpertKycDetails controller:", error);
@@ -447,14 +387,12 @@ class AdminController implements IAdminController {
         });
         return;
       }
-
       if (error.message === "KYC details not found") {
         res.status(Http_Status_Codes.NOT_FOUND).json({
           message: "KYC details not found",
         });
         return;
       }
-
       res.status(Http_Status_Codes.INTERNAL_SERVER_ERROR).json({
         message: "Internal Server Error",
       });
@@ -467,8 +405,6 @@ class AdminController implements IAdminController {
     res: Response
   ): Promise<void> {
     try {
-      // console.log("get submit_kyc_details serverside");
-
       const data = req.body;
       if (!data) {
         res.status(Http_Status_Codes.BAD_REQUEST).json({
@@ -476,10 +412,7 @@ class AdminController implements IAdminController {
         });
         return;
       }
-
       const result = await this.adminService.submitKycDetails(data);
-      // console.log("KYC update result:", result);
-
       res.status(Http_Status_Codes.OK).json(result);
     } catch (error: any) {
       console.error("Error in submitKycDetails controller:", error);
@@ -497,7 +430,6 @@ class AdminController implements IAdminController {
         });
         return;
       }
-
       res.status(Http_Status_Codes.INTERNAL_SERVER_ERROR).json({
         message: "Internal Server Error",
       });
@@ -510,24 +442,18 @@ class AdminController implements IAdminController {
     res: Response
   ): Promise<Response> {
     try {
-      // console.log("get download_kyc_documents serverside");
       const { expertId, name, index } = req.query;
-
       if (!expertId || !name) {
         return res
           .status(Http_Status_Codes.BAD_REQUEST)
           .json({ message: "Fetching data to download failed" });
       }
 
-      // console.log("name, index:", name, index);
-
       const destinationPath = await this.adminService.downloadDocument({
         expertId,
         name,
         index: typeof index === "string" ? parseInt(index, 10) : undefined,
       });
-
-      // console.log("certificate downloaded successfully");
 
       return res
         .status(Http_Status_Codes.OK)
@@ -553,7 +479,6 @@ class AdminController implements IAdminController {
               .json({ message: "Error copying file" });
         }
       }
-
       return res
         .status(Http_Status_Codes.INTERNAL_SERVER_ERROR)
         .json({ message: "Internal Server Error" });
@@ -562,22 +487,14 @@ class AdminController implements IAdminController {
 
   async editPayOut(req: Request, res: Response): Promise<void> {
     try {
-      // console.log("editPayOut serverside");
-
       const data = req.body;
-
-      // Validate input data
       if (!data || !data.payOut) {
         res
           .status(Http_Status_Codes.BAD_REQUEST)
           .json({ message: "Edit payout failed. Invalid data." });
         return;
       }
-
-      // Call the service to perform the logic
       const message = await this.adminService.editPayOut(data.payOut);
-
-      // Respond with success message
       res.status(Http_Status_Codes.OK).json({ message });
     } catch (error) {
       console.error("Error during editPayOut:", error);
@@ -587,12 +504,8 @@ class AdminController implements IAdminController {
     }
   }
 
-   async getAppointmentDetails (
-    req: Request,
-    res: Response
-  ): Promise<void> {
+  async getAppointmentDetails(req: Request, res: Response): Promise<void> {
     try {
-      // console.log("get get_appointment_details serverside");
       const appointments = await this.adminService.getAppointmentDetails();
       res.status(Http_Status_Codes.OK).json(appointments);
     } catch (error) {
@@ -601,8 +514,7 @@ class AdminController implements IAdminController {
         .status(Http_Status_Codes.INTERNAL_SERVER_ERROR)
         .json({ message: "Internal Server Error" });
     }
-  };
-
+  }
 }
 
 export default AdminController;

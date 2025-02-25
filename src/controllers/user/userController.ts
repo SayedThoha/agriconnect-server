@@ -1,21 +1,16 @@
 //userController.ts
-
 import { Request, Response } from "express";
-
 import { Http_Status_Codes } from "../../constants/httpStatusCodes";
 import UserServices from "../../services/user/userService";
 import {
   FarmerBookingDetails,
   PaymentRequest,
-  SlotUpdateData,
 } from "../../interfaces/commonInterface";
 
 class UserController {
   constructor(private userService: UserServices) {}
 
   async registerUser(req: Request, res: Response): Promise<void> {
-    // console.log("Registering user...");
-
     try {
       // Validate required fields
       const requiredFields = ["firstName", "lastName", "email", "password"];
@@ -28,10 +23,8 @@ class UserController {
         return;
       }
 
-      // Extract user data
       const { firstName, lastName, email, password } = req.body;
 
-      // Call service to register user
       const result = await this.userService.registerUser({
         firstName,
         lastName,
@@ -39,10 +32,7 @@ class UserController {
         password,
       });
 
-      // Respond based on service result
       if (result.success) {
-        // console.log("registration success");
-
         res.status(Http_Status_Codes.CREATED).json({ message: result.message });
       } else {
         res
@@ -59,7 +49,6 @@ class UserController {
 
   async resendOtp(req: Request, res: Response): Promise<void> {
     try {
-      // Validate required fields
       const requiredFields = ["email"];
       const missingFields = requiredFields.filter((field) => !req.body[field]);
 
@@ -70,7 +59,6 @@ class UserController {
         });
         return;
       }
-
       const { email } = req.body;
       const result = await this.userService.resendOtp(email);
 
@@ -90,7 +78,6 @@ class UserController {
 
   async verifyOtp(req: Request, res: Response): Promise<void> {
     try {
-      // Validate required fields
       const requiredFields = ["email", "otp"];
       const missingFields = requiredFields.filter((field) => !req.body[field]);
 
@@ -124,10 +111,8 @@ class UserController {
       });
     }
   }
-
   async login(req: Request, res: Response): Promise<void> {
     try {
-      // Validate required fields
       const requiredFields = ["email", "password"];
       const missingFields = requiredFields.filter((field) => !req.body[field]);
 
@@ -138,10 +123,7 @@ class UserController {
         });
         return;
       }
-
       const { email, password } = req.body;
-      // console.log(email, password);
-
       const result = await this.userService.login(email, password);
 
       res.status(result.statusCode).json({
@@ -161,18 +143,15 @@ class UserController {
       });
     }
   }
-
   async getUserDetails(req: Request, res: Response): Promise<void> {
     try {
       const { _id } = req.query;
-
       if (!_id) {
         res
           .status(Http_Status_Codes.BAD_REQUEST)
           .json({ message: "User ID is required" });
         return;
       }
-
       const user = await this.userService.getUserDetails(_id as string);
 
       if (!user) {
@@ -181,7 +160,6 @@ class UserController {
           .json({ message: "User not found" });
         return;
       }
-
       res.status(Http_Status_Codes.OK).json(user);
     } catch (error) {
       console.error("Error in getExpertDetails controller:", error);
@@ -190,15 +168,9 @@ class UserController {
         .json({ message: "Internal server error" });
     }
   }
-
   async editUserProfile(req: Request, res: Response): Promise<void> {
     try {
-      // console.log("editUserProfile backend");
       const { _id, firstName, lastName, email } = req.body;
-
-      console.log(
-        `id :${_id} firstName:${firstName} secondName:${lastName} email:${email}`
-      );
 
       if (!_id || !firstName || !lastName || !email) {
         res
@@ -206,20 +178,17 @@ class UserController {
           .json({ message: "All fields are required" });
         return;
       }
-
       const updatedUser = await this.userService.editUserProfile(_id, {
         firstName,
         lastName,
         email,
       });
-
       if (!updatedUser) {
         res
           .status(Http_Status_Codes.NOT_FOUND)
           .json({ message: "User not found" });
         return;
       }
-
       res
         .status(Http_Status_Codes.OK)
         .json({ message: "profile updated sucessfully", data: updatedUser });
@@ -230,11 +199,8 @@ class UserController {
         .json({ message: "Internal server error" });
     }
   }
-
   async optForNewEmail(req: Request, res: Response): Promise<void> {
     try {
-      // console.log("optForNewEmail backend");
-
       const { userId, email } = req.body;
 
       if (!userId || !email) {
@@ -243,7 +209,6 @@ class UserController {
           .json({ message: "User ID and email are required" });
         return;
       }
-
       const message = await this.userService.optForNewEmail(userId, email);
 
       res.status(Http_Status_Codes.OK).json({ message });
@@ -262,18 +227,15 @@ class UserController {
       }
     }
   }
-
   async editUserProfilePicture(req: Request, res: Response): Promise<void> {
     try {
       const { userId, image_url } = req.body;
-
       if (!userId || !image_url) {
         res
           .status(Http_Status_Codes.BAD_REQUEST)
           .json({ message: "Missing required fields" });
         return;
       }
-
       const message = await this.userService.editUserProfilePicture(
         userId,
         image_url
@@ -286,11 +248,9 @@ class UserController {
         .json({ message: "Internal Server Error" });
     }
   }
-
   async checkUserStatus(req: Request, res: Response): Promise<void> {
     try {
       const userId = req.params.id;
-      // console.log(userId);
       const status = await this.userService.checkUserStatus(userId);
       res.status(200).json(status);
     } catch (error) {
@@ -299,13 +259,11 @@ class UserController {
       res.status(500).json({ message: "Internal server error" });
     }
   }
-
   async verifyEmailForPasswordReset(
     req: Request,
     res: Response
   ): Promise<void> {
     try {
-      // Input validation
       const requiredFields = ["email"];
       const missingFields = requiredFields.filter((field) => !req.body[field]);
 
@@ -315,11 +273,8 @@ class UserController {
         });
         return;
       }
-
       const { email } = req.body;
-
       await this.userService.verifyEmailForPasswordReset(email);
-
       res.status(Http_Status_Codes.OK).json({
         message: "Email verification done",
       });
@@ -333,7 +288,6 @@ class UserController {
 
   async updatePassword(req: Request, res: Response): Promise<void> {
     try {
-      // Validation
       const requiredFields = ["email", "password"];
       const missingFields = requiredFields.filter((field) => !req.body[field]);
 
@@ -343,7 +297,6 @@ class UserController {
         });
         return;
       }
-
       const { email, password } = req.body;
       const result = await this.userService.updatePassword(email, password);
 
@@ -353,7 +306,6 @@ class UserController {
           .json({ message: result.message });
         return;
       }
-
       res.status(Http_Status_Codes.OK).json({ message: result.message });
     } catch (error) {
       console.log(error);
@@ -362,10 +314,8 @@ class UserController {
       });
     }
   }
-
   async refreshToken(req: Request, res: Response): Promise<void> {
     const { refreshToken } = req.body;
-
     if (!refreshToken) {
       res.status(Http_Status_Codes.BAD_REQUEST).json({
         success: false,
@@ -373,11 +323,8 @@ class UserController {
       });
       return;
     }
-
     try {
-      // Call the refreshToken method from UserService
       const response = await this.userService.refreshToken(refreshToken);
-
       res.status(response.statusCode).json(response);
       return;
     } catch (error) {
@@ -389,7 +336,6 @@ class UserController {
       return;
     }
   }
-
   async getSpecialisation(req: Request, res: Response): Promise<void> {
     try {
       const specialisation = await this.userService.getSpecialisations();
@@ -401,7 +347,6 @@ class UserController {
       });
     }
   }
-
   async getExperts(req: Request, res: Response): Promise<void> {
     try {
       const expert = await this.userService.getExperts();
@@ -416,95 +361,26 @@ class UserController {
   async getExpertDetails(req: Request, res: Response): Promise<void> {
     try {
       const data = req.query;
-      // console.log(data);
-
       if (!data._id) {
         res.status(Http_Status_Codes.BAD_REQUEST).json({
           message: "Missing required data",
         });
         return;
       }
-
       const expert = await this.userService.getExpertDetails(
         data._id as string
       );
-      // console.log(expert);
       res.status(Http_Status_Codes.OK).json(expert);
     } catch (error) {
       console.error("Error in getExpertDetails controller:", error);
-
       res.status(Http_Status_Codes.INTERNAL_SERVER_ERROR).json({
         message: "Internal Server Error",
       });
-    }
-  }
-
-  async getExpertSlots(req: Request, res: Response): Promise<void> {
-    try {
-      const data = req.query;
-
-      if (!data._id) {
-        res.status(Http_Status_Codes.BAD_REQUEST).json({
-          message: "Missing required data",
-        });
-        return;
-      }
-
-      const expert = await this.userService.getExpertSlots(data._id as string);
-      console.log(expert);
-      res.status(Http_Status_Codes.OK).json(expert);
-    } catch (error) {
-      console.error("Error in getExpertSlotss controller:", error);
-
-      res.status(Http_Status_Codes.INTERNAL_SERVER_ERROR).json({
-        message: "Internal Server Error",
-      });
-    }
-  }
-
-  async addSlots(req: Request, res: Response): Promise<void> {
-    try {
-      // console.log("addSlots backend");
-      const slotData: SlotUpdateData = req.body;
-      // console.log(slotData);
-
-      const updatedSlot = await this.userService.bookSlot(slotData);
-      // console.log("slots after booking:", updatedSlot);
-
-      res.status(Http_Status_Codes.CREATED).json({
-        message: "slot updated",
-        slot: updatedSlot,
-      });
-    } catch (error) {
-      console.error("Error in slot controller addSlots:", error);
-      res
-        .status(Http_Status_Codes.INTERNAL_SERVER_ERROR)
-        .json({ message: "Internal server error" });
-    }
-  }
-
-  async getSlot(req: Request, res: Response): Promise<void> {
-    try {
-      // console.log("getSlot backend");
-      const { slotId } = req.query;
-      // console.log("Query data:", { slotId });
-
-      const slot = await this.userService.getSlotDetails(slotId as string);
-      // console.log("Retrieved slot:", slot);
-
-      res.status(Http_Status_Codes.OK).json(slot);
-    } catch (error) {
-      console.error("Error in slot controller getSlot:", error);
-
-      res
-        .status(Http_Status_Codes.INTERNAL_SERVER_ERROR)
-        .json({ message: "Internal server error" });
     }
   }
 
   async checkSlotAvailability(req: Request, res: Response): Promise<void> {
     try {
-      // console.log("check_if_the_slot_available backend");
       const { slotId } = req.query;
 
       if (!slotId) {
@@ -513,9 +389,6 @@ class UserController {
           .json({ message: "slot Id is missing" });
         return;
       }
-
-      // console.log("slotId:", slotId, req.query);
-
       const { isAvailable, message } =
         await this.userService.checkSlotAvailability(slotId as string);
 
@@ -523,7 +396,6 @@ class UserController {
         res.status(Http_Status_Codes.UNAUTHORIZED).json({ message });
         return;
       }
-
       res.status(Http_Status_Codes.OK).json({ message });
     } catch (error) {
       console.error("Error in slot controller checkSlotAvailability:", error);
@@ -539,9 +411,7 @@ class UserController {
     res: Response
   ): Promise<void> {
     try {
-      // console.log("booking_payment backend");
       const { consultation_fee } = req.body;
-
       if (!consultation_fee || consultation_fee <= 0) {
         res.status(Http_Status_Codes.BAD_REQUEST).json({
           success: false,
@@ -549,16 +419,13 @@ class UserController {
         });
         return;
       }
-
       const paymentOrder = await this.userService.createPaymentOrder(
         consultation_fee
       );
-      // console.log(paymentOrder);
       if (!paymentOrder.success) {
         res.status(Http_Status_Codes.BAD_REQUEST).json(paymentOrder);
         return;
       }
-
       res.status(Http_Status_Codes.OK).json(paymentOrder);
     } catch (error) {
       console.error("Error in user controller createBookingPayment:", error);
@@ -575,10 +442,7 @@ class UserController {
     res: Response
   ): Promise<void> {
     try {
-      // console.log("appointmnet_booking backend");
       const farmerDetails = req.body;
-      // console.log(farmerDetails);
-
       await this.userService.bookAppointment(farmerDetails);
 
       res
@@ -596,14 +460,12 @@ class UserController {
   async userDetails(req: Request, res: Response): Promise<void> {
     try {
       const { userId } = req.query;
-
       if (!userId) {
         res
           .status(Http_Status_Codes.BAD_REQUEST)
           .json({ message: "User ID is required" });
         return;
       }
-
       const user = await this.userService.getUserDetails(userId as string);
 
       if (!user) {
@@ -612,7 +474,6 @@ class UserController {
           .json({ message: "User not found" });
         return;
       }
-
       res.status(Http_Status_Codes.OK).json(user);
     } catch (error) {
       console.error("Error in userDetails controller:", error);
@@ -621,41 +482,11 @@ class UserController {
         .json({ message: "Internal server error" });
     }
   }
-
-  async getBookingDetails(req: Request, res: Response): Promise<void> {
-    try {
-      // console.log("get get_booking_details serverside");
-      const { userId } = req.query;
-      // console.log("Query data:", { userId });
-
-      if (!userId) {
-        res.status(Http_Status_Codes.BAD_REQUEST).json({
-          message: "User ID is required",
-        });
-        return;
-      }
-
-      const bookedSlots = await this.userService.getBookingDetails(
-        userId as string
-      );
-      res.status(Http_Status_Codes.OK).json(bookedSlots);
-    } catch (error) {
-      console.error("Error in getBookingDetails controller:", error);
-      res
-        .status(Http_Status_Codes.INTERNAL_SERVER_ERROR)
-        .json({ message: "Internal Server Error" });
-    }
-  }
-
+ 
   async cancelSlot(req: Request, res: Response): Promise<void> {
     try {
-      // console.log("get get_booking_details serverside");
-
       const { slotId } = req.query;
-      // console.log("Slot ID:", slotId);
-
       const response = await this.userService.cancelSlot(slotId as string);
-
       res.status(Http_Status_Codes.OK).json(response);
     } catch (error) {
       console.error(error);
@@ -665,146 +496,7 @@ class UserController {
     }
   }
 
-  async upcomingAppointment(req: Request, res: Response): Promise<void> {
-    try {
-      // console.log("Fetching upcoming appointment from server...");
-
-      const userId = req.query._id as string;
-      // console.log("User ID:", userId);
-
-      const appointment = await this.userService.getUpcomingAppointment(userId);
-
-      if (Object.keys(appointment).length) {
-        // console.log("Next appointment:", appointment);
-      } else {
-        // console.log("No upcoming appointments found.");
-      }
-
-      res.status(Http_Status_Codes.OK).json(appointment);
-    } catch (error) {
-      console.error("Error fetching upcoming appointment:", error);
-      res
-        .status(Http_Status_Codes.INTERNAL_SERVER_ERROR)
-        .json({ message: "Internal Server Error" });
-    }
-  }
-
-  async getUpcomingSlot(req: Request, res: Response): Promise<void> {
-    try {
-      // console.log(req.query);
-      const { appointmentId } = req.query;
-
-      if (!appointmentId) {
-        res
-          .status(Http_Status_Codes.BAD_REQUEST)
-          .json({ message: "Appointment ID is required" });
-        return;
-      }
-
-      const data = await this.userService.getUpcomingSlot(
-        appointmentId as string
-      );
-      // console.log("data:", data);
-
-      res.status(Http_Status_Codes.OK).json(data);
-    } catch (error) {
-      console.error(error);
-      res
-        .status(Http_Status_Codes.INTERNAL_SERVER_ERROR)
-        .json({ message: "Internal Server Error" });
-    }
-  }
-
-  async getPrescriptionDetails(req: Request, res: Response): Promise<void> {
-    try {
-      // console.log("get_prescription_details:", req.query);
-
-      const { _id } = req.query;
-      // console.log(_id)
-
-      if (!_id) {
-        res
-          .status(Http_Status_Codes.BAD_REQUEST)
-          .json({ message: "Missing required data" });
-        return;
-      }
-
-      const data = await this.userService.getPrescriptionDetails(_id as string);
-      // console.log("Prescription details:", data);
-
-      res.status(Http_Status_Codes.OK).json(data);
-    } catch (error) {
-      console.error(error);
-      res
-        .status(Http_Status_Codes.INTERNAL_SERVER_ERROR)
-        .json({ message: "Internal Server Error" });
-    }
-  }
-
-  async getNotifications(req: Request, res: Response): Promise<void> {
-    try {
-      const { userId } = req.query;
-
-      if (!userId) {
-        res.status(Http_Status_Codes.BAD_REQUEST).json({
-          message: "User ID is required",
-        });
-        return;
-      }
-      const notification = await this.userService.getNotifications(
-        userId as string
-      );
-      res.status(Http_Status_Codes.OK).json(notification);
-    } catch (error) {
-      console.log(error);
-      res.status(Http_Status_Codes.INTERNAL_SERVER_ERROR).json({
-        message: "Internal Server Error",
-      });
-    }
-  }
-
-  async markNotificationAsRead(req: Request, res: Response): Promise<void> {
-    try {
-      const { userId } = req.body;
-
-      if (!userId) {
-        res.status(Http_Status_Codes.BAD_REQUEST).json({
-          message: "User ID is required",
-        });
-        return;
-      }
-
-      await this.userService.markNotificationAsRead(userId as string);
-
-      res
-        .status(Http_Status_Codes.OK)
-        .json({ message: "Notifications marked as read" });
-    } catch (error) {
-      console.log(error);
-      res.status(Http_Status_Codes.INTERNAL_SERVER_ERROR).json({
-        message: "Internal Server Error",
-      });
-    }
-  }
-
-  async clearNotifications(req: Request, res: Response): Promise<void> {
-    try {
-      const { userId } = req.body;
-
-      if (!userId) {
-        res.status(400).json({ message: "User ID is required" });
-        return;
-      }
-
-      await this.userService.clearNotifications(userId as string);
-      res.status(200).json({ message: "All notifications cleared" });
-    } catch (error) {
-      console.error(error);
-      res.status(500).json({ message: "Internal Server Error" });
-    }
-  }
-
-
+  
 }
 
 export default UserController;

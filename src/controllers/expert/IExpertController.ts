@@ -13,17 +13,8 @@ export interface IExpertController {
   verifyEmailForPasswordReset(req: Request, res: Response): Promise<void>;
   updatePassword(req: Request, res: Response): Promise<void>;
   refreshToken(req: Request, res: Response): Promise<void>;
-
   getBookingDetails(req: Request, res: Response): Promise<void>;
   getExpertDashboardDetails(req: Request, res: Response): Promise<void>;
-  upcomingAppointment(req: Request, res: Response): Promise<void>;
-  updateUpcomingSlot(req: Request, res: Response): Promise<void>;
-  updateSlotStatus(req: Request, res: Response): Promise<void>;
   getExpertBookings(req: Request, res: Response): Promise<void>;
-  addPrescription(req: Request, res: Response): Promise<void>;
   shareRoomIdThroughEmail(req: Request, res: Response): Promise<void>;
-  getPrescriptionDetails(req: Request, res: Response): Promise<void>;
-  getNotifications(req: Request, res: Response): Promise<void>;
-  markNotificationAsRead(req: Request, res: Response): Promise<void>;
-  clearNotifications(req: Request, res: Response): Promise<void>;
 }

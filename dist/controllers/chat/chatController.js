@@ -130,7 +130,7 @@ class ChatController {
                     return;
                 }
                 const messages = yield this.chatService.fetchMessagesByChatId(chatId);
-                console.log(messages);
+                // console.log(messages)
                 res.status(httpStatusCodes_1.Http_Status_Codes.OK).json(messages);
             }
             catch (error) {

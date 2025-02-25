@@ -20,6 +20,7 @@ class SlotRepository extends baseRepository_1.default {
     constructor() {
         super(slotModel_1.Slot);
     }
+    // expert
     findSlotByExpertIdAndTime(expertId, time) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
@@ -88,6 +89,54 @@ class SlotRepository extends baseRepository_1.default {
     deleteSlotById(slotId) {
         return __awaiter(this, void 0, void 0, function* () {
             return yield slotModel_1.Slot.findByIdAndDelete(slotId);
+        });
+    }
+    // user
+    getSlots(expertId) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const now = new Date().toISOString();
+                const slots = yield slotModel_1.Slot.find({
+                    expertId: expertId,
+                    booked: false,
+                    time: { $gte: now },
+                }).sort({ time: 1 });
+                return slots;
+            }
+            catch (error) {
+                console.error(error);
+                throw error;
+            }
+        });
+    }
+    updateSlotBooking(data) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const updatedSlot = yield slotModel_1.Slot.findByIdAndUpdate(data._id, {
+                    $set: {
+                        bookedUserId: data.userId,
+                        expertId: data.expertId,
+                        booked: true,
+                    },
+                }, { new: true });
+                return updatedSlot;
+            }
+            catch (error) {
+                console.error("Error in slot repository updateSlotBooking:", error);
+                throw error;
+            }
+        });
+    }
+    userFindSlotById(slotId) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const slot = yield slotModel_1.Slot.findById(slotId).populate("expertId").exec();
+                return slot;
+            }
+            catch (error) {
+                console.error("Error in slot repository findSlotById:", error);
+                throw error;
+            }
         });
     }
 }

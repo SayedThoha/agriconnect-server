@@ -3,9 +3,7 @@
 import { IPrescriptionInput } from "../../interfaces/commonInterface";
 import { IBookedSlot } from "../../models/bookeSlotModel";
 import { IExpert } from "../../models/expertModel";
-import { INotification } from "../../models/notificationModel";
 import { IPrescription } from "../../models/prescriptionModel";
-
 import { ISpecialisation } from "../../models/specialisationModel";
 
 export interface IExpertRepository {
@@ -27,15 +25,7 @@ export interface IExpertRepository {
 
   getBookingDetails(expertId: string): Promise<IBookedSlot[]>;
   getExpertDashboardDetails(expertId: string): Promise<IBookedSlot[]>;
-  findPendingAppointmentsByExpert(expertId: string): Promise<IBookedSlot[]>;
-  findSlotByIdAndUpdate(
-    slotId: string,
-    roomId: string
-  ): Promise<IBookedSlot | null>;
-  findSlotByIdAndUpdateStatus(
-    slotId: string,
-    status: string
-  ): Promise<IBookedSlot | null>;
+  
   findBookedSlotsByExpert(expertId: string): Promise<string[]>;
 
   findBookedSlotsBySlotIds(
@@ -58,7 +48,4 @@ export interface IExpertRepository {
 
   getUserEmailFromSlot(slot: any): Promise<string | null>;
   findPrescriptionById(prescriptionId: string): Promise<IPrescription | null>;
-  getNotifications(expertId: string): Promise<INotification[]>;
-  markNotificationAsRead(expertId: string): Promise<void>;
-  clearNotifications(expertId: string): Promise<void>;
 }

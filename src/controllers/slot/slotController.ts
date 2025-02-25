@@ -2,6 +2,7 @@ import { Http_Status_Codes } from "../../constants/httpStatusCodes";
 import SlotService from "../../services/slot/slotService";
 import { Request, Response } from "express";
 import { ISlotController } from "./ISlotController";
+import { SlotUpdateData } from "../../interfaces/commonInterface";
 
 class SlotController implements ISlotController {
   constructor(private slotService: SlotService) {}
@@ -94,6 +95,72 @@ class SlotController implements ISlotController {
       return;
     }
   }
+
+  //user
+
+  async getExpertSlots(req: Request, res: Response): Promise<void> {
+    try {
+      const data = req.query;
+
+      if (!data._id) {
+        res.status(Http_Status_Codes.BAD_REQUEST).json({
+          message: "Missing required data",
+        });
+        return;
+      }
+
+      const expert = await this.slotService.getExpertSlots(data._id as string);
+      console.log(expert);
+      res.status(Http_Status_Codes.OK).json(expert);
+    } catch (error) {
+      console.error("Error in getExpertSlotss controller:", error);
+
+      res.status(Http_Status_Codes.INTERNAL_SERVER_ERROR).json({
+        message: "Internal Server Error",
+      });
+    }
+  }
+
+  async addSlots(req: Request, res: Response): Promise<void> {
+      try {
+        // console.log("addSlots backend");
+        const slotData: SlotUpdateData = req.body;
+        // console.log(slotData);
+  
+        const updatedSlot = await this.slotService.bookSlot(slotData);
+        // console.log("slots after booking:", updatedSlot);
+  
+        res.status(Http_Status_Codes.CREATED).json({
+          message: "slot updated",
+          slot: updatedSlot,
+        });
+      } catch (error) {
+        console.error("Error in slot controller addSlots:", error);
+        res
+          .status(Http_Status_Codes.INTERNAL_SERVER_ERROR)
+          .json({ message: "Internal server error" });
+      }
+    }
+
+    async getSlot(req: Request, res: Response): Promise<void> {
+      try {
+        // console.log("getSlot backend");
+        const { slotId } = req.query;
+        // console.log("Query data:", { slotId });
+  
+        const slot = await this.slotService.getSlotDetails(slotId as string);
+        // console.log("Retrieved slot:", slot);
+  
+        res.status(Http_Status_Codes.OK).json(slot);
+      } catch (error) {
+        console.error("Error in slot controller getSlot:", error);
+  
+        res
+          .status(Http_Status_Codes.INTERNAL_SERVER_ERROR)
+          .json({ message: "Internal server error" });
+      }
+    }
+
 }
 
 export default SlotController;

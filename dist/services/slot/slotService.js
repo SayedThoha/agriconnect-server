@@ -18,6 +18,7 @@ class SlotService {
     constructor(slotRepository) {
         this.slotRepository = slotRepository;
     }
+    // expert
     convertToLocalDate(date) {
         const utcDate = new Date(date);
         return new Date(utcDate.getTime() - utcDate.getTimezoneOffset() * 60000);
@@ -160,6 +161,49 @@ class SlotService {
                     statusCode: httpStatusCodes_1.Http_Status_Codes.INTERNAL_SERVER_ERROR,
                     message: error instanceof Error ? error.message : "Error deleting slot",
                 };
+            }
+        });
+    }
+    //user
+    getExpertSlots(expertId) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const slots = yield this.slotRepository.getSlots(expertId);
+                return slots;
+            }
+            catch (error) {
+                console.error("Error in getExpertSlots service:", error);
+                throw error;
+            }
+        });
+    }
+    bookSlot(slotData) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const updatedSlot = yield this.slotRepository.updateSlotBooking(slotData);
+                if (!updatedSlot) {
+                    throw new Error("Slot not found or could not be updated");
+                }
+                return updatedSlot;
+            }
+            catch (error) {
+                console.error("Error in slot service bookSlot:", error);
+                throw error;
+            }
+        });
+    }
+    getSlotDetails(slotId) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const slot = yield this.slotRepository.userFindSlotById(slotId);
+                if (!slot) {
+                    throw new Error("Slot not found");
+                }
+                return slot;
+            }
+            catch (error) {
+                console.error("Error in slot service getSlotDetails:", error);
+                throw error;
             }
         });
     }

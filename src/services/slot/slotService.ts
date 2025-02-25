@@ -4,13 +4,14 @@ import { ISlot } from "../../models/slotModel";
 import SlotRepository from "../../repositories/slot/slotRepository";
 import mongoose from "mongoose";
 
-import { ISlotData } from "../../interfaces/commonInterface";
+import { ISlotData, SlotUpdateData } from "../../interfaces/commonInterface";
 import { ISlotService } from "./ISlotService";
 class SlotService implements ISlotService {
   constructor(
     private slotRepository: SlotRepository
   ) {}
 
+// expert
   private convertToLocalDate(date: Date): Date {
     const utcDate = new Date(date);
     return new Date(utcDate.getTime() - utcDate.getTimezoneOffset() * 60000);
@@ -172,6 +173,46 @@ class SlotService implements ISlotService {
       };
     }
   }
+
+  //user
+  async getExpertSlots(expertId: string): Promise<ISlot[]> {
+    try {
+      const slots = await this.slotRepository.getSlots(expertId);
+      return slots;
+    } catch (error) {
+      console.error("Error in getExpertSlots service:", error);
+      throw error;
+    }
+  }
+
+   async bookSlot(slotData: SlotUpdateData): Promise<ISlot | null> {
+      try {
+        const updatedSlot = await this.slotRepository.updateSlotBooking(slotData);
+        if (!updatedSlot) {
+          throw new Error("Slot not found or could not be updated");
+        }
+        return updatedSlot;
+      } catch (error) {
+        console.error("Error in slot service bookSlot:", error);
+        throw error;
+      }
+    }
+
+    async getSlotDetails(slotId: string): Promise<ISlot | null> {
+      try {
+        const slot = await this.slotRepository.userFindSlotById(slotId);
+        if (!slot) {
+          throw new Error("Slot not found");
+        }
+        return slot;
+      } catch (error) {
+        console.error("Error in slot service getSlotDetails:", error);
+        throw error;
+      }
+    }
+
+    
+
 
 }
 
