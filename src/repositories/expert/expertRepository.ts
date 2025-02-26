@@ -4,16 +4,12 @@ import { Specialisation } from "../../models/specialisationModel";
 import { Expert, IExpert } from "../../models/expertModel";
 import { ExpertKyc, IExpertKyc } from "../../models/expertKycModel";
 import BaseRepository from "../base/baseRepository";
-import { ISlot, Slot } from "../../models/slotModel";
-import { Admin } from "../../models/adminModel";
-import {
-  IPrescriptionInput,
-  ISlotData,
-} from "../../interfaces/commonInterface";
+import { Slot } from "../../models/slotModel";
+
+import { IPrescriptionInput } from "../../interfaces/commonInterface";
 import { BookedSlot, IBookedSlot } from "../../models/bookeSlotModel";
 import { IPrescription, Prescription } from "../../models/prescriptionModel";
 import { User } from "../../models/userModel";
-import { INotification, Notification } from "../../models/notificationModel";
 
 class ExpertRepository
   extends BaseRepository<IExpert>
@@ -176,60 +172,6 @@ class ExpertRepository
     }
   }
 
-  async findSlotByExpertIdAndTime(
-    expertId: string,
-    time: Date
-  ): Promise<ISlot | null> {
-    try {
-      return await Slot.findOne({ expertId, time });
-    } catch (error) {
-      throw new Error(`Error finding slot: ${error}`);
-    }
-  }
-
-  async createSlot(slotData: Partial<ISlot>): Promise<ISlot> {
-    try {
-      const slot = await Slot.create(slotData);
-      return await slot.save();
-    } catch (error) {
-      throw new Error(`Error creating slot: ${error}`);
-    }
-  }
-
-  async findAdminSettings(): Promise<any> {
-    try {
-      return await Admin.find({});
-    } catch (error) {
-      throw new Error(`Error finding admin settings: ${error}`);
-    }
-  }
-
-  async createMultipleSlots(slots: ISlotData[]): Promise<ISlot[]> {
-    return await Slot.insertMany(slots);
-  }
-
-  async findSlotsByExpertId(
-    expertId: string,
-    currentTime: Date
-  ): Promise<ISlot[]> {
-    try {
-      return await Slot.find({
-        expertId: expertId,
-        time: { $gte: currentTime },
-      }).sort({ time: 1 });
-    } catch (error) {
-      throw new Error(`Error fetching slots for expert ${expertId}: ${error}`);
-    }
-  }
-
-  async findSlotById(slotId: string): Promise<ISlot | null> {
-    return await Slot.findById(slotId);
-  }
-
-  async deleteSlotById(slotId: string): Promise<ISlot | null> {
-    return await Slot.findByIdAndDelete(slotId);
-  }
-
   async getBookingDetails(expertId: string): Promise<IBookedSlot[]> {
     // const now = new Date().toISOString();
     // time: { $gte: now }
@@ -254,39 +196,7 @@ class ExpertRepository
     }
   }
 
-  async findPendingAppointmentsByExpert(
-    expertId: string
-  ): Promise<IBookedSlot[]> {
-    return await BookedSlot.find({ expertId, consultation_status: "pending" })
-      .populate({
-        path: "slotId",
-        model: "Slot",
-      })
-      .populate("userId")
-      .populate("expertId");
-  }
 
-  async findSlotByIdAndUpdate(
-    slotId: string,
-    roomId: string
-  ): Promise<IBookedSlot | null> {
-    return await BookedSlot.findByIdAndUpdate(
-      { _id: slotId },
-      { $set: { roomId: roomId } }
-    );
-  }
-
-  async findSlotByIdAndUpdateStatus(
-    slotId: string,
-    status: string
-  ): Promise<IBookedSlot | null> {
-    return await BookedSlot.findByIdAndUpdate(
-      { _id: slotId },
-      {
-        $set: { consultation_status: status },
-      }
-    );
-  }
 
   async findBookedSlotsByExpert(expertId: string): Promise<string[]> {
     const now = new Date().toISOString();
@@ -297,7 +207,6 @@ class ExpertRepository
       time: { $gte: now },
     }).sort({ time: 1 });
 
-    // Convert ObjectIds to strings
     return slots.map((slot) => slot._id.toString());
   }
 
@@ -355,47 +264,6 @@ class ExpertRepository
     prescriptionId: string
   ): Promise<IPrescription | null> {
     return await Prescription.findById(prescriptionId);
-  }
-
-  async getNotifications(expertId: string): Promise<INotification[]> {
-    try {
-      // console.log("get notification repository");
-      const notifications = await Notification.find({
-        expertId,
-        isClearedByExpert: false,
-      }).sort({
-        createdAt: -1,
-      });
-      return notifications;
-    } catch (error) {
-      console.error("Error in notification repository:", error);
-      throw error;
-    }
-  }
-
-  async markNotificationAsRead(expertId: string): Promise<void> {
-    try {
-      // await Notification.updateMany({expertId,isRead:false},{ $set: { isRead: true } })
-      await Notification.updateMany(
-        { expertId, isReadByExpert: false },
-        { $set: { isReadByExpert: true } }
-      );
-    } catch (error) {
-      console.log(error);
-    }
-  }
-
-  async clearNotifications(expertId: string): Promise<void> {
-    try {
-      // await Notification.deleteMany({ expertId });
-      await Notification.updateMany(
-        { expertId, isClearedByExpert: false },
-        { $set: { isClearedByExpert: true } }
-      );
-    } catch (error) {
-      console.error("Error in clearing notifications (Repository):", error);
-      throw error;
-    }
   }
 }
 

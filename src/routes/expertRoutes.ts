@@ -7,6 +7,18 @@ import { expertAuth } from "../middlewares/expertAuth";
 import ChatRepository from "../repositories/chat/chatRepository";
 import ChatService from "../services/chat/chatService";
 import ChatController from "../controllers/chat/chatController";
+import SlotRepository from "../repositories/slot/slotRepository";
+import SlotService from "../services/slot/slotService";
+import SlotController from "../controllers/slot/slotController";
+import PrescriptionRepository from "../repositories/prescription/prescriptionRepository";
+import PrescriptionService from "../services/prescription/prescriptionService";
+import PrescriptionController from "../controllers/prescription/prescriptionController";
+import NotificationRepository from "../repositories/notification/notificationRepository";
+import NotificationService from "../services/notification/notificationService";
+import NotificationController from "../controllers/notification/notificationController";
+import BookedSlotRepository from "../repositories/bookedSlot/bookedSlotRepository";
+import BookedSlotService from "../services/bookedSlot/bookedSlotService";
+import BookedSlotController from "../controllers/bookedSlot/bookedSlotController";
 
 const expertRouter = express.Router();
 
@@ -17,6 +29,22 @@ const expertController = new ExpertController(expertService);
 const chatRepository = new ChatRepository();
 const chatService = new ChatService(chatRepository);
 const chatController = new ChatController(chatService);
+
+const slotRepository = new SlotRepository();
+const slotService = new SlotService(slotRepository);
+const slotController = new SlotController(slotService);
+
+const prescriptionRepository = new PrescriptionRepository();
+const prescriptionService = new PrescriptionService(prescriptionRepository);
+const prescriptionController = new PrescriptionController(prescriptionService);
+
+const notificationRepository = new NotificationRepository();
+const notificationService = new NotificationService(notificationRepository);
+const notificationController = new NotificationController(notificationService);
+
+const bookedSlotRepository = new BookedSlotRepository();
+const bookedSlotService = new BookedSlotService(bookedSlotRepository);
+const bookedSlotController = new BookedSlotController(bookedSlotService);
 
 expertRouter.post(
   "/registration",
@@ -67,7 +95,7 @@ expertRouter.post("/verifyEmail", (req, res) =>
   expertController.verifyEmailForPasswordReset(req, res)
 );
 
-expertRouter.post("/updatePassword", (req, res) =>
+expertRouter.patch("/updatePassword", (req, res) =>
   expertController.updatePassword(req, res)
 );
 
@@ -76,19 +104,19 @@ expertRouter.post("/auth/refresh-token", (req, res) =>
 );
 
 expertRouter.post("/slotCreation", expertAuth, (req, res) =>
-  expertController.createSlot(req, res)
+  slotController.createSlot(req, res)
 );
 
 expertRouter.post("/add_all_slots", (req, res) =>
-  expertController.addAllSlots(req, res)
+  slotController.addAllSlots(req, res)
 );
 
 expertRouter.get("/expertSlotDetails", expertAuth, (req, res) =>
-  expertController.expertSlotDetails(req, res)
+  slotController.expertSlotDetails(req, res)
 );
 
 expertRouter.delete("/removeSlot", expertAuth, (req, res) =>
-  expertController.removeSlot(req, res)
+  slotController.removeSlot(req, res)
 );
 
 expertRouter.get("/get_booking_details", expertAuth, (req, res) =>
@@ -99,53 +127,62 @@ expertRouter.get("/get_expert_dashboard_details", expertAuth, (req, res) =>
 );
 
 expertRouter.get("/upcoming_appointment", expertAuth, (req, res) =>
-  expertController.upcomingAppointment(req, res)
+  bookedSlotController.upcomingAppointmentByExpert(req, res)
 );
 
 expertRouter.get("/updateUpcomingSlot", expertAuth, (req, res) =>
-  expertController.updateUpcomingSlot(req, res)
+  bookedSlotController.updateUpcomingSlot(req, res)
 );
 
 expertRouter.get("/update_consultationStatus", expertAuth, (req, res) =>
-  expertController.updateSlotStatus(req, res)
+  bookedSlotController.updateSlotStatus(req, res)
 );
 
 expertRouter.get("/get_bookings_of_expert", expertAuth, (req, res) =>
   expertController.getExpertBookings(req, res)
 );
 
-expertRouter.get("/expert_accessed_chats", (req, res) =>
+
+//chats
+expertRouter
+.use(expertAuth)
+.get("/expert_accessed_chats", (req, res) =>
   chatController.getExpertChats(req, res)
-);
-expertRouter.get("/expertFetchAllMessages", (req, res) =>
+)
+.get("/expertFetchAllMessages", (req, res) =>
   chatController.getExpertMessages(req, res)
-);
-expertRouter.post("/expertSendMessage", (req, res) =>
+)
+.post("/expertSendMessage", (req, res) =>
   chatController.expertSendMessage(req, res)
 );
 
-expertRouter.get("/add_prescription", (req, res) =>
-  expertController.addPrescription(req, res)
+// prescription
+expertRouter
+.use(expertAuth)
+.get("/add_prescription", (req, res) =>
+  prescriptionController.addPrescription(req, res)
+).get("/prescriptions", (req, res) =>
+  prescriptionController.getAllPrescriptions(req, res)
+).get("/get_prescription_details", (req, res) =>
+  prescriptionController.getPrescriptionDetailsByExpert(req, res)
 );
+
+
+// notification
+expertRouter
+.use(expertAuth)
+.get("/notifications", (req, res) =>
+  notificationController.getNotificationsForExpert(req, res)
+).put("/notifications/mark-as-read", (req, res) =>
+  notificationController.markNotificationAsReadForExpert(req, res)
+).put("/notifications/clear", (req, res) =>
+  notificationController.clearNotificationsForExpert(req, res)
+);
+
+
 
 expertRouter.get("/share_roomId_through_email", (req, res) =>
   expertController.shareRoomIdThroughEmail(req, res)
-);
-
-expertRouter.get("/get_prescription_details", (req, res) =>
-  expertController.getPrescriptionDetails(req, res)
-);
-
-expertRouter.get("/notifications", (req, res) =>
-  expertController.getNotifications(req, res)
-);
-
-expertRouter.put("/notifications/mark-as-read", (req, res) =>
-  expertController.markNotificationAsRead(req, res)
-);
-
-expertRouter.put("/notifications/clear", (req, res) =>
-  expertController.clearNotifications(req, res)
 );
 
 export default expertRouter;

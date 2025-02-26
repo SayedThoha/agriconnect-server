@@ -33,8 +33,6 @@ adminRouter.delete("/deleteSpecialisation", adminAuth_1.default, (req, res) => a
 adminRouter.get("/kycDataCollection", adminAuth_1.default, (req, res) => adminController.getKycData(req, res));
 adminRouter.get("/get_kyc_details_of_expert", adminAuth_1.default, (req, res) => adminController.getExpertKycDetails(req, res));
 adminRouter.post("/submit_kyc_details", adminAuth_1.default, (req, res) => adminController.submitKycDetails(req, res));
-// adminRouter.get("/download_kyc_documents",
-//   (req,res)=>adminController.downloadKycDocuments(req,res))
 adminRouter.post("/editpayOut", (req, res) => adminController.editPayOut(req, res));
 adminRouter.get("/get_appointment_details", (req, res) => adminController.getAppointmentDetails(req, res));
 exports.default = adminRouter;

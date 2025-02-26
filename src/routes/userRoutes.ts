@@ -10,8 +10,18 @@ import { userAuth } from "../middlewares/userAuth";
 import ChatController from "../controllers/chat/chatController";
 import ChatRepository from "../repositories/chat/chatRepository";
 import ChatService from "../services/chat/chatService";
-
-// import { checkUserBlocked } from "../middlewares/userAuth";
+import SlotRepository from "../repositories/slot/slotRepository";
+import SlotService from "../services/slot/slotService";
+import SlotController from "../controllers/slot/slotController";
+import PrescriptionRepository from "../repositories/prescription/prescriptionRepository";
+import PrescriptionService from "../services/prescription/prescriptionService";
+import PrescriptionController from "../controllers/prescription/prescriptionController";
+import NotificationRepository from "../repositories/notification/notificationRepository";
+import NotificationService from "../services/notification/notificationService";
+import NotificationController from "../controllers/notification/notificationController";
+import BookedSlotRepository from "../repositories/bookedSlot/bookedSlotRepository";
+import BookedSlotService from "../services/bookedSlot/bookedSlotService";
+import BookedSlotController from "../controllers/bookedSlot/bookedSlotController";
 
 const userRouter = express.Router();
 
@@ -22,6 +32,22 @@ const userController = new UserController(userService);
 const chatRepository = new ChatRepository();
 const chatService = new ChatService(chatRepository);
 const chatController = new ChatController(chatService);
+
+const slotRepository = new SlotRepository();
+const slotService = new SlotService(slotRepository);
+const slotController = new SlotController(slotService);
+
+const prescriptionRepository = new PrescriptionRepository();
+const prescriptionService = new PrescriptionService(prescriptionRepository);
+const prescriptionController = new PrescriptionController(prescriptionService);
+
+const notificationRepository = new NotificationRepository();
+const notificationService = new NotificationService(notificationRepository);
+const notificationController = new NotificationController(notificationService);
+
+const bookedSlotRepository = new BookedSlotRepository();
+const bookedSlotService = new BookedSlotService(bookedSlotRepository);
+const bookedSlotController = new BookedSlotController(bookedSlotService);
 
 const googleAuthRepository = new GoogleAuthRepository(
   process.env.GOOGLE_CLIENT_ID!,
@@ -68,7 +94,7 @@ userRouter.post("/verifyEmail", (req, res) =>
   userController.verifyEmailForPasswordReset(req, res)
 );
 
-userRouter.post("/updatePassword", (req, res) =>
+userRouter.patch("/updatePassword", (req, res) =>
   userController.updatePassword(req, res)
 );
 
@@ -89,15 +115,15 @@ userRouter.get("/getExpertDetails", userAuth, (req, res) =>
 );
 
 userRouter.get("/getSlots", userAuth, (req, res) =>
-  userController.getExpertSlots(req, res)
+  slotController.getExpertSlots(req, res)
 );
 
 userRouter.post("/addSlots", userAuth, (req, res) =>
-  userController.addSlots(req, res)
+  slotController.addSlots(req, res)
 );
 
 userRouter.get("/getSlot", userAuth, (req, res) =>
-  userController.getSlot(req, res)
+  slotController.getSlot(req, res)
 );
 
 userRouter.get("/check_if_the_slot_available", userAuth, (req, res) =>
@@ -114,50 +140,65 @@ userRouter.post("/appointment_booking", (req, res) =>
 userRouter.get("/userDetails", (req, res) =>
   userController.userDetails(req, res)
 );
-userRouter.get("/get_booking_details", (req, res) =>
-  userController.getBookingDetails(req, res)
-);
 
 userRouter.get("/cancelSlot", (req, res) =>
   userController.cancelSlot(req, res)
 );
 
-userRouter.get("/upcoming_appointment", (req, res) =>
-  userController.upcomingAppointment(req, res)
+//bookedSlot
+userRouter
+.use(userAuth)
+.get("/get_booking_details", (req, res) =>
+  bookedSlotController.getBookingDetails(req, res)
+)
+
+.get("/upcoming_appointment", (req, res) =>
+  bookedSlotController.upcomingAppointment(req, res)
+)
+
+.get("/getUpcomingSlot", (req, res) =>
+  bookedSlotController.getUpcomingSlot(req, res)
 );
 
-userRouter.get("/getUpcomingSlot", (req, res) =>
-  userController.getUpcomingSlot(req, res)
-);
 
-userRouter.get("/userAccessChat", (req, res) =>
+
+//chats
+userRouter
+.use(userAuth)
+.get("/userAccessChat", (req, res) =>
   chatController.userAccessChat(req, res)
-);
-userRouter.get("/userFetchAllChat", (req, res) =>
+)
+.get("/userFetchAllChat", (req, res) =>
   chatController.userFetchAllChat(req, res)
-);
-userRouter.post("/sendMessage", (req, res) =>
+)
+.post("/sendMessage", (req, res) =>
   chatController.sendMessage(req, res)
-);
-userRouter.get("/userFetchAllMessages", (req, res) =>
+)
+.get("/userFetchAllMessages", (req, res) =>
   chatController.userFetchAllMessages(req, res)
 );
 
-userRouter.get("/get_prescription_details", (req, res) =>
-  userController.getPrescriptionDetails(req, res)
+
+userRouter
+.use(userAuth)
+.get("/get_prescription_details", (req, res) =>
+  prescriptionController.getPrescriptionDetails(req, res)
 );
 
-userRouter.get("/notifications", (req, res) =>
-  userController.getNotifications(req, res)
-);
 
-userRouter.put("/notifications/mark-as-read", (req, res) =>
-  userController.markNotificationAsRead(req, res)
-);
+//notification
+userRouter
+  .use(userAuth)
+  .get("/notifications", (req, res) =>
+    notificationController.getNotificationsForUser(req, res)
+  )
+  .put("/notifications/mark-as-read", (req, res) =>
+    notificationController.markNotificationAsReadForUser(req, res)
+  )
+  .put("/notifications/clear", (req, res) =>
+    notificationController.clearNotificationsForUser(req, res)
+  );
 
-userRouter.put("/notifications/clear", (req, res) =>
-  userController.clearNotifications(req, res)
-);
-
+  
 
 export default userRouter;

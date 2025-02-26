@@ -17,11 +17,9 @@ const expertModel_1 = require("../../models/expertModel");
 const expertKycModel_1 = require("../../models/expertKycModel");
 const baseRepository_1 = __importDefault(require("../base/baseRepository"));
 const slotModel_1 = require("../../models/slotModel");
-const adminModel_1 = require("../../models/adminModel");
 const bookeSlotModel_1 = require("../../models/bookeSlotModel");
 const prescriptionModel_1 = require("../../models/prescriptionModel");
 const userModel_1 = require("../../models/userModel");
-const notificationModel_1 = require("../../models/notificationModel");
 class ExpertRepository extends baseRepository_1.default {
     constructor() {
         super(expertModel_1.Expert);
@@ -161,65 +159,6 @@ class ExpertRepository extends baseRepository_1.default {
             }
         });
     }
-    findSlotByExpertIdAndTime(expertId, time) {
-        return __awaiter(this, void 0, void 0, function* () {
-            try {
-                return yield slotModel_1.Slot.findOne({ expertId, time });
-            }
-            catch (error) {
-                throw new Error(`Error finding slot: ${error}`);
-            }
-        });
-    }
-    createSlot(slotData) {
-        return __awaiter(this, void 0, void 0, function* () {
-            try {
-                const slot = yield slotModel_1.Slot.create(slotData);
-                return yield slot.save();
-            }
-            catch (error) {
-                throw new Error(`Error creating slot: ${error}`);
-            }
-        });
-    }
-    findAdminSettings() {
-        return __awaiter(this, void 0, void 0, function* () {
-            try {
-                return yield adminModel_1.Admin.find({});
-            }
-            catch (error) {
-                throw new Error(`Error finding admin settings: ${error}`);
-            }
-        });
-    }
-    createMultipleSlots(slots) {
-        return __awaiter(this, void 0, void 0, function* () {
-            return yield slotModel_1.Slot.insertMany(slots);
-        });
-    }
-    findSlotsByExpertId(expertId, currentTime) {
-        return __awaiter(this, void 0, void 0, function* () {
-            try {
-                return yield slotModel_1.Slot.find({
-                    expertId: expertId,
-                    time: { $gte: currentTime },
-                }).sort({ time: 1 });
-            }
-            catch (error) {
-                throw new Error(`Error fetching slots for expert ${expertId}: ${error}`);
-            }
-        });
-    }
-    findSlotById(slotId) {
-        return __awaiter(this, void 0, void 0, function* () {
-            return yield slotModel_1.Slot.findById(slotId);
-        });
-    }
-    deleteSlotById(slotId) {
-        return __awaiter(this, void 0, void 0, function* () {
-            return yield slotModel_1.Slot.findByIdAndDelete(slotId);
-        });
-    }
     getBookingDetails(expertId) {
         return __awaiter(this, void 0, void 0, function* () {
             // const now = new Date().toISOString();
@@ -246,29 +185,6 @@ class ExpertRepository extends baseRepository_1.default {
             }
         });
     }
-    findPendingAppointmentsByExpert(expertId) {
-        return __awaiter(this, void 0, void 0, function* () {
-            return yield bookeSlotModel_1.BookedSlot.find({ expertId, consultation_status: "pending" })
-                .populate({
-                path: "slotId",
-                model: "Slot",
-            })
-                .populate("userId")
-                .populate("expertId");
-        });
-    }
-    findSlotByIdAndUpdate(slotId, roomId) {
-        return __awaiter(this, void 0, void 0, function* () {
-            return yield bookeSlotModel_1.BookedSlot.findByIdAndUpdate({ _id: slotId }, { $set: { roomId: roomId } });
-        });
-    }
-    findSlotByIdAndUpdateStatus(slotId, status) {
-        return __awaiter(this, void 0, void 0, function* () {
-            return yield bookeSlotModel_1.BookedSlot.findByIdAndUpdate({ _id: slotId }, {
-                $set: { consultation_status: status },
-            });
-        });
-    }
     findBookedSlotsByExpert(expertId) {
         return __awaiter(this, void 0, void 0, function* () {
             const now = new Date().toISOString();
@@ -277,7 +193,6 @@ class ExpertRepository extends baseRepository_1.default {
                 booked: true,
                 time: { $gte: now },
             }).sort({ time: 1 });
-            // Convert ObjectIds to strings
             return slots.map((slot) => slot._id.toString());
         });
     }
@@ -325,47 +240,6 @@ class ExpertRepository extends baseRepository_1.default {
     findPrescriptionById(prescriptionId) {
         return __awaiter(this, void 0, void 0, function* () {
             return yield prescriptionModel_1.Prescription.findById(prescriptionId);
-        });
-    }
-    getNotifications(expertId) {
-        return __awaiter(this, void 0, void 0, function* () {
-            try {
-                // console.log("get notification repository");
-                const notifications = yield notificationModel_1.Notification.find({
-                    expertId,
-                    isClearedByExpert: false,
-                }).sort({
-                    createdAt: -1,
-                });
-                return notifications;
-            }
-            catch (error) {
-                console.error("Error in notification repository:", error);
-                throw error;
-            }
-        });
-    }
-    markNotificationAsRead(expertId) {
-        return __awaiter(this, void 0, void 0, function* () {
-            try {
-                // await Notification.updateMany({expertId,isRead:false},{ $set: { isRead: true } })
-                yield notificationModel_1.Notification.updateMany({ expertId, isReadByExpert: false }, { $set: { isReadByExpert: true } });
-            }
-            catch (error) {
-                console.log(error);
-            }
-        });
-    }
-    clearNotifications(expertId) {
-        return __awaiter(this, void 0, void 0, function* () {
-            try {
-                // await Notification.deleteMany({ expertId });
-                yield notificationModel_1.Notification.updateMany({ expertId, isClearedByExpert: false }, { $set: { isClearedByExpert: true } });
-            }
-            catch (error) {
-                console.error("Error in clearing notifications (Repository):", error);
-                throw error;
-            }
         });
     }
 }

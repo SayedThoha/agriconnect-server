@@ -137,7 +137,7 @@ class ChatController implements IChatController {
       const messages = await this.chatService.fetchMessagesByChatId(
         chatId as string
       );
-      console.log(messages)
+      // console.log(messages)
       res.status(Http_Status_Codes.OK).json(messages);
     } catch (error) {
       console.error("Error fetching messages:", error);

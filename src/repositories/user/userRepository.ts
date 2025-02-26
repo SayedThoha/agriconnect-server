@@ -7,13 +7,9 @@ import {
 } from "../../models/specialisationModel";
 import { IUser, User } from "../../models/userModel";
 import BaseRepository from "../base/baseRepository";
-
 import { IUserRepository } from "./IUserRepository";
 import { ISlot, Slot } from "../../models/slotModel";
-import { SlotUpdateData } from "../../interfaces/commonInterface";
 import { BookedSlot, IBookedSlot } from "../../models/bookeSlotModel";
-import { IPrescription, Prescription } from "../../models/prescriptionModel";
-import { INotification, Notification } from "../../models/notificationModel";
 
 class UserRepository extends BaseRepository<IUser> implements IUserRepository {
   constructor() {
@@ -114,9 +110,8 @@ class UserRepository extends BaseRepository<IUser> implements IUserRepository {
 
   async findUserById(id: string): Promise<IUser | null> {
     try {
-      // return await User.findById(id);
-
-      return this.findById(id); // Using base repository findById method
+      
+      return this.findById(id); 
     } catch (error) {
       console.error("Error in expert repository findById:", error);
       throw new Error("Database operation failed");
@@ -128,7 +123,7 @@ class UserRepository extends BaseRepository<IUser> implements IUserRepository {
     updateData: Partial<IUser>
   ): Promise<IUser | null> {
     try {
-      return this.update(id, updateData); // Using base repository update method
+      return this.update(id, updateData); 
     } catch (error) {
       console.error("Error in user repository updateUserProfile:", error);
       throw new Error("Database operation failed");
@@ -139,7 +134,7 @@ class UserRepository extends BaseRepository<IUser> implements IUserRepository {
     userId: string,
     updateData: Partial<IUser>
   ): Promise<IUser | null> {
-    return this.update(userId, updateData); // Using base repository update method
+    return this.update(userId, updateData); 
   }
 
   async updateProfilePicture(userId: string, imageUrl: string): Promise<void> {
@@ -181,7 +176,7 @@ class UserRepository extends BaseRepository<IUser> implements IUserRepository {
   }
 
   async getSpecialisations(): Promise<ISpecialisation[]> {
-    // console.log("get specialisation serverside");
+    
     return await Specialisation.find();
   }
 
@@ -206,43 +201,6 @@ class UserRepository extends BaseRepository<IUser> implements IUserRepository {
       return expert;
     } catch (error) {
       console.error("Error in findExpertDetails repository:", error);
-      throw error;
-    }
-  }
-
-  async getSlots(expertId: string): Promise<ISlot[]> {
-    try {
-      const now = new Date().toISOString();
-      const slots = await Slot.find({
-        expertId: expertId,
-        booked: false,
-        time: { $gte: now }, // Filter slots from the current time onward
-      }).sort({ time: 1 });
-
-      return slots;
-    } catch (error) {
-      console.error(error);
-      throw error;
-    }
-  }
-
-  async updateSlotBooking(data: SlotUpdateData): Promise<ISlot | null> {
-    try {
-      const updatedSlot = await Slot.findByIdAndUpdate(
-        data._id,
-        {
-          $set: {
-            bookedUserId: data.userId,
-            expertId: data.expertId,
-            booked: true,
-          },
-        },
-        { new: true }
-      );
-
-      return updatedSlot;
-    } catch (error) {
-      console.error("Error in slot repository updateSlotBooking:", error);
       throw error;
     }
   }
@@ -338,75 +296,13 @@ class UserRepository extends BaseRepository<IUser> implements IUserRepository {
     );
   }
 
-  async findPendingAppointmentsByUser(userId: string): Promise<IBookedSlot[]> {
-    return await BookedSlot.find({ userId, consultation_status: "pending" })
-      .populate({
-        path: "slotId",
-        model: "Slot",
-      })
-      .populate("userId")
-      .populate("expertId");
-  }
 
   async findBookedSlotById(appointmentId: string): Promise<IBookedSlot | null> {
     return await BookedSlot.findById(appointmentId);
   }
 
-  async findPrescriptionById(
-    prescriptionId: string
-  ): Promise<IPrescription | null> {
-    return await Prescription.findById(prescriptionId).populate({
-      path: "bookedSlot", // Populating the bookedSlot reference
-      populate: {
-        path: "expertId", // Populating the expertId within the bookedSlot
-        select: "firstName lastName specialisation", // Select fields you want from the expert
-      },
-    });
-  }
-
   async updateUserWallet(userId: string, amount: number): Promise<void> {
     await User.findByIdAndUpdate(userId, { $inc: { wallet: amount } });
-  }
-
-  async getNotifications(userId: string): Promise<INotification[]> {
-    try {
-      // console.log("get notification repository");
-      const notifications = await Notification.find({
-        userId,
-        isClearedByUser: false,
-      }).sort({
-        createdAt: -1,
-      });
-      return notifications;
-    } catch (error) {
-      console.error("Error in notification repository:", error);
-      throw error;
-    }
-  }
-
-  async markNotificationAsRead(userId: string): Promise<void> {
-    try {
-      // await Notification.updateMany({userId,isRead:false},{ $set: { isRead: true } })
-      await Notification.updateMany(
-        { userId, isReadByUser: false },
-        { $set: { isReadByUser: true } }
-      );
-    } catch (error) {
-      console.log(error);
-    }
-  }
-
-  async clearNotifications(userId: string): Promise<void> {
-    try {
-      // await Notification.deleteMany({ userId });
-      await Notification.updateMany(
-        { userId, isClearedByUser: false },
-        { $set: { isClearedByUser: true } }
-      );
-    } catch (error) {
-      console.error("Error in clearing notifications (Repository):", error);
-      throw error;
-    }
   }
 }
 export default UserRepository;
