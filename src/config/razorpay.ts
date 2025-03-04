@@ -1,8 +1,5 @@
 import Razorpay from "razorpay";
 
-
-
-
 export const getRazorpayInstance = (): Razorpay => {
   const keyId = process.env.razorpay_key_id;
   const keySecret = process.env.razorpay_secret_id;
@@ -13,6 +10,6 @@ export const getRazorpayInstance = (): Razorpay => {
   }
   return new Razorpay({
     key_id: keyId,
-    key_secret:keySecret,
+    key_secret: keySecret,
   });
 };

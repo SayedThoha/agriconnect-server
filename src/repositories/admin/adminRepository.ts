@@ -19,9 +19,6 @@ class AdminRepository
     super(Admin);
   }
 
-  // async findByEmail(email: string): Promise<IAdmin | null> {
-  //   return await Admin.findOne({ email });
-  // }
 
   async findByEmail(email: string): Promise<IAdmin | null> {
     try {
