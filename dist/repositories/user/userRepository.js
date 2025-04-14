@@ -1,5 +1,4 @@
 "use strict";
-//userRepository.ts
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -35,12 +34,11 @@ class UserRepository extends baseRepository_1.default {
     }
     saveUser(userData) {
         return __awaiter(this, void 0, void 0, function* () {
-            return this.create(userData); // Using base repository create method
+            return this.create(userData);
         });
     }
     findById(id) {
         return __awaiter(this, void 0, void 0, function* () {
-            // Find user by ID
             return yield userModel_1.User.findById(id);
         });
     }
@@ -180,7 +178,6 @@ class UserRepository extends baseRepository_1.default {
     getExperts() {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                // console.log("get experts repository");
                 const experts = yield expertModel_1.Expert.find({
                     kyc_verification: true,
                     blocked: false,

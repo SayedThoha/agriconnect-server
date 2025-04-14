@@ -10,7 +10,7 @@ class NotificationRepository
     super(Notification);
   }
 
-  //user
+  
   async getNotificationsForUser(userId: string): Promise<INotification[]> {
     try {
       const notifications = await Notification.find({
@@ -54,7 +54,7 @@ class NotificationRepository
     }
   }
 
-  //expert
+  
   async getNotificationsForExpert(expertId: string): Promise<INotification[]> {
     try {
       const notifications = await Notification.find({

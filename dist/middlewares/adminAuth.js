@@ -13,14 +13,11 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
-// Middleware for admin token authentication
 const adminAuth = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     const authHeader = req.headers["authorization"];
     if (authHeader && authHeader.startsWith("admin-Bearer")) {
-        const token = authHeader.split(" ")[1]; // token from header
+        const token = authHeader.split(" ")[1];
         const secret = process.env.JWT_SECRET || "default_secret";
-        // console.log("Token received:", token);
-        // console.log("JWT_SECRET during verification:", secret);
         try {
             jsonwebtoken_1.default.verify(token, secret, (err, admin) => {
                 if (err || !admin) {

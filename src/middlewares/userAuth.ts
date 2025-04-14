@@ -1,6 +1,5 @@
 import { Request, Response, NextFunction } from "express";
 import { User } from "../models/userModel";
-// import jwt, { JwtPayload } from "jsonwebtoken";
 import { verifyToken } from "../utils/token";
 
 interface UserRequest extends Request {
@@ -12,23 +11,22 @@ export const userAuth = async (
   res: Response,
   next: NextFunction
 ): Promise<void> => {
-  
   const authHeader = req.headers["authorization"];
   if (authHeader && authHeader.startsWith("user-Bearer")) {
-    const token = authHeader.split(" ")[1]; // Getting token from the header
-    
-   
+    const token = authHeader.split(" ")[1];
+
     try {
-      // const decoded = jwt.verify(token, secret) as JwtPayload;
-      const decoded =  await verifyToken(token);
-      
+      const decoded = await verifyToken(token);
+
       if (!decoded) {
-        res.status(401).json({ message: "Unauthorized: Invalid or expired token" });
+        res
+          .status(401)
+          .json({ message: "Unauthorized: Invalid or expired token" });
         return;
       }
-      // Check if decoded has the expertId property
+
       if (decoded && typeof decoded === "object" && "data" in decoded) {
-        req.userId = decoded.data as string; // Explicitly cast to string
+        req.userId = decoded.data as string;
         next();
       } else {
         res
@@ -50,10 +48,9 @@ export const checkUserBlocked = async (
   try {
     const { userId } = req;
 
-    // Assuming the user ID is stored in req.user
     if (!userId) {
       res.status(400).json({ message: "User ID is missing" });
-      return; // Ensure no further processing
+      return;
     }
     const user = await User.findById(userId);
 

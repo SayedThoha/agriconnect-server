@@ -3,11 +3,10 @@ import BookedSlotService from "../../services/bookedSlot/bookedSlotService";
 import { Request, Response } from "express";
 import { IBookedSlotController } from "./IBookedSlotController";
 
-class BookedSlotController implements IBookedSlotController{
-    constructor(private bookedSlotService:BookedSlotService){}
+class BookedSlotController implements IBookedSlotController {
+  constructor(private bookedSlotService: BookedSlotService) {}
 
-// user
- async getBookingDetails(req: Request, res: Response): Promise<void> {
+  async getBookingDetails(req: Request, res: Response): Promise<void> {
     try {
       const { userId } = req.query;
       if (!userId) {
@@ -27,7 +26,6 @@ class BookedSlotController implements IBookedSlotController{
         .json({ message: "Internal Server Error" });
     }
   }
-
 
   async getUpcomingSlot(req: Request, res: Response): Promise<void> {
     try {
@@ -53,13 +51,10 @@ class BookedSlotController implements IBookedSlotController{
   async upcomingAppointment(req: Request, res: Response): Promise<void> {
     try {
       const userId = req.query._id as string;
-      const appointment = await this.bookedSlotService.getUpcomingAppointment(userId);
+      const appointment = await this.bookedSlotService.getUpcomingAppointment(
+        userId
+      );
 
-      if (Object.keys(appointment).length) {
-        // console.log("Next appointment:", appointment);
-      } else {
-        // console.log("No upcoming appointments found.");
-      }
       res.status(Http_Status_Codes.OK).json(appointment);
     } catch (error) {
       console.error("Error fetching upcoming appointment:", error);
@@ -69,13 +64,17 @@ class BookedSlotController implements IBookedSlotController{
     }
   }
 
-// expert
-  async upcomingAppointmentByExpert(req: Request, res: Response): Promise<void> {
+  // expert
+  async upcomingAppointmentByExpert(
+    req: Request,
+    res: Response
+  ): Promise<void> {
     try {
       const { expertId } = req.query;
-      const appointment = await this.bookedSlotService.getUpcomingAppointmentByExpert(
-        expertId as string
-      );
+      const appointment =
+        await this.bookedSlotService.getUpcomingAppointmentByExpert(
+          expertId as string
+        );
       if (Object.keys(appointment).length) {
         // console.log("Next appointment:", appointment);
       } else {
@@ -90,7 +89,6 @@ class BookedSlotController implements IBookedSlotController{
         .json({ message: "Internal Server Error" });
     }
   }
-
 
   async updateUpcomingSlot(req: Request, res: Response): Promise<void> {
     try {
@@ -139,10 +137,6 @@ class BookedSlotController implements IBookedSlotController{
         .json({ message: "Internal Server Error" });
     }
   }
-
-
-
-
 }
 
-export default BookedSlotController
+export default BookedSlotController;

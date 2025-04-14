@@ -75,7 +75,6 @@ class NotificationController {
             }
         });
     }
-    //expert
     getNotificationsForExpert(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             try {

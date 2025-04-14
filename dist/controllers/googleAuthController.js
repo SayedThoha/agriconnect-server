@@ -16,7 +16,6 @@ class GoogleAuthController {
     }
     login(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
-            // console.log("enteerin google login")
             const { token } = req.body;
             if (!token) {
                 res.status(400).json({

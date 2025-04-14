@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Request, Response } from "express";
 import { Http_Status_Codes } from "../../constants/httpStatusCodes";
 import ExpertService from "../../services/expert/expertService";
@@ -213,7 +214,6 @@ class ExpertController implements IExpertController {
       const message = await this.expertService.optForNewEmail(expertId, email);
 
       res.status(Http_Status_Codes.OK).json({ message });
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
       console.error("Error in optForNewEmail controller:", error);
 
@@ -289,7 +289,6 @@ class ExpertController implements IExpertController {
 
   async updatePassword(req: Request, res: Response): Promise<void> {
     try {
-      // Validation
       const requiredFields = ["email", "password"];
       const missingFields = requiredFields.filter((field) => !req.body[field]);
       if (missingFields.length > 0) {
@@ -378,7 +377,6 @@ class ExpertController implements IExpertController {
         .json({ message: "Internal Server Error" });
     }
   }
-
 
   async getExpertBookings(req: Request, res: Response): Promise<void> {
     try {

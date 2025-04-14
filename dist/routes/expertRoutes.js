@@ -72,17 +72,14 @@ expertRouter.get("/upcoming_appointment", expertAuth_1.expertAuth, (req, res) =>
 expertRouter.get("/updateUpcomingSlot", expertAuth_1.expertAuth, (req, res) => bookedSlotController.updateUpcomingSlot(req, res));
 expertRouter.get("/update_consultationStatus", expertAuth_1.expertAuth, (req, res) => bookedSlotController.updateSlotStatus(req, res));
 expertRouter.get("/get_bookings_of_expert", expertAuth_1.expertAuth, (req, res) => expertController.getExpertBookings(req, res));
-//chats
 expertRouter
     .use(expertAuth_1.expertAuth)
     .get("/expert_accessed_chats", (req, res) => chatController.getExpertChats(req, res))
     .get("/expertFetchAllMessages", (req, res) => chatController.getExpertMessages(req, res))
     .post("/expertSendMessage", (req, res) => chatController.expertSendMessage(req, res));
-// prescription
 expertRouter
     .use(expertAuth_1.expertAuth)
     .get("/add_prescription", (req, res) => prescriptionController.addPrescription(req, res)).get("/prescriptions", (req, res) => prescriptionController.getAllPrescriptions(req, res)).get("/get_prescription_details", (req, res) => prescriptionController.getPrescriptionDetailsByExpert(req, res));
-// notification
 expertRouter
     .use(expertAuth_1.expertAuth)
     .get("/notifications", (req, res) => notificationController.getNotificationsForExpert(req, res)).put("/notifications/mark-as-read", (req, res) => notificationController.markNotificationAsReadForExpert(req, res)).put("/notifications/clear", (req, res) => notificationController.clearNotificationsForExpert(req, res));

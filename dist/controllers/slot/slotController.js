@@ -101,7 +101,6 @@ class SlotController {
             }
         });
     }
-    //user
     getExpertSlots(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
@@ -127,11 +126,8 @@ class SlotController {
     addSlots(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                // console.log("addSlots backend");
                 const slotData = req.body;
-                // console.log(slotData);
                 const updatedSlot = yield this.slotService.bookSlot(slotData);
-                // console.log("slots after booking:", updatedSlot);
                 res.status(httpStatusCodes_1.Http_Status_Codes.CREATED).json({
                     message: "slot updated",
                     slot: updatedSlot,
@@ -148,11 +144,8 @@ class SlotController {
     getSlot(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                // console.log("getSlot backend");
                 const { slotId } = req.query;
-                // console.log("Query data:", { slotId });
                 const slot = yield this.slotService.getSlotDetails(slotId);
-                // console.log("Retrieved slot:", slot);
                 res.status(httpStatusCodes_1.Http_Status_Codes.OK).json(slot);
             }
             catch (error) {

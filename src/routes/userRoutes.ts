@@ -145,7 +145,6 @@ userRouter.get("/cancelSlot", (req, res) =>
   userController.cancelSlot(req, res)
 );
 
-//bookedSlot
 userRouter
 .use(userAuth)
 .get("/get_booking_details", (req, res) =>
@@ -161,8 +160,6 @@ userRouter
 );
 
 
-
-//chats
 userRouter
 .use(userAuth)
 .get("/userAccessChat", (req, res) =>
@@ -186,7 +183,6 @@ userRouter
 );
 
 
-//notification
 userRouter
   .use(userAuth)
   .get("/notifications", (req, res) =>

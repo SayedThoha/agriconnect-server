@@ -33,9 +33,7 @@ class ChatService {
     }
     fetchUserChats(userId) {
         return __awaiter(this, void 0, void 0, function* () {
-            // Get all chats from the repository
             const chats = yield this.chatRepository.findChatsByUserId(userId);
-            // Ensure latestMessage is populated
             for (const chat of chats) {
                 if (chat.latestMessage) {
                     const populatedMessage = yield messageModel_1.Message.findById(chat.latestMessage).populate("sender");
@@ -52,7 +50,6 @@ class ChatService {
             if (!content || !chatId || !userId) {
                 throw new Error("Invalid data passed as content, chatId, or userId");
             }
-            // Create the new message
             const newMessage = yield messageModel_1.Message.create({
                 sender: userId,
                 senderModel: "User",
@@ -62,9 +59,7 @@ class ChatService {
             if (!newMessage) {
                 throw new Error("Message creation failed");
             }
-            // Use repository to update the latest message in the chat
             yield this.chatRepository.updateLatestMessage(chatId, newMessage._id.toString());
-            // Populate sender field in the message response
             return messageModel_1.Message.findById(newMessage._id).populate({
                 path: "sender",
                 model: "User",

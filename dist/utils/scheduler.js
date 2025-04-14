@@ -21,9 +21,7 @@ const sendNotification_1 = require("./sendNotification");
 const userModel_1 = require("../models/userModel");
 const notificationModel_1 = require("../models/notificationModel");
 const email_to_notify_booking_time = () => __awaiter(void 0, void 0, void 0, function* () {
-    // console.log("email_to_notify_booking_time_to user and expert");
     node_cron_1.default.schedule("50,20 8-20 * * *", () => __awaiter(void 0, void 0, void 0, function* () {
-        // console.log("Running task every 30 minutes from 8:50 AM to 8:20 PM");
         try {
             const bookedSlots = yield bookeSlotModel_1.BookedSlot.find({
                 consultation_status: "pending",
@@ -32,8 +30,7 @@ const email_to_notify_booking_time = () => __awaiter(void 0, void 0, void 0, fun
                 .populate("userId")
                 .populate("expertId");
             const now = new Date();
-            const tenMinutesFromNow = new Date(now.getTime() + 10 * 60000); // 10 minutes from now
-            // Filter the slots after populating
+            const tenMinutesFromNow = new Date(now.getTime() + 10 * 60000);
             const upcomingSlot = bookedSlots.filter((slot) => {
                 const slotTime = new Date(slot.slotId.time);
                 return slotTime >= now && slotTime <= tenMinutesFromNow;
@@ -51,21 +48,14 @@ const email_to_notify_booking_time = () => __awaiter(void 0, void 0, void 0, fun
 });
 exports.email_to_notify_booking_time = email_to_notify_booking_time;
 const delete_unbooked_slots = () => __awaiter(void 0, void 0, void 0, function* () {
-    // console.log("delete_unbooked_slots");
     node_cron_1.default.schedule("0,30 9-20 * * *", () => __awaiter(void 0, void 0, void 0, function* () {
-        // console.log("Running task every 30 minutes from 9:00 AM to 8:30 PM");
         try {
-            // Get the current date and time
             const now = new Date();
-            // Find and delete slots that have a time in the past
-            // const result =
             yield slotModel_1.Slot.deleteMany({
                 time: { $lt: now },
                 booked: false,
                 cancelled: false,
             });
-            // console.log("result:", result);
-            // console.log(`Deleted ${result.deletedCount} past slots`);
         }
         catch (err) {
             console.error("Error cleaning up past slots:", err);
@@ -75,16 +65,14 @@ const delete_unbooked_slots = () => __awaiter(void 0, void 0, void 0, function* 
 exports.delete_unbooked_slots = delete_unbooked_slots;
 const update_unattended_slots = () => __awaiter(void 0, void 0, void 0, function* () {
     node_cron_1.default.schedule("0,30 * * * *", () => __awaiter(void 0, void 0, void 0, function* () {
-        // Runs every 30 minutes
         try {
             const now = new Date();
-            const oneHourAgo = new Date(now.getTime() - 60 * 60000); // 1 hour ago
+            const oneHourAgo = new Date(now.getTime() - 60 * 60000);
             const unattendedSlots = yield bookeSlotModel_1.BookedSlot.find({
                 consultation_status: "pending",
             })
                 .populate("slotId")
                 .populate("userId");
-            // Filter slots where scheduled time was more than an hour ago
             const slotsToUpdate = unattendedSlots.filter((slot) => {
                 const slotTime = new Date(slot.slotId.time);
                 return slotTime < oneHourAgo;
@@ -93,15 +81,12 @@ const update_unattended_slots = () => __awaiter(void 0, void 0, void 0, function
                 for (const slot of slotsToUpdate) {
                     const user = slot.userId;
                     const slotDetails = slot.slotId;
-                    const refundAmount = slotDetails.bookingAmount || 0; // Get booking amount
-                    // Refund the booking amount to the user's wallet
+                    const refundAmount = slotDetails.bookingAmount || 0;
                     if (refundAmount > 0) {
                         yield userModel_1.User.findByIdAndUpdate(user._id, {
                             $inc: { wallet: refundAmount },
                         });
-                        // console.log(`Refunded ${refundAmount} to user ${user.email}`);
                     }
-                    // Update the slot status
                     yield bookeSlotModel_1.BookedSlot.findByIdAndUpdate(slot._id, {
                         consultation_status: "not_consulted",
                     });
@@ -116,17 +101,11 @@ const update_unattended_slots = () => __awaiter(void 0, void 0, void 0, function
 exports.update_unattended_slots = update_unattended_slots;
 const deleteClearedNotifications = () => __awaiter(void 0, void 0, void 0, function* () {
     node_cron_1.default.schedule("0 0 * * *", () => __awaiter(void 0, void 0, void 0, function* () {
-        // Runs every day at midnight
         try {
-            // console.log("Running scheduled notification cleanup...");
-            // const deletedNotifications =
             yield notificationModel_1.Notification.deleteMany({
                 isClearedByUser: true,
                 isClearedByExpert: true,
             });
-            // console.log(
-            //   `Deleted ${deletedNotifications.deletedCount} cleared notifications`
-            // );
         }
         catch (error) {
             console.error("Error deleting cleared notifications:", error);

@@ -22,7 +22,6 @@ class PrescriptionService {
             return data;
         });
     }
-    //expert
     addPrescription(appointmentId, issue, prescription) {
         return __awaiter(this, void 0, void 0, function* () {
             if (!appointmentId || !issue || !prescription) {

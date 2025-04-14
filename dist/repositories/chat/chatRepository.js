@@ -33,10 +33,10 @@ class ChatRepository extends baseRepository_1.default {
         return __awaiter(this, void 0, void 0, function* () {
             const chatData = {
                 chatName: "sender",
-                user: new mongoose_1.default.Types.ObjectId(userId), // Convert to ObjectId
-                expert: new mongoose_1.default.Types.ObjectId(expertId), // Convert to ObjectId
+                user: new mongoose_1.default.Types.ObjectId(userId),
+                expert: new mongoose_1.default.Types.ObjectId(expertId),
             };
-            const createdChat = yield this.create(chatData); // Use BaseRepository create method
+            const createdChat = yield this.create(chatData);
             return this.model
                 .findOne({ _id: createdChat._id })
                 .populate({ path: "user", model: "User" })
@@ -46,7 +46,7 @@ class ChatRepository extends baseRepository_1.default {
     findChatsByUserId(userId) {
         return __awaiter(this, void 0, void 0, function* () {
             return yield this.model
-                .find({ users: userId }) // Ensure userId is an ObjectId
+                .find({ users: userId })
                 .populate([
                 { path: "user", model: "User" },
                 { path: "expert", model: "Expert" },
@@ -85,11 +85,9 @@ class ChatRepository extends baseRepository_1.default {
                 content,
                 chat: chatId,
             });
-            // Update chat with the latest message
             yield this.model.findByIdAndUpdate(chatId, {
                 $set: { latestMessage: newMessage._id },
             });
-            // Populate sender before returning
             return yield messageModel_1.Message.findById(newMessage._id).populate({
                 path: "sender",
                 model: senderModel,

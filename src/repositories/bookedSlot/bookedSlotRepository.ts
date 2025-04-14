@@ -10,7 +10,7 @@ class BookedSlotRepository
     super(BookedSlot);
   }
 
-  // user
+  
   async findBookedSlotsByUser(userId: string): Promise<IBookedSlot[]> {
     try {
       const bookedSlots = await BookedSlot.find({ userId })
@@ -47,7 +47,7 @@ class BookedSlotRepository
   }
 
 
-// expert
+
   async findPendingAppointmentsByExpert(
     expertId: string
   ): Promise<IBookedSlot[]> {

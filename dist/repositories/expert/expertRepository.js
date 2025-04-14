@@ -26,7 +26,6 @@ class ExpertRepository extends baseRepository_1.default {
     }
     getSpecialisations() {
         return __awaiter(this, void 0, void 0, function* () {
-            // console.log("get specialisation serverside");
             return yield specialisationModel_1.Specialisation.find();
         });
     }
@@ -113,12 +112,12 @@ class ExpertRepository extends baseRepository_1.default {
     }
     updateExpertProfile(id, updateData) {
         return __awaiter(this, void 0, void 0, function* () {
-            return this.update(id, updateData); // Using base repository method
+            return this.update(id, updateData);
         });
     }
     updateExpertById(expertId, updateData) {
         return __awaiter(this, void 0, void 0, function* () {
-            return this.update(expertId, updateData); // Using base repository method
+            return this.update(expertId, updateData);
         });
     }
     updateProfilePicture(expertId, imageUrl) {
@@ -161,8 +160,6 @@ class ExpertRepository extends baseRepository_1.default {
     }
     getBookingDetails(expertId) {
         return __awaiter(this, void 0, void 0, function* () {
-            // const now = new Date().toISOString();
-            // time: { $gte: now }
             return yield bookeSlotModel_1.BookedSlot.find({
                 expertId: expertId,
             })

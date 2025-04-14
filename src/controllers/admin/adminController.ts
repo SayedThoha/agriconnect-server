@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-empty-object-type */
 /* eslint-disable  @typescript-eslint/no-explicit-any */
 
 import { Request, Response } from "express";
@@ -254,7 +255,6 @@ class AdminController implements IAdminController {
   }
 
   async searchUsers(
-    // eslint-disable-next-line @typescript-eslint/no-empty-object-type
     req: Request<{}, {}, SearchUserRequest>,
     res: Response
   ): Promise<void> {
@@ -284,7 +284,6 @@ class AdminController implements IAdminController {
   }
 
   async searchExperts(
-    // eslint-disable-next-line @typescript-eslint/no-empty-object-type
     req: Request<{}, {}, SearchUserRequest>,
     res: Response
   ): Promise<void> {
@@ -363,7 +362,6 @@ class AdminController implements IAdminController {
   }
 
   async getExpertKycDetails(
-    // eslint-disable-next-line @typescript-eslint/no-empty-object-type
     req: Request<{}, {}, {}, { expertId?: string }>,
     res: Response
   ): Promise<void> {
@@ -400,7 +398,6 @@ class AdminController implements IAdminController {
   }
 
   async submitKycDetails(
-    // eslint-disable-next-line @typescript-eslint/no-empty-object-type
     req: Request<{}, {}, KycUpdateData>,
     res: Response
   ): Promise<void> {
@@ -437,7 +434,6 @@ class AdminController implements IAdminController {
   }
 
   async downloadKycDocuments(
-    // eslint-disable-next-line @typescript-eslint/no-empty-object-type
     req: Request<{}, {}, {}, DownloadRequest>,
     res: Response
   ): Promise<Response> {

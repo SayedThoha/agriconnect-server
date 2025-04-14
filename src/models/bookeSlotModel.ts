@@ -1,4 +1,4 @@
-// const mongoose = require("mongoose");
+
 import mongoose, { Schema, Document } from "mongoose";
 export interface IBookedSlot extends Document{
     _id:mongoose.Types.ObjectId;

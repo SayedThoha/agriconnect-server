@@ -3,7 +3,6 @@ import { v4 as uuidv4 } from "uuid";
 import { Request, Response } from "express";
 import sharp from "sharp";
 
-
 const s3 = new AWS.S3({
   accessKeyId: process.env.AWS_ACCESS_KEY_ID,
   secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
@@ -14,17 +13,6 @@ export const uploadToS3 = async (
   req: Request,
   res: Response
 ): Promise<void> => {
-  // console.log("Upload Request Details:", {
-  //   file: req.file
-  //     ? {
-  //         originalname: req.file.originalname,
-  //         mimetype: req.file.mimetype,
-  //         size: req.file.size,
-  //       }
-  //     : "No file",
-  //   body: req.body,
-  // });
-
   try {
     if (!req.file) {
       res.status(400).json({ message: "No file uploaded" });
@@ -65,7 +53,6 @@ export const uploadToS3 = async (
     };
 
     const result = await s3.upload(uploadParams).promise();
-    // console.log(result);
 
     res.json({
       fileUrl: result.Location,
@@ -79,5 +66,3 @@ export const uploadToS3 = async (
     });
   }
 };
-
-

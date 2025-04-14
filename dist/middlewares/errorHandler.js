@@ -6,7 +6,6 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const logger_1 = __importDefault(require("../utils/logger"));
 function errorHandler(err, req, res) {
-    // Log the error details
     logger_1.default.error({
         message: err.message,
         stack: err.stack,
@@ -14,7 +13,6 @@ function errorHandler(err, req, res) {
         url: req.url,
         body: req.body,
     });
-    // Send response to the client
     res.status(res.statusCode || 500).json({
         success: false,
         message: err.message || "Internal Server Error",

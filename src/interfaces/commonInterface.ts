@@ -43,7 +43,7 @@ export interface FarmerBookingDetails {
         expertId:string,
         farmer_details:object
         payment_method:string
-  // Add other farmer details fields
+  
 }
 
 export interface IPrescriptionInput {

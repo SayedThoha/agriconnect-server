@@ -4,25 +4,25 @@ import { IPrescription, Prescription } from "../../models/prescriptionModel";
 import BaseRepository from "../base/baseRepository";
 import { IPrescriptionRepository } from "./IPrescriptionRepository";
 
-class PrescriptionRepository extends BaseRepository<IPrescription> implements IPrescriptionRepository{
-    constructor(){
-        super(Prescription)
-    }
+class PrescriptionRepository
+  extends BaseRepository<IPrescription>
+  implements IPrescriptionRepository
+{
+  constructor() {
+    super(Prescription);
+  }
 
-    async findPrescriptionById(
-        prescriptionId: string
-      ): Promise<IPrescription | null> {
-        return await Prescription.findById(prescriptionId).populate({
-          path: "bookedSlot", 
-          populate: {
-            path: "expertId", 
-            select: "firstName lastName specialisation", 
-          },
-        });
-      }
-
-
-//expert
+  async findPrescriptionById(
+    prescriptionId: string
+  ): Promise<IPrescription | null> {
+    return await Prescription.findById(prescriptionId).populate({
+      path: "bookedSlot",
+      populate: {
+        path: "expertId",
+        select: "firstName lastName specialisation",
+      },
+    });
+  }
 
   async createPrescription(
     prescriptionData: IPrescriptionInput
@@ -44,8 +44,7 @@ class PrescriptionRepository extends BaseRepository<IPrescription> implements IP
     return await BookedSlot.findById(appointmentId);
   }
 
-
-async findPrescriptionsById(
+  async findPrescriptionsById(
     prescriptionId: string
   ): Promise<IPrescription | null> {
     return await Prescription.findById(prescriptionId);
@@ -69,15 +68,12 @@ async findPrescriptionsById(
           },
         });
 
-      
       return prescriptions;
     } catch (error) {
       console.log(error);
       throw new Error("Error fetching prescriptions");
     }
   }
-
-
 }
 
-export default PrescriptionRepository
+export default PrescriptionRepository;

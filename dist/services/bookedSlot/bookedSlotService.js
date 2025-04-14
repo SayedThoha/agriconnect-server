@@ -13,7 +13,6 @@ class BookedSlotService {
     constructor(bookedSlotRepository) {
         this.bookedSlotRepository = bookedSlotRepository;
     }
-    // user
     getBookingDetails(userId) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
@@ -41,9 +40,8 @@ class BookedSlotService {
     getUpcomingAppointment(userId) {
         return __awaiter(this, void 0, void 0, function* () {
             const now = new Date();
-            const margin = 15 * 60 * 1000; // 15 minutes in milliseconds
+            const margin = 15 * 60 * 1000;
             const bookedSlots = yield this.bookedSlotRepository.findPendingAppointmentsByUser(userId);
-            // Filter appointments that are upcoming
             const upcomingAppointments = bookedSlots.filter((slot) => {
                 if (!slot.slotId ||
                     typeof slot.slotId !== "object" ||
@@ -59,7 +57,6 @@ class BookedSlotService {
             return upcomingAppointments[0] || {};
         });
     }
-    // expert
     getUpcomingAppointmentByExpert(expertId) {
         return __awaiter(this, void 0, void 0, function* () {
             const now = new Date();

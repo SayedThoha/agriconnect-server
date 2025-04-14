@@ -35,7 +35,6 @@ class PrescriptionController {
             }
         });
     }
-    // expert
     addPrescription(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
@@ -85,7 +84,6 @@ class PrescriptionController {
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 const prescriptions = yield this.prescriptionService.getAllPrescriptions();
-                // console.log("prescrsiptions from the controller",prescriptions);
                 res.status(httpStatusCodes_1.Http_Status_Codes.OK).json(prescriptions);
             }
             catch (error) {

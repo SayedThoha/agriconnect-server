@@ -30,7 +30,6 @@ class PrescriptionRepository extends baseRepository_1.default {
             });
         });
     }
-    //expert
     createPrescription(prescriptionData) {
         return __awaiter(this, void 0, void 0, function* () {
             const newPrescription = new prescriptionModel_1.Prescription(prescriptionData);

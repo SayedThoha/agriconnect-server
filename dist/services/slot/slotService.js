@@ -18,7 +18,6 @@ class SlotService {
     constructor(slotRepository) {
         this.slotRepository = slotRepository;
     }
-    // expert
     convertToLocalDate(date) {
         const utcDate = new Date(date);
         return new Date(utcDate.getTime() - utcDate.getTimezoneOffset() * 60000);
@@ -26,10 +25,8 @@ class SlotService {
     createSlot(slotData) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                // Convert dates
                 const slotLocalDate = this.convertToLocalDate(slotData.time);
                 const currentLocalDate = this.convertToLocalDate(new Date());
-                // Check if slot exists
                 const existingSlot = yield this.slotRepository.findSlotByExpertIdAndTime(slotData._id, slotData.time);
                 if (existingSlot) {
                     return {
@@ -45,7 +42,6 @@ class SlotService {
                         message: "The selected slot is no longer available",
                     };
                 }
-                // Get required data
                 const [admin, expert] = yield Promise.all([
                     this.slotRepository.findAdminSettings(),
                     this.slotRepository.findExpertById(slotData._id),
@@ -57,9 +53,7 @@ class SlotService {
                         message: "Expert not found",
                     };
                 }
-                // Convert string ID to ObjectId
                 const expertObjectId = new mongoose_1.default.Types.ObjectId(slotData._id);
-                // Create slot data
                 const newSlotData = {
                     expertId: expertObjectId,
                     time: slotData.time,
@@ -69,7 +63,6 @@ class SlotService {
                     bookingAmount: expert.consultation_fee,
                     created_time: new Date(),
                 };
-                // Create slot
                 const slot = yield this.slotRepository.createSlot(newSlotData);
                 return {
                     success: true,
@@ -97,7 +90,6 @@ class SlotService {
                 this.slotRepository.findAdminSettings(),
                 this.slotRepository.findExpertById(expertId),
             ]);
-            // console.log(admin);
             if (!admin || !expert) {
                 throw new Error("Admin or expert not found");
             }
@@ -116,7 +108,6 @@ class SlotService {
     getExpertSlotDetails(expertId) {
         return __awaiter(this, void 0, void 0, function* () {
             const currentTime = new Date();
-            // console.log(expertId);
             try {
                 return yield this.slotRepository.findSlotsByExpertId(expertId, currentTime);
             }
@@ -128,8 +119,6 @@ class SlotService {
     removeSlot(slotId) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                // console.log("Removing slot with ID:", slotId);
-                // Find slot
                 const slot = yield this.slotRepository.findSlotById(slotId);
                 if (!slot) {
                     return {
@@ -138,7 +127,6 @@ class SlotService {
                         message: "Slot not found",
                     };
                 }
-                // Check if slot is booked
                 if (slot.booked) {
                     return {
                         success: false,
@@ -146,7 +134,6 @@ class SlotService {
                         message: "Slot is already booked and cannot be removed.",
                     };
                 }
-                // Delete slot
                 yield this.slotRepository.deleteSlotById(slotId);
                 return {
                     success: true,
@@ -164,7 +151,6 @@ class SlotService {
             }
         });
     }
-    //user
     getExpertSlots(expertId) {
         return __awaiter(this, void 0, void 0, function* () {
             try {

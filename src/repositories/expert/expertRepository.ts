@@ -20,7 +20,7 @@ class ExpertRepository
   }
 
   async getSpecialisations() {
-    // console.log("get specialisation serverside");
+  
     return await Specialisation.find();
   }
 
@@ -121,14 +121,14 @@ class ExpertRepository
     id: string,
     updateData: Partial<IExpert>
   ): Promise<IExpert | null> {
-    return this.update(id, updateData); // Using base repository method
+    return this.update(id, updateData); 
   }
 
   async updateExpertById(
     expertId: string,
     updateData: Partial<IExpert>
   ): Promise<IExpert | null> {
-    return this.update(expertId, updateData); // Using base repository method
+    return this.update(expertId, updateData); 
   }
 
   async updateProfilePicture(
@@ -173,8 +173,7 @@ class ExpertRepository
   }
 
   async getBookingDetails(expertId: string): Promise<IBookedSlot[]> {
-    // const now = new Date().toISOString();
-    // time: { $gte: now }
+
     return await BookedSlot.find({
       expertId: expertId,
     })

@@ -1,4 +1,4 @@
-//index.ts
+
 import server from "./app";
 import connectDB from "./config/db";
 import {

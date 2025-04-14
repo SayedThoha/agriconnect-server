@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-empty-object-type */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 //userController.ts
 import { Request, Response } from "express";
 import { Http_Status_Codes } from "../../constants/httpStatusCodes";
@@ -12,7 +14,6 @@ class UserController {
 
   async registerUser(req: Request, res: Response): Promise<void> {
     try {
-      // Validate required fields
       const requiredFields = ["firstName", "lastName", "email", "password"];
       const missingFields = requiredFields.filter((field) => !req.body[field]);
 
@@ -212,7 +213,6 @@ class UserController {
       const message = await this.userService.optForNewEmail(userId, email);
 
       res.status(Http_Status_Codes.OK).json({ message });
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
       console.error("Error in optForNewEmail controller:", error);
 
@@ -406,7 +406,6 @@ class UserController {
   }
 
   async createBookingPayment(
-    // eslint-disable-next-line @typescript-eslint/no-empty-object-type
     req: Request<{}, {}, PaymentRequest>,
     res: Response
   ): Promise<void> {
@@ -437,7 +436,6 @@ class UserController {
   }
 
   async appointmentBooking(
-    // eslint-disable-next-line @typescript-eslint/no-empty-object-type
     req: Request<{}, {}, FarmerBookingDetails>,
     res: Response
   ): Promise<void> {
@@ -482,7 +480,7 @@ class UserController {
         .json({ message: "Internal server error" });
     }
   }
- 
+
   async cancelSlot(req: Request, res: Response): Promise<void> {
     try {
       const { slotId } = req.query;
@@ -495,8 +493,6 @@ class UserController {
         .json("Internal Server Error");
     }
   }
-
-  
 }
 
 export default UserController;

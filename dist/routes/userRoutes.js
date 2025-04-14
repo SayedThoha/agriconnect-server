@@ -72,13 +72,11 @@ userRouter.post("/booking_payment", (req, res) => userController.createBookingPa
 userRouter.post("/appointment_booking", (req, res) => userController.appointmentBooking(req, res));
 userRouter.get("/userDetails", (req, res) => userController.userDetails(req, res));
 userRouter.get("/cancelSlot", (req, res) => userController.cancelSlot(req, res));
-//bookedSlot
 userRouter
     .use(userAuth_1.userAuth)
     .get("/get_booking_details", (req, res) => bookedSlotController.getBookingDetails(req, res))
     .get("/upcoming_appointment", (req, res) => bookedSlotController.upcomingAppointment(req, res))
     .get("/getUpcomingSlot", (req, res) => bookedSlotController.getUpcomingSlot(req, res));
-//chats
 userRouter
     .use(userAuth_1.userAuth)
     .get("/userAccessChat", (req, res) => chatController.userAccessChat(req, res))
@@ -88,7 +86,6 @@ userRouter
 userRouter
     .use(userAuth_1.userAuth)
     .get("/get_prescription_details", (req, res) => prescriptionController.getPrescriptionDetails(req, res));
-//notification
 userRouter
     .use(userAuth_1.userAuth)
     .get("/notifications", (req, res) => notificationController.getNotificationsForUser(req, res))

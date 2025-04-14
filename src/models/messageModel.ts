@@ -18,7 +18,7 @@ const messageSchema: Schema<IMessage> = new mongoose.Schema(
     senderModel: {
       type: String,
       required: true,
-      enum: ["User", "Expert"], // Using usercollection and doctorcollection as references
+      enum: ["User", "Expert"], 
     },
     content: {
       type: String,

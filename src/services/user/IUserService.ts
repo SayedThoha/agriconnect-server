@@ -1,7 +1,8 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 
 import {
   FarmerBookingDetails,
-  PaymentOrder
+  PaymentOrder,
 } from "../../interfaces/commonInterface";
 import {
   LoginResponse,
@@ -11,7 +12,6 @@ import { IExpert } from "../../models/expertModel";
 import { ISpecialisation } from "../../models/specialisationModel";
 import { IUser } from "../../models/userModel";
 
-/* eslint-disable @typescript-eslint/no-explicit-any */
 export interface IUserService {
   registerUser(userData: {
     firstName: string;
@@ -50,7 +50,4 @@ export interface IUserService {
   createPaymentOrder(fee: number): Promise<PaymentOrder>;
   bookAppointment(farmerDetails: FarmerBookingDetails): Promise<void>;
   cancelSlot(slotId: string): Promise<{ message: string }>;
- 
-  
-
 }

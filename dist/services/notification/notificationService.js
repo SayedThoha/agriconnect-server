@@ -13,7 +13,6 @@ class NotificationService {
     constructor(notificationRepository) {
         this.notificationRepository = notificationRepository;
     }
-    //user
     getNotificationsForUser(userId) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
@@ -48,7 +47,6 @@ class NotificationService {
             }
         });
     }
-    // expert
     getNotificationsForExpert(expertId) {
         return __awaiter(this, void 0, void 0, function* () {
             try {

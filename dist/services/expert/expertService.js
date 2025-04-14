@@ -78,7 +78,6 @@ class ExpertService {
                         message: "User not found",
                     };
                 }
-                // Send OTP via email
                 const isOtpSent = yield (0, sendOtpToMail_1.sentOtpToEmail)(email, otp);
                 if (!isOtpSent) {
                     return {
@@ -307,12 +306,7 @@ class ExpertService {
                     throw new Error("Invalid Email");
                 }
                 const otp = (0, otp_1.generateOtp)();
-                const isOtpSent = yield (0, sendOtpToMail_1.sentOtpToEmail)(email, otp);
-                if (!isOtpSent) {
-                    {
-                        // console.log("otp not send")
-                    }
-                }
+                yield (0, sendOtpToMail_1.sentOtpToEmail)(email, otp);
                 yield this.expertRepository.updateExpertOtp(email, otp);
             }
             catch (error) {

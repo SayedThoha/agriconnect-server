@@ -14,10 +14,10 @@ const notificationSchema = new mongoose_1.default.Schema({
     },
     message: { type: String, required: true },
     type: { type: String, required: true },
-    isReadByUser: { type: Boolean, default: false }, // Track if user read it
-    isReadByExpert: { type: Boolean, default: false }, // Track if expert read it
-    isClearedByUser: { type: Boolean, default: false }, // Track if user cleared it
-    isClearedByExpert: { type: Boolean, default: false }, // Track if expert cleared it
+    isReadByUser: { type: Boolean, default: false },
+    isReadByExpert: { type: Boolean, default: false },
+    isClearedByUser: { type: Boolean, default: false },
+    isClearedByExpert: { type: Boolean, default: false },
     createdAt: { type: Date, default: Date.now },
 });
 exports.Notification = mongoose_1.default.model("Notification", notificationSchema);

@@ -44,7 +44,6 @@ class UserService implements IUserService {
     password: string;
   }): Promise<any> {
     try {
-      // Check if the user already exists
       const existingUser = await this.userRepository.emailExist(userData.email);
 
       if (existingUser) {
@@ -52,7 +51,7 @@ class UserService implements IUserService {
       }
       const hashedPassword = await hashedPass(userData.password);
       const otp = generateOtp();
-      // Create user data
+
       const user = await this.userRepository.saveUser({
         firstName: userData.firstName,
         lastName: userData.lastName,
@@ -65,7 +64,7 @@ class UserService implements IUserService {
       if (!user) {
         return { success: false, message: "Failed to register user" };
       }
-      // Send OTP via email
+
       const isOtpSent = await sentOtpToEmail(userData.email, otp);
       if (!isOtpSent) {
         return { success: false, message: "Failed to send OTP" };
@@ -78,7 +77,6 @@ class UserService implements IUserService {
 
   async resendOtp(email: string): Promise<Record<string, any>> {
     try {
-      // Generate new OTP
       const otp = generateOtp();
 
       const updatedUser = await this.userRepository.updateUserOtp(email, otp);
@@ -90,7 +88,7 @@ class UserService implements IUserService {
           message: "User not found",
         };
       }
-      // Send OTP via email
+
       const isOtpSent = await sentOtpToEmail(email, otp);
       if (!isOtpSent) {
         return {
@@ -133,7 +131,7 @@ class UserService implements IUserService {
           message: "User not found",
         };
       }
-      // Verify OTP
+
       if (user.otp !== otp) {
         return {
           success: false,
@@ -141,7 +139,7 @@ class UserService implements IUserService {
           message: "Incorrect OTP",
         };
       }
-      // Check OTP expiration
+
       const otpExpirySeconds = this.OTP_EXPIRY_MINUTES * 60;
       const timeDifference = Math.floor(
         (new Date().getTime() - user.otp_update_time!.getTime()) / 1000
@@ -336,16 +334,8 @@ class UserService implements IUserService {
       if (!user) {
         throw new Error("Invalid Email");
       }
-
       const otp = generateOtp();
-      // Send OTP
-      const isOtpSent = await sentOtpToEmail(email, otp);
-
-      if (!isOtpSent) {
-        {
-          // console.log("otp not send");
-        }
-      }
+      await sentOtpToEmail(email, otp);
       await this.userRepository.updateUserOtp(email, otp);
     } catch (error) {
       console.log(error);
@@ -543,7 +533,6 @@ class UserService implements IUserService {
       await this.userRepository.createBookedSlot(farmerDetails);
 
       const expertId = slot.expertId._id;
-      // Send notification about successful booking
       await NotificationService.sendNotification(
         user._id.toString(),
         expertId.toString(),
@@ -581,9 +570,6 @@ class UserService implements IUserService {
     );
     return { message: "Slot cancelled" };
   }
-
- 
-
 }
 
 export default UserService;

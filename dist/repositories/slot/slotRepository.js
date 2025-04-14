@@ -20,7 +20,6 @@ class SlotRepository extends baseRepository_1.default {
     constructor() {
         super(slotModel_1.Slot);
     }
-    // expert
     findSlotByExpertIdAndTime(expertId, time) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
@@ -91,7 +90,6 @@ class SlotRepository extends baseRepository_1.default {
             return yield slotModel_1.Slot.findByIdAndDelete(slotId);
         });
     }
-    // user
     getSlots(expertId) {
         return __awaiter(this, void 0, void 0, function* () {
             try {

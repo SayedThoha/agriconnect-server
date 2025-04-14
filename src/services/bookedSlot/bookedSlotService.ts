@@ -7,7 +7,7 @@ import { IBookedSlotService } from "./IBookedSlotService";
 class BookedSlotService implements IBookedSlotService {
   constructor(private bookedSlotRepository: BookedSlotRepository) {}
 
-  // user
+  
   async getBookingDetails(userId: string): Promise<IBookedSlot[]> {
     try {
       if (!userId) {
@@ -35,12 +35,12 @@ class BookedSlotService implements IBookedSlotService {
 
   async getUpcomingAppointment(userId: string): Promise<IBookedSlot | {}> {
     const now = new Date();
-    const margin = 15 * 60 * 1000; // 15 minutes in milliseconds
+    const margin = 15 * 60 * 1000; 
 
     const bookedSlots =
       await this.bookedSlotRepository.findPendingAppointmentsByUser(userId);
 
-    // Filter appointments that are upcoming
+  
     const upcomingAppointments = bookedSlots.filter((slot) => {
       if (
         !slot.slotId ||
@@ -64,7 +64,7 @@ class BookedSlotService implements IBookedSlotService {
     return upcomingAppointments[0] || {};
   }
 
-  // expert
+
   async getUpcomingAppointmentByExpert(
     expertId: string
   ): Promise<IBookedSlot | {}> {

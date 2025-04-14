@@ -32,7 +32,7 @@ class PrescriptionController implements IPrescriptionController {
     }
   }
 
-  // expert
+  
   async addPrescription(req: Request, res: Response): Promise<void> {
     try {
       const { appointmentId, issue, prescription } = req.query;
@@ -92,7 +92,7 @@ class PrescriptionController implements IPrescriptionController {
   async getAllPrescriptions(req: Request, res: Response): Promise<void> {
     try {
       const prescriptions = await this.prescriptionService.getAllPrescriptions();
-      // console.log("prescrsiptions from the controller",prescriptions);
+      
       res.status(Http_Status_Codes.OK).json(prescriptions);
     } catch (error) {
       console.log(error);

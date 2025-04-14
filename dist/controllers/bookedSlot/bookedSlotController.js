@@ -14,7 +14,6 @@ class BookedSlotController {
     constructor(bookedSlotService) {
         this.bookedSlotService = bookedSlotService;
     }
-    // user
     getBookingDetails(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
@@ -62,12 +61,6 @@ class BookedSlotController {
             try {
                 const userId = req.query._id;
                 const appointment = yield this.bookedSlotService.getUpcomingAppointment(userId);
-                if (Object.keys(appointment).length) {
-                    // console.log("Next appointment:", appointment);
-                }
-                else {
-                    // console.log("No upcoming appointments found.");
-                }
                 res.status(httpStatusCodes_1.Http_Status_Codes.OK).json(appointment);
             }
             catch (error) {

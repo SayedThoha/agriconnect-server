@@ -2,14 +2,14 @@ import nodemailer from "nodemailer";
 
 export const sentOtpToEmail = (email: string, otp: string) => {
   const transporter = nodemailer.createTransport({
-    service: "gmail", // Use your email service provider
+    service: "gmail", 
     auth: {
       user: process.env.TRANSPORTER_EMAIL,
       pass: process.env.TRANSPORTER_PASSWORD,
     },
   });
 
-  //interface for mail options
+  
   interface MailOptions {
     from: string | undefined;
     to: string;
@@ -29,12 +29,9 @@ export const sentOtpToEmail = (email: string, otp: string) => {
     try {
       await transporter.sendMail(mailOptions);
 
-      // console.log("Mail Send to ", mailOptions.to);
-      //if otp success return true;
       return true;
     } catch (error) {
       console.error("Error sending email:", error);
-      //if otp fails return false;
       return false;
     }
   };

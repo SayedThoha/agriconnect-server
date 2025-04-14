@@ -1,4 +1,4 @@
-//IUserRepository.ts
+
 
 import { IBookedSlot } from "../../models/bookeSlotModel";
 import { IExpert } from "../../models/expertModel";

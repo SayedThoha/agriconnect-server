@@ -143,7 +143,6 @@ expertRouter.get("/get_bookings_of_expert", expertAuth, (req, res) =>
 );
 
 
-//chats
 expertRouter
 .use(expertAuth)
 .get("/expert_accessed_chats", (req, res) =>
@@ -156,7 +155,7 @@ expertRouter
   chatController.expertSendMessage(req, res)
 );
 
-// prescription
+
 expertRouter
 .use(expertAuth)
 .get("/add_prescription", (req, res) =>
@@ -168,7 +167,7 @@ expertRouter
 );
 
 
-// notification
+
 expertRouter
 .use(expertAuth)
 .get("/notifications", (req, res) =>

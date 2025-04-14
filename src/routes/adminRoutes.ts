@@ -16,7 +16,6 @@ adminRouter.get("/get_admin_dashboard_details", adminAuth, (req, res) =>
   adminController.getAdminDashboardDetails(req, res)
 );
 
-//experts
 adminRouter.get("/expertdata", adminAuth, (req, res) =>
   adminController.getExperts(req, res)
 );
@@ -27,7 +26,7 @@ adminRouter.post("/searchExpert", adminAuth, (req, res) =>
   adminController.searchExperts(req, res)
 );
 
-//users
+
 adminRouter.get("/userdata", adminAuth, (req, res) =>
   adminController.getUsers(req, res)
 );
@@ -41,7 +40,6 @@ adminRouter.post("/searchUser", adminAuth, (req, res) =>
   adminController.searchUsers(req, res)
 );
 
-//specialisation
 adminRouter.get("/getSpecialisation", adminAuth, (req, res) =>
   adminController.getSpecialisations(req, res)
 );
@@ -58,7 +56,6 @@ adminRouter.delete("/deleteSpecialisation", adminAuth, (req, res) =>
   adminController.deleteSpecialisation(req, res)
 );
 
-//kyc
 
 adminRouter.get("/kycDataCollection", adminAuth, (req, res) =>
   adminController.getKycData(req, res)

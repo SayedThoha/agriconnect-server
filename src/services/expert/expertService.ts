@@ -1,4 +1,3 @@
-
 /* eslint-disable  @typescript-eslint/no-explicit-any */
 import { Http_Status_Codes } from "../../constants/httpStatusCodes";
 import {
@@ -96,7 +95,6 @@ class ExpertService implements IExpertService {
         };
       }
 
-      // Send OTP via email
       const isOtpSent = await sentOtpToEmail(email, otp);
       if (!isOtpSent) {
         return {
@@ -339,12 +337,7 @@ class ExpertService implements IExpertService {
         throw new Error("Invalid Email");
       }
       const otp = generateOtp();
-      const isOtpSent = await sentOtpToEmail(email, otp);
-      if (!isOtpSent) {
-        {
-          // console.log("otp not send")
-        }
-      }
+      await sentOtpToEmail(email, otp);
       await this.expertRepository.updateExpertOtp(email, otp);
     } catch (error) {
       console.log(error);
@@ -437,8 +430,7 @@ class ExpertService implements IExpertService {
       throw error;
     }
   }
-  
- 
+
   async getExpertBookings(expertId: string): Promise<IBookedSlot[]> {
     if (!expertId) {
       throw new Error("Expert ID is required");

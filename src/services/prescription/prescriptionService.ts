@@ -3,19 +3,17 @@ import PrescriptionRepository from "../../repositories/prescription/prescription
 import { IPrescriptionService } from "./IPrescriptionService";
 
 class PrescriptionService implements IPrescriptionService {
+  constructor(private prescriptionRepository: PrescriptionRepository) {}
 
-constructor(private prescriptionRepository:PrescriptionRepository){}
-
- async getPrescriptionDetails(prescriptionId: string): Promise<IPrescription> {
-    const data = await this.prescriptionRepository.findPrescriptionById(prescriptionId);
+  async getPrescriptionDetails(prescriptionId: string): Promise<IPrescription> {
+    const data = await this.prescriptionRepository.findPrescriptionById(
+      prescriptionId
+    );
     if (!data) {
       throw new Error("Prescription not found");
     }
     return data;
   }
-
-
-  //expert
 
   async addPrescription(
     appointmentId: string,
@@ -32,11 +30,12 @@ constructor(private prescriptionRepository:PrescriptionRepository){}
       if (!bookedSlot) {
         throw new Error("Appointment not found");
       }
-      const newPrescription = await this.prescriptionRepository.createPrescription({
-        bookedSlot: appointmentId,
-        issue,
-        prescription,
-      });
+      const newPrescription =
+        await this.prescriptionRepository.createPrescription({
+          bookedSlot: appointmentId,
+          issue,
+          prescription,
+        });
       await this.prescriptionRepository.updateBookedSlotWithPrescription(
         appointmentId,
         newPrescription._id as string
@@ -48,7 +47,9 @@ constructor(private prescriptionRepository:PrescriptionRepository){}
     }
   }
 
-  async getPrescriptionDetailsByExpert(prescriptionId: string): Promise<IPrescription> {
+  async getPrescriptionDetailsByExpert(
+    prescriptionId: string
+  ): Promise<IPrescription> {
     const data = await this.prescriptionRepository.findPrescriptionsById(
       prescriptionId
     );
@@ -58,7 +59,6 @@ constructor(private prescriptionRepository:PrescriptionRepository){}
     return data;
   }
 
-
   async getAllPrescriptions(): Promise<IPrescription[]> {
     try {
       return await this.prescriptionRepository.getPrescriptionsByExpert();
@@ -67,7 +67,6 @@ constructor(private prescriptionRepository:PrescriptionRepository){}
       throw new Error("Prescriptions not found");
     }
   }
-
 }
 
-export default PrescriptionService
+export default PrescriptionService;

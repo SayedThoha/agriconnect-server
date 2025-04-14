@@ -45,7 +45,6 @@ class GoogleAuthRepository {
                 const payload = yield this.verifyGoogleToken(token);
                 let user = yield this.userRepository.findUserByEmail(payload.email);
                 if (!user) {
-                    // If user does not exist, create a new user
                     user = yield this.userRepository.saveUser({
                         email: payload.email,
                         firstName: (_a = payload.name) === null || _a === void 0 ? void 0 : _a.split(" ")[0],
@@ -53,7 +52,7 @@ class GoogleAuthRepository {
                         googleId: payload.googleId,
                         profile_picture: payload.photoUrl,
                         is_verified: true,
-                        authProvider: "google", // Mark as verified since Google handles verification
+                        authProvider: "google",
                     });
                 }
                 if (!user._id) {

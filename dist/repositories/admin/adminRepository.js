@@ -23,9 +23,6 @@ class AdminRepository extends baseRepository_1.default {
     constructor() {
         super(adminModel_1.Admin);
     }
-    // async findByEmail(email: string): Promise<IAdmin | null> {
-    //   return await Admin.findOne({ email });
-    // }
     findByEmail(email) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
@@ -286,7 +283,6 @@ class AdminRepository extends baseRepository_1.default {
             }
         });
     }
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     updatePayOut(payOut) {
         return __awaiter(this, void 0, void 0, function* () {
             return yield adminModel_1.Admin.updateMany({}, { $set: { payOut } });

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { IExpertDocuments } from "../../interfaces/adminInterface";
 import { Admin, IAdmin } from "../../models/adminModel";
 import { BookedSlot, IBookedSlot } from "../../models/bookeSlotModel";
@@ -268,7 +269,7 @@ class AdminRepository
     }
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+
   async updatePayOut(payOut: number): Promise<any> {
     return await Admin.updateMany({}, { $set: { payOut } });
   }

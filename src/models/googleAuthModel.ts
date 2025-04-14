@@ -1,4 +1,4 @@
-// models/GoogleAuthModel.ts
+
 
 export interface GoogleAuthPayload {
     email: string;

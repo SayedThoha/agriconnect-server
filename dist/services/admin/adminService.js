@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-// /* eslint-disable  @typescript-eslint/no-explicit-any */
+/* eslint-disable  @typescript-eslint/no-explicit-any */
 const fs_1 = __importDefault(require("fs"));
 const path_1 = __importDefault(require("path"));
 const dotenv_1 = require("dotenv");
@@ -53,7 +53,6 @@ class AdminServices {
                     message: "Incorrect Password",
                 };
             }
-            // Ensure adminData._id is treated as a string (or ObjectId) for simplicity
             if (!adminData._id) {
                 return {
                     success: false,
@@ -65,8 +64,6 @@ class AdminServices {
                 throw new Error("JWT_SECRET is not defined. Please set it in your environment.");
             }
             const accessToken = jsonwebtoken_1.default.sign({ adminId: adminData._id }, this.jwtSecret);
-            // console.log("secret in adminlogin", this.jwtSecret);
-            // console.log("accessToken in login admin", accessToken);
             const accessedUser = {
                 email: adminData.email,
                 role: adminData.role,
@@ -251,7 +248,6 @@ class AdminServices {
                 if (!expert) {
                     throw new Error("Expert not found");
                 }
-                // Toggle the status
                 expert.blocked = expert.blocked === true ? false : true;
                 yield this.adminRepository.updateExpertStatus(expert);
             }
@@ -265,7 +261,6 @@ class AdminServices {
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 const kycData = yield this.adminRepository.findPendingKycData();
-                // Filter out entries where expertId is null
                 const filteredKycData = kycData.filter((item) => item.expertId !== null);
                 return filteredKycData;
             }
@@ -324,7 +319,6 @@ class AdminServices {
                 if (failedVerification) {
                     return { message: failedVerification.message };
                 }
-                // All verifications passed, update expert status
                 yield this.adminRepository.updateExpertKycStatus(data.expert_id, true);
                 return { message: "KYC verification done" };
             }
@@ -334,7 +328,6 @@ class AdminServices {
             }
         });
     }
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     getFilePath(expert, name, index) {
         switch (name) {
             case "identity_proof":
@@ -349,10 +342,6 @@ class AdminServices {
                 return null;
         }
     }
-    /**
-     * Copy file to destination folder.
-     */
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     copyFile(sourcePath, name) {
         const fullPath = path_1.default.resolve(sourcePath);
         const destinationPath = path_1.default.join(this.baseDestinationPath, `${name}_${Date.now()}${path_1.default.basename(fullPath)}`);
@@ -368,7 +357,6 @@ class AdminServices {
             });
         });
     }
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     downloadDocument(data) {
         return __awaiter(this, void 0, void 0, function* () {
             const { expertId, name, index } = data;
@@ -383,7 +371,6 @@ class AdminServices {
             return this.copyFile(filePath, name);
         });
     }
-    // Method to update payOut for admin
     editPayOut(payOut) {
         return __awaiter(this, void 0, void 0, function* () {
             const result = yield this.adminRepository.updatePayOut(payOut);
@@ -397,7 +384,6 @@ class AdminServices {
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 const appointments = yield this.adminRepository.getAppointmentDetails();
-                // console.log("bookedSlots:", appointments, appointments.length);
                 return appointments;
             }
             catch (error) {

@@ -18,7 +18,6 @@ class NotificationRepository extends baseRepository_1.default {
     constructor() {
         super(notificationModel_1.Notification);
     }
-    //user
     getNotificationsForUser(userId) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
@@ -62,7 +61,6 @@ class NotificationRepository extends baseRepository_1.default {
             }
         });
     }
-    //expert
     getNotificationsForExpert(expertId) {
         return __awaiter(this, void 0, void 0, function* () {
             try {

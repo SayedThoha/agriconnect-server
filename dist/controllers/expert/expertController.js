@@ -210,7 +210,6 @@ class ExpertController {
                 }
                 const message = yield this.expertService.optForNewEmail(expertId, email);
                 res.status(httpStatusCodes_1.Http_Status_Codes.OK).json({ message });
-                // eslint-disable-next-line @typescript-eslint/no-explicit-any
             }
             catch (error) {
                 console.error("Error in optForNewEmail controller:", error);
@@ -289,7 +288,6 @@ class ExpertController {
     updatePassword(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                // Validation
                 const requiredFields = ["email", "password"];
                 const missingFields = requiredFields.filter((field) => !req.body[field]);
                 if (missingFields.length > 0) {

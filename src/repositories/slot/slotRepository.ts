@@ -7,11 +7,10 @@ import BaseRepository from "../base/baseRepository";
 import { ISlotRepository } from "./ISlotRepository";
 
 class SlotRepository extends BaseRepository<ISlot> implements ISlotRepository {
-
   constructor() {
     super(Slot);
   }
-// expert
+
   async findSlotByExpertIdAndTime(
     expertId: string,
     time: Date
@@ -41,13 +40,13 @@ class SlotRepository extends BaseRepository<ISlot> implements ISlotRepository {
   }
 
   async findExpertById(id: string): Promise<IExpert | null> {
-      try {
-        return await Expert.findById(id);
-      } catch (error) {
-        console.error("Error in expert repository findById:", error);
-        throw new Error("Database operation failed");
-      }
+    try {
+      return await Expert.findById(id);
+    } catch (error) {
+      console.error("Error in expert repository findById:", error);
+      throw new Error("Database operation failed");
     }
+  }
 
   async createMultipleSlots(slots: ISlotData[]): Promise<ISlot[]> {
     return await Slot.insertMany(slots);
@@ -67,7 +66,6 @@ class SlotRepository extends BaseRepository<ISlot> implements ISlotRepository {
     }
   }
 
-
   async findSlotById(slotId: string): Promise<ISlot | null> {
     return await Slot.findById(slotId);
   }
@@ -76,14 +74,13 @@ class SlotRepository extends BaseRepository<ISlot> implements ISlotRepository {
     return await Slot.findByIdAndDelete(slotId);
   }
 
-// user
   async getSlots(expertId: string): Promise<ISlot[]> {
     try {
       const now = new Date().toISOString();
       const slots = await Slot.find({
         expertId: expertId,
         booked: false,
-        time: { $gte: now }, 
+        time: { $gte: now },
       }).sort({ time: 1 });
 
       return slots;
@@ -93,7 +90,7 @@ class SlotRepository extends BaseRepository<ISlot> implements ISlotRepository {
     }
   }
 
- async updateSlotBooking(data: SlotUpdateData): Promise<ISlot | null> {
+  async updateSlotBooking(data: SlotUpdateData): Promise<ISlot | null> {
     try {
       const updatedSlot = await Slot.findByIdAndUpdate(
         data._id,
@@ -124,9 +121,6 @@ class SlotRepository extends BaseRepository<ISlot> implements ISlotRepository {
       throw error;
     }
   }
-
-  
-
 }
 
 export default SlotRepository;

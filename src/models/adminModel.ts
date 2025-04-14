@@ -1,6 +1,5 @@
 import mongoose, { Schema, Document } from "mongoose";
 
-// Interface for Admin schema
 export interface IAdmin extends Document {
   email: string;
   password: string;

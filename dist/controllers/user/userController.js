@@ -17,7 +17,6 @@ class UserController {
     registerUser(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                // Validate required fields
                 const requiredFields = ["firstName", "lastName", "email", "password"];
                 const missingFields = requiredFields.filter((field) => !req.body[field]);
                 if (missingFields.length > 0) {
@@ -203,7 +202,6 @@ class UserController {
                 }
                 const message = yield this.userService.optForNewEmail(userId, email);
                 res.status(httpStatusCodes_1.Http_Status_Codes.OK).json({ message });
-                // eslint-disable-next-line @typescript-eslint/no-explicit-any
             }
             catch (error) {
                 console.error("Error in optForNewEmail controller:", error);
@@ -407,9 +405,7 @@ class UserController {
             }
         });
     }
-    createBookingPayment(
-    // eslint-disable-next-line @typescript-eslint/no-empty-object-type
-    req, res) {
+    createBookingPayment(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 const { consultation_fee } = req.body;
@@ -435,9 +431,7 @@ class UserController {
             }
         });
     }
-    appointmentBooking(
-    // eslint-disable-next-line @typescript-eslint/no-empty-object-type
-    req, res) {
+    appointmentBooking(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 const farmerDetails = req.body;

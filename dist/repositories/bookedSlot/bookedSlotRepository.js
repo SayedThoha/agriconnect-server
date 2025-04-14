@@ -18,7 +18,6 @@ class BookedSlotRepository extends baseRepository_1.default {
     constructor() {
         super(bookeSlotModel_1.BookedSlot);
     }
-    // user
     findBookedSlotsByUser(userId) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
@@ -55,7 +54,6 @@ class BookedSlotRepository extends baseRepository_1.default {
             return yield bookeSlotModel_1.BookedSlot.findById(appointmentId);
         });
     }
-    // expert
     findPendingAppointmentsByExpert(expertId) {
         return __awaiter(this, void 0, void 0, function* () {
             return yield bookeSlotModel_1.BookedSlot.find({ expertId, consultation_status: "pending" })

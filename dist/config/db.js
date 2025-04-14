@@ -15,16 +15,15 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const mongoose_1 = __importDefault(require("mongoose"));
 const connectDB = () => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        // console.log("Connecting to MongoDB at:", process.env.MONGODB_COMPASS);
         yield mongoose_1.default.connect(`${process.env.MONGODB_CONNECTION_STRING}`, {});
-        console.log('MongoDB connected...');
+        console.log("MongoDB connected...");
     }
     catch (err) {
         if (err instanceof Error) {
             console.error(`Error: ${err.message}`);
         }
         else {
-            console.error('An unknown error occurred');
+            console.error("An unknown error occurred");
         }
         process.exit(1);
     }

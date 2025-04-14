@@ -1,4 +1,4 @@
-// /* eslint-disable  @typescript-eslint/no-explicit-any */
+/* eslint-disable  @typescript-eslint/no-explicit-any */
 import fs from "fs";
 import path from "path";
 import { config } from "dotenv";
@@ -53,7 +53,7 @@ class AdminServices implements IAdminService {
         message: "Incorrect Password",
       };
     }
-    // Ensure adminData._id is treated as a string (or ObjectId) for simplicity
+
     if (!adminData._id) {
       return {
         success: false,
@@ -69,8 +69,6 @@ class AdminServices implements IAdminService {
 
     const accessToken = jwt.sign({ adminId: adminData._id }, this.jwtSecret);
 
-    // console.log("secret in adminlogin", this.jwtSecret);
-    // console.log("accessToken in login admin", accessToken);
     const accessedUser: IAdminResponse = {
       email: adminData.email,
       role: adminData.role,
@@ -259,7 +257,6 @@ class AdminServices implements IAdminService {
         throw new Error("Expert not found");
       }
 
-      // Toggle the status
       expert.blocked = expert.blocked === true ? false : true;
 
       await this.adminRepository.updateExpertStatus(expert);
@@ -273,7 +270,6 @@ class AdminServices implements IAdminService {
     try {
       const kycData = await this.adminRepository.findPendingKycData();
 
-      // Filter out entries where expertId is null
       const filteredKycData = kycData.filter((item) => item.expertId !== null);
 
       return filteredKycData;
@@ -354,7 +350,6 @@ class AdminServices implements IAdminService {
         return { message: failedVerification.message };
       }
 
-      // All verifications passed, update expert status
       await this.adminRepository.updateExpertKycStatus(data.expert_id, true);
       return { message: "KYC verification done" };
     } catch (error) {
@@ -363,7 +358,6 @@ class AdminServices implements IAdminService {
     }
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   private getFilePath(expert: IExpert, name: any, index: number) {
     switch (name) {
       case "identity_proof":
@@ -379,10 +373,6 @@ class AdminServices implements IAdminService {
     }
   }
 
-  /**
-   * Copy file to destination folder.
-   */
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   private copyFile(sourcePath: string, name: any) {
     const fullPath = path.resolve(sourcePath);
     const destinationPath = path.join(
@@ -402,7 +392,6 @@ class AdminServices implements IAdminService {
     });
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   async downloadDocument(data: { expertId: any; name: any; index: any }) {
     const { expertId, name, index } = data;
     const expert = await this.adminRepository.findExpertById(expertId);
@@ -420,7 +409,6 @@ class AdminServices implements IAdminService {
     return this.copyFile(filePath, name);
   }
 
-  // Method to update payOut for admin
   async editPayOut(payOut: number): Promise<string> {
     const result = await this.adminRepository.updatePayOut(payOut);
 
@@ -434,7 +422,7 @@ class AdminServices implements IAdminService {
   async getAppointmentDetails(): Promise<IBookedSlot[]> {
     try {
       const appointments = await this.adminRepository.getAppointmentDetails();
-      // console.log("bookedSlots:", appointments, appointments.length);
+
       return appointments;
     } catch (error) {
       console.error(error);

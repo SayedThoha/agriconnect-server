@@ -1,4 +1,5 @@
 "use strict";
+/* eslint-disable @typescript-eslint/no-empty-object-type */
 /* eslint-disable  @typescript-eslint/no-explicit-any */
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
@@ -269,9 +270,7 @@ class AdminController {
             }
         });
     }
-    searchUsers(
-    // eslint-disable-next-line @typescript-eslint/no-empty-object-type
-    req, res) {
+    searchUsers(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 const { data } = req.body;
@@ -298,9 +297,7 @@ class AdminController {
             }
         });
     }
-    searchExperts(
-    // eslint-disable-next-line @typescript-eslint/no-empty-object-type
-    req, res) {
+    searchExperts(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 const { data } = req.body;
@@ -378,9 +375,7 @@ class AdminController {
             }
         });
     }
-    getExpertKycDetails(
-    // eslint-disable-next-line @typescript-eslint/no-empty-object-type
-    req, res) {
+    getExpertKycDetails(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 const { expertId } = req.query;
@@ -413,9 +408,7 @@ class AdminController {
             }
         });
     }
-    submitKycDetails(
-    // eslint-disable-next-line @typescript-eslint/no-empty-object-type
-    req, res) {
+    submitKycDetails(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 const data = req.body;
@@ -448,9 +441,7 @@ class AdminController {
             }
         });
     }
-    downloadKycDocuments(
-    // eslint-disable-next-line @typescript-eslint/no-empty-object-type
-    req, res) {
+    downloadKycDocuments(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 const { expertId, name, index } = req.query;

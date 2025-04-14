@@ -11,22 +11,21 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.checkUserBlocked = exports.userAuth = void 0;
 const userModel_1 = require("../models/userModel");
-// import jwt, { JwtPayload } from "jsonwebtoken";
 const token_1 = require("../utils/token");
 const userAuth = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     const authHeader = req.headers["authorization"];
     if (authHeader && authHeader.startsWith("user-Bearer")) {
-        const token = authHeader.split(" ")[1]; // Getting token from the header
+        const token = authHeader.split(" ")[1];
         try {
-            // const decoded = jwt.verify(token, secret) as JwtPayload;
             const decoded = yield (0, token_1.verifyToken)(token);
             if (!decoded) {
-                res.status(401).json({ message: "Unauthorized: Invalid or expired token" });
+                res
+                    .status(401)
+                    .json({ message: "Unauthorized: Invalid or expired token" });
                 return;
             }
-            // Check if decoded has the expertId property
             if (decoded && typeof decoded === "object" && "data" in decoded) {
-                req.userId = decoded.data; // Explicitly cast to string
+                req.userId = decoded.data;
                 next();
             }
             else {
@@ -45,10 +44,9 @@ exports.userAuth = userAuth;
 const checkUserBlocked = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { userId } = req;
-        // Assuming the user ID is stored in req.user
         if (!userId) {
             res.status(400).json({ message: "User ID is missing" });
-            return; // Ensure no further processing
+            return;
         }
         const user = yield userModel_1.User.findById(userId);
         if (user && user.blocked) {

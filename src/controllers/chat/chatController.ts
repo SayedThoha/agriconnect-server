@@ -7,11 +7,7 @@ class ChatController implements IChatController {
 
   async userAccessChat(req: Request, res: Response): Promise<void> {
     try {
-      // console.log(req.query)
       const { userId, expertId } = req.query;
-
-      // console.log("userId:", userId);
-      // console.log("expertId:", expertId);
 
       const result = await this.chatService.getUserChat(
         userId as string,
@@ -35,8 +31,6 @@ class ChatController implements IChatController {
     try {
       const { userId } = req.query;
 
-      // console.log("req.query.userId:", userId);
-
       if (!userId || typeof userId !== "string") {
         res
           .status(Http_Status_Codes.BAD_REQUEST)
@@ -44,7 +38,6 @@ class ChatController implements IChatController {
         return;
       }
 
-      // Fetch chats via service
       const chats = await this.chatService.fetchUserChats(userId);
 
       res.status(Http_Status_Codes.OK).json(chats);
@@ -58,7 +51,6 @@ class ChatController implements IChatController {
 
   async sendMessage(req: Request, res: Response): Promise<void> {
     try {
-      // console.log("sendMessage in serverSide");
       const { content, chatId, userId } = req.body;
 
       const message = await this.chatService.sendMessage(
@@ -74,11 +66,9 @@ class ChatController implements IChatController {
         .json({ message: "Server side error" });
     }
   }
-  
 
   async userFetchAllMessages(req: Request, res: Response): Promise<void> {
     try {
-      // console.log("fetchAllMessages in serverSide");
       const { chatId } = req.query;
 
       if (!chatId) {
@@ -137,7 +127,7 @@ class ChatController implements IChatController {
       const messages = await this.chatService.fetchMessagesByChatId(
         chatId as string
       );
-      // console.log(messages)
+
       res.status(Http_Status_Codes.OK).json(messages);
     } catch (error) {
       console.error("Error fetching messages:", error);
@@ -149,10 +139,7 @@ class ChatController implements IChatController {
 
   async expertSendMessage(req: Request, res: Response): Promise<void> {
     try {
-      // console.log("expertSendMessage in serverSide");
       const { content, chatId, expertId } = req.body;
-
-      // console.log(content,chatId,expertId)
 
       if (!content || !chatId || !expertId) {
         res

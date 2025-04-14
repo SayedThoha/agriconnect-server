@@ -17,10 +17,7 @@ class ChatController {
     userAccessChat(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                // console.log(req.query)
                 const { userId, expertId } = req.query;
-                // console.log("userId:", userId);
-                // console.log("expertId:", expertId);
                 const result = yield this.chatService.getUserChat(userId, expertId);
                 if (typeof result === "string") {
                     res.status(httpStatusCodes_1.Http_Status_Codes.BAD_REQUEST).json({ message: result });
@@ -41,14 +38,12 @@ class ChatController {
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 const { userId } = req.query;
-                // console.log("req.query.userId:", userId);
                 if (!userId || typeof userId !== "string") {
                     res
                         .status(httpStatusCodes_1.Http_Status_Codes.BAD_REQUEST)
                         .json({ message: "Missing or invalid userId" });
                     return;
                 }
-                // Fetch chats via service
                 const chats = yield this.chatService.fetchUserChats(userId);
                 res.status(httpStatusCodes_1.Http_Status_Codes.OK).json(chats);
             }
@@ -63,7 +58,6 @@ class ChatController {
     sendMessage(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                // console.log("sendMessage in serverSide");
                 const { content, chatId, userId } = req.body;
                 const message = yield this.chatService.sendMessage(content, chatId, userId);
                 res.status(httpStatusCodes_1.Http_Status_Codes.CREATED).json(message);
@@ -79,7 +73,6 @@ class ChatController {
     userFetchAllMessages(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                // console.log("fetchAllMessages in serverSide");
                 const { chatId } = req.query;
                 if (!chatId) {
                     res
@@ -130,7 +123,6 @@ class ChatController {
                     return;
                 }
                 const messages = yield this.chatService.fetchMessagesByChatId(chatId);
-                // console.log(messages)
                 res.status(httpStatusCodes_1.Http_Status_Codes.OK).json(messages);
             }
             catch (error) {
@@ -144,9 +136,7 @@ class ChatController {
     expertSendMessage(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                // console.log("expertSendMessage in serverSide");
                 const { content, chatId, expertId } = req.body;
-                // console.log(content,chatId,expertId)
                 if (!content || !chatId || !expertId) {
                     res
                         .status(httpStatusCodes_1.Http_Status_Codes.BAD_REQUEST)

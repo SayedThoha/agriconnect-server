@@ -16,7 +16,6 @@ exports.comparePass = exports.hashedPass = void 0;
 const bcrypt_1 = __importDefault(require("bcrypt"));
 const hashedPass = (password) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        // console.log("password hashing")
         const salt = yield bcrypt_1.default.genSalt(10);
         return yield bcrypt_1.default.hash(password, salt);
     }

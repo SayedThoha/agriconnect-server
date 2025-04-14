@@ -16,7 +16,7 @@ exports.sentOtpToEmail = void 0;
 const nodemailer_1 = __importDefault(require("nodemailer"));
 const sentOtpToEmail = (email, otp) => {
     const transporter = nodemailer_1.default.createTransport({
-        service: "gmail", // Use your email service provider
+        service: "gmail",
         auth: {
             user: process.env.TRANSPORTER_EMAIL,
             pass: process.env.TRANSPORTER_PASSWORD,
@@ -31,13 +31,10 @@ const sentOtpToEmail = (email, otp) => {
     const sendEmail = (mailOptions) => __awaiter(void 0, void 0, void 0, function* () {
         try {
             yield transporter.sendMail(mailOptions);
-            // console.log("Mail Send to ", mailOptions.to);
-            //if otp success return true;
             return true;
         }
         catch (error) {
             console.error("Error sending email:", error);
-            //if otp fails return false;
             return false;
         }
     });

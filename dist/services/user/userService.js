@@ -29,14 +29,12 @@ class UserService {
     registerUser(userData) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                // Check if the user already exists
                 const existingUser = yield this.userRepository.emailExist(userData.email);
                 if (existingUser) {
                     return { success: false, message: "Email already exists" };
                 }
                 const hashedPassword = yield (0, hashPassword_1.hashedPass)(userData.password);
                 const otp = (0, otp_1.generateOtp)();
-                // Create user data
                 const user = yield this.userRepository.saveUser({
                     firstName: userData.firstName,
                     lastName: userData.lastName,
@@ -48,7 +46,6 @@ class UserService {
                 if (!user) {
                     return { success: false, message: "Failed to register user" };
                 }
-                // Send OTP via email
                 const isOtpSent = yield (0, sendOtpToMail_1.sentOtpToEmail)(userData.email, otp);
                 if (!isOtpSent) {
                     return { success: false, message: "Failed to send OTP" };
@@ -63,7 +60,6 @@ class UserService {
     resendOtp(email) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                // Generate new OTP
                 const otp = (0, otp_1.generateOtp)();
                 const updatedUser = yield this.userRepository.updateUserOtp(email, otp);
                 if (!updatedUser) {
@@ -73,7 +69,6 @@ class UserService {
                         message: "User not found",
                     };
                 }
-                // Send OTP via email
                 const isOtpSent = yield (0, sendOtpToMail_1.sentOtpToEmail)(email, otp);
                 if (!isOtpSent) {
                     return {
@@ -109,7 +104,6 @@ class UserService {
                         message: "User not found",
                     };
                 }
-                // Verify OTP
                 if (user.otp !== otp) {
                     return {
                         success: false,
@@ -117,7 +111,6 @@ class UserService {
                         message: "Incorrect OTP",
                     };
                 }
-                // Check OTP expiration
                 const otpExpirySeconds = this.OTP_EXPIRY_MINUTES * 60;
                 const timeDifference = Math.floor((new Date().getTime() - user.otp_update_time.getTime()) / 1000);
                 if (timeDifference > otpExpirySeconds) {
@@ -304,13 +297,7 @@ class UserService {
                     throw new Error("Invalid Email");
                 }
                 const otp = (0, otp_1.generateOtp)();
-                // Send OTP
-                const isOtpSent = yield (0, sendOtpToMail_1.sentOtpToEmail)(email, otp);
-                if (!isOtpSent) {
-                    {
-                        // console.log("otp not send");
-                    }
-                }
+                yield (0, sendOtpToMail_1.sentOtpToEmail)(email, otp);
                 yield this.userRepository.updateUserOtp(email, otp);
             }
             catch (error) {
@@ -501,7 +488,6 @@ class UserService {
                 yield this.userRepository.updateSlotBookingStatus(farmerDetails.slotId, true);
                 yield this.userRepository.createBookedSlot(farmerDetails);
                 const expertId = slot.expertId._id;
-                // Send notification about successful booking
                 yield notificationService_1.NotificationService.sendNotification(user._id.toString(), expertId.toString(), `Your slot booking for ${slot.time} is confirmed!`, "booking_success");
             }
             catch (error) {

@@ -2,13 +2,13 @@ import { INotification } from "../../models/notificationModel";
 import NotificationRepository from "../../repositories/notification/notificationRepository";
 import { INotificationService } from "./INotificationService";
 
-class NotificationService implements INotificationService{
-    constructor(private notificationRepository:NotificationRepository){
-}
-//user
- async getNotificationsForUser(userId: string): Promise<INotification[]> {
+class NotificationService implements INotificationService {
+  constructor(private notificationRepository: NotificationRepository) {}
+
+  async getNotificationsForUser(userId: string): Promise<INotification[]> {
     try {
-      const notifications = await this.notificationRepository.getNotificationsForUser(userId);
+      const notifications =
+        await this.notificationRepository.getNotificationsForUser(userId);
       return notifications;
     } catch (error) {
       console.error("Error in notification service:", error);
@@ -34,13 +34,10 @@ class NotificationService implements INotificationService{
     }
   }
 
-  // expert
-
   async getNotificationsForExpert(expertId: string): Promise<INotification[]> {
     try {
-      const notifications = await this.notificationRepository.getNotificationsForExpert(
-        expertId
-      );
+      const notifications =
+        await this.notificationRepository.getNotificationsForExpert(expertId);
 
       return notifications;
     } catch (error) {
@@ -49,16 +46,16 @@ class NotificationService implements INotificationService{
     }
   }
 
-  
   async markNotificationAsReadForExpert(expertId: string): Promise<void> {
     try {
-      await this.notificationRepository.markNotificationAsReadForExpert(expertId);
+      await this.notificationRepository.markNotificationAsReadForExpert(
+        expertId
+      );
     } catch (error) {
       console.error("Error in notification service:", error);
       throw error;
     }
   }
-
 
   async clearNotificationsForExpert(expertId: string): Promise<void> {
     try {
@@ -70,4 +67,4 @@ class NotificationService implements INotificationService{
   }
 }
 
-export default NotificationService
+export default NotificationService;

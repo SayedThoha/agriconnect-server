@@ -21,11 +21,11 @@ class ChatRepository extends BaseRepository<IChat> implements IChatRepository {
   async createChat(userId: string, expertId: string): Promise<IChat | null> {
     const chatData: Partial<IChat> = {
       chatName: "sender",
-      user: new mongoose.Types.ObjectId(userId), // Convert to ObjectId
-      expert: new mongoose.Types.ObjectId(expertId), // Convert to ObjectId
+      user: new mongoose.Types.ObjectId(userId), 
+      expert: new mongoose.Types.ObjectId(expertId), 
     };
 
-    const createdChat = await this.create(chatData); // Use BaseRepository create method
+    const createdChat = await this.create(chatData); 
 
     return this.model
       .findOne({ _id: createdChat._id })
@@ -35,7 +35,7 @@ class ChatRepository extends BaseRepository<IChat> implements IChatRepository {
 
   async findChatsByUserId(userId: string): Promise<IChat[]> {
     return await this.model
-      .find({ users: userId }) // Ensure userId is an ObjectId
+      .find({ users: userId }) 
       .populate([
         { path: "user", model: "User" },
         { path: "expert", model: "Expert" },
@@ -86,12 +86,12 @@ class ChatRepository extends BaseRepository<IChat> implements IChatRepository {
       chat: chatId,
     });
 
-    // Update chat with the latest message
+    
     await this.model.findByIdAndUpdate(chatId, {
       $set: { latestMessage: newMessage._id },
     });
 
-    // Populate sender before returning
+    
     return await Message.findById(newMessage._id).populate({
       path: "sender",
       model: senderModel,

@@ -7,11 +7,8 @@ import mongoose from "mongoose";
 import { ISlotData, SlotUpdateData } from "../../interfaces/commonInterface";
 import { ISlotService } from "./ISlotService";
 class SlotService implements ISlotService {
-  constructor(
-    private slotRepository: SlotRepository
-  ) {}
+  constructor(private slotRepository: SlotRepository) {}
 
-// expert
   private convertToLocalDate(date: Date): Date {
     const utcDate = new Date(date);
     return new Date(utcDate.getTime() - utcDate.getTimezoneOffset() * 60000);
@@ -22,11 +19,8 @@ class SlotService implements ISlotService {
     time: Date;
   }): Promise<SlotServiceResponse<ISlot>> {
     try {
-      // Convert dates
       const slotLocalDate = this.convertToLocalDate(slotData.time);
       const currentLocalDate = this.convertToLocalDate(new Date());
-
-      // Check if slot exists
       const existingSlot = await this.slotRepository.findSlotByExpertIdAndTime(
         slotData._id,
         slotData.time
@@ -48,7 +42,6 @@ class SlotService implements ISlotService {
         };
       }
 
-      // Get required data
       const [admin, expert] = await Promise.all([
         this.slotRepository.findAdminSettings(),
         this.slotRepository.findExpertById(slotData._id),
@@ -61,9 +54,8 @@ class SlotService implements ISlotService {
           message: "Expert not found",
         };
       }
-      // Convert string ID to ObjectId
+
       const expertObjectId = new mongoose.Types.ObjectId(slotData._id);
-      // Create slot data
       const newSlotData: Partial<ISlot> = {
         expertId: expertObjectId,
         time: slotData.time,
@@ -74,7 +66,6 @@ class SlotService implements ISlotService {
         created_time: new Date(),
       };
 
-      // Create slot
       const slot = await this.slotRepository.createSlot(newSlotData);
 
       return {
@@ -103,8 +94,6 @@ class SlotService implements ISlotService {
       this.slotRepository.findExpertById(expertId),
     ]);
 
-    // console.log(admin);
-
     if (!admin || !expert) {
       throw new Error("Admin or expert not found");
     }
@@ -123,7 +112,7 @@ class SlotService implements ISlotService {
 
   async getExpertSlotDetails(expertId: string): Promise<ISlot[]> {
     const currentTime = new Date();
-    // console.log(expertId);
+
     try {
       return await this.slotRepository.findSlotsByExpertId(
         expertId,
@@ -136,9 +125,6 @@ class SlotService implements ISlotService {
 
   async removeSlot(slotId: string): Promise<SlotServiceResponse<null>> {
     try {
-      // console.log("Removing slot with ID:", slotId);
-
-      // Find slot
       const slot = await this.slotRepository.findSlotById(slotId);
       if (!slot) {
         return {
@@ -148,7 +134,6 @@ class SlotService implements ISlotService {
         };
       }
 
-      // Check if slot is booked
       if (slot.booked) {
         return {
           success: false,
@@ -157,7 +142,6 @@ class SlotService implements ISlotService {
         };
       }
 
-      // Delete slot
       await this.slotRepository.deleteSlotById(slotId);
       return {
         success: true,
@@ -174,7 +158,6 @@ class SlotService implements ISlotService {
     }
   }
 
-  //user
   async getExpertSlots(expertId: string): Promise<ISlot[]> {
     try {
       const slots = await this.slotRepository.getSlots(expertId);
@@ -185,35 +168,31 @@ class SlotService implements ISlotService {
     }
   }
 
-   async bookSlot(slotData: SlotUpdateData): Promise<ISlot | null> {
-      try {
-        const updatedSlot = await this.slotRepository.updateSlotBooking(slotData);
-        if (!updatedSlot) {
-          throw new Error("Slot not found or could not be updated");
-        }
-        return updatedSlot;
-      } catch (error) {
-        console.error("Error in slot service bookSlot:", error);
-        throw error;
+  async bookSlot(slotData: SlotUpdateData): Promise<ISlot | null> {
+    try {
+      const updatedSlot = await this.slotRepository.updateSlotBooking(slotData);
+      if (!updatedSlot) {
+        throw new Error("Slot not found or could not be updated");
       }
+      return updatedSlot;
+    } catch (error) {
+      console.error("Error in slot service bookSlot:", error);
+      throw error;
     }
+  }
 
-    async getSlotDetails(slotId: string): Promise<ISlot | null> {
-      try {
-        const slot = await this.slotRepository.userFindSlotById(slotId);
-        if (!slot) {
-          throw new Error("Slot not found");
-        }
-        return slot;
-      } catch (error) {
-        console.error("Error in slot service getSlotDetails:", error);
-        throw error;
+  async getSlotDetails(slotId: string): Promise<ISlot | null> {
+    try {
+      const slot = await this.slotRepository.userFindSlotById(slotId);
+      if (!slot) {
+        throw new Error("Slot not found");
       }
+      return slot;
+    } catch (error) {
+      console.error("Error in slot service getSlotDetails:", error);
+      throw error;
     }
-
-    
-
-
+  }
 }
 
 export default SlotService;

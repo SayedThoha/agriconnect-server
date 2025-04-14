@@ -1,4 +1,4 @@
-//userRepository.ts
+
 
 import { Expert, IExpert } from "../../models/expertModel";
 import {
@@ -25,11 +25,11 @@ class UserRepository extends BaseRepository<IUser> implements IUserRepository {
   }
 
   async saveUser(userData: Partial<IUser>): Promise<IUser> {
-    return this.create(userData); // Using base repository create method
+    return this.create(userData); 
   }
 
   async findById(id: string): Promise<IUser | null> {
-    // Find user by ID
+    
     return await User.findById(id);
   }
 
@@ -182,7 +182,7 @@ class UserRepository extends BaseRepository<IUser> implements IUserRepository {
 
   async getExperts(): Promise<IExpert[]> {
     try {
-      // console.log("get experts repository");
+      
       const experts = await Expert.find({
         kyc_verification: true,
         blocked: false,
