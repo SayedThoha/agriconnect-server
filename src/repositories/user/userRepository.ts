@@ -1,5 +1,3 @@
-
-
 import { Expert, IExpert } from "../../models/expertModel";
 import {
   ISpecialisation,
@@ -25,12 +23,7 @@ class UserRepository extends BaseRepository<IUser> implements IUserRepository {
   }
 
   async saveUser(userData: Partial<IUser>): Promise<IUser> {
-    return this.create(userData); 
-  }
-
-  async findById(id: string): Promise<IUser | null> {
-    
-    return await User.findById(id);
+    return this.create(userData);
   }
 
   async checkEmail(email: string): Promise<IUser | null> {
@@ -110,8 +103,7 @@ class UserRepository extends BaseRepository<IUser> implements IUserRepository {
 
   async findUserById(id: string): Promise<IUser | null> {
     try {
-      
-      return this.findById(id); 
+      return this.findById(id);
     } catch (error) {
       console.error("Error in expert repository findById:", error);
       throw new Error("Database operation failed");
@@ -123,7 +115,7 @@ class UserRepository extends BaseRepository<IUser> implements IUserRepository {
     updateData: Partial<IUser>
   ): Promise<IUser | null> {
     try {
-      return this.update(id, updateData); 
+      return this.update(id, updateData);
     } catch (error) {
       console.error("Error in user repository updateUserProfile:", error);
       throw new Error("Database operation failed");
@@ -134,7 +126,7 @@ class UserRepository extends BaseRepository<IUser> implements IUserRepository {
     userId: string,
     updateData: Partial<IUser>
   ): Promise<IUser | null> {
-    return this.update(userId, updateData); 
+    return this.update(userId, updateData);
   }
 
   async updateProfilePicture(userId: string, imageUrl: string): Promise<void> {
@@ -176,13 +168,11 @@ class UserRepository extends BaseRepository<IUser> implements IUserRepository {
   }
 
   async getSpecialisations(): Promise<ISpecialisation[]> {
-    
     return await Specialisation.find();
   }
 
   async getExperts(): Promise<IExpert[]> {
     try {
-      
       const experts = await Expert.find({
         kyc_verification: true,
         blocked: false,
@@ -295,7 +285,6 @@ class UserRepository extends BaseRepository<IUser> implements IUserRepository {
       { new: true }
     );
   }
-
 
   async findBookedSlotById(appointmentId: string): Promise<IBookedSlot | null> {
     return await BookedSlot.findById(appointmentId);

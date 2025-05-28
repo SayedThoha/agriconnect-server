@@ -1,5 +1,3 @@
-
-
 import { IBookedSlot } from "../../models/bookeSlotModel";
 import { IExpert } from "../../models/expertModel";
 import { ISlot } from "../../models/slotModel";
@@ -10,7 +8,6 @@ export interface IUserRepository {
   emailExist(email: string): Promise<IUser | null>;
   saveUser(data: IUser): Promise<Partial<IUser> | null>;
   checkEmail(email: string): Promise<IUser | null>;
-  findById(id: string): Promise<IUser | null>;
   updateUserOtp(email: string, otp: string): Promise<IUser | null>;
   findUserById(id: string): Promise<IUser | null>;
   updateUserProfile(
@@ -40,7 +37,7 @@ export interface IUserRepository {
     filter: object,
     updateData: object
   ): Promise<IBookedSlot | null>;
-  
+
   findBookedSlotById(appointmentId: string): Promise<IBookedSlot | null>;
   updateUserWallet(userId: string, amount: number): Promise<void>;
 }

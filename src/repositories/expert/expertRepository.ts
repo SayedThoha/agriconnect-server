@@ -20,7 +20,6 @@ class ExpertRepository
   }
 
   async getSpecialisations() {
-  
     return await Specialisation.find();
   }
 
@@ -110,7 +109,7 @@ class ExpertRepository
 
   async findById(id: string): Promise<IExpert | null> {
     try {
-      return await Expert.findById(id);
+      return await this.findById(id);
     } catch (error) {
       console.error("Error in expert repository findById:", error);
       throw new Error("Database operation failed");
@@ -121,14 +120,14 @@ class ExpertRepository
     id: string,
     updateData: Partial<IExpert>
   ): Promise<IExpert | null> {
-    return this.update(id, updateData); 
+    return this.update(id, updateData);
   }
 
   async updateExpertById(
     expertId: string,
     updateData: Partial<IExpert>
   ): Promise<IExpert | null> {
-    return this.update(expertId, updateData); 
+    return this.update(expertId, updateData);
   }
 
   async updateProfilePicture(
@@ -173,7 +172,6 @@ class ExpertRepository
   }
 
   async getBookingDetails(expertId: string): Promise<IBookedSlot[]> {
-
     return await BookedSlot.find({
       expertId: expertId,
     })
@@ -194,8 +192,6 @@ class ExpertRepository
       throw error;
     }
   }
-
-
 
   async findBookedSlotsByExpert(expertId: string): Promise<string[]> {
     const now = new Date().toISOString();
