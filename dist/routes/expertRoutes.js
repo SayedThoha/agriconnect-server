@@ -56,7 +56,7 @@ expertRouter.post("/verifyOtp", (req, res) => expertController.verifyOtp(req, re
 expertRouter.post("/login", (req, res) => expertController.login(req, res));
 expertRouter.get("/getExpertDetails", expertAuth_1.expertAuth, (req, res) => expertController.getExpertDetails(req, res));
 expertRouter.post("/editExpertProfile", expertAuth_1.expertAuth, (req, res) => expertController.editExpertProfile(req, res));
-expertRouter.post("/opt_for_new_email", expertAuth_1.expertAuth, (req, res) => expertController.optForNewEmail(req, res));
+expertRouter.post("/opt_for_new_email", expertAuth_1.expertAuth, (req, res) => expertController.otpForNewEmail(req, res));
 expertRouter.post("/edit_expert_profile_picture", expertAuth_1.expertAuth, (req, res) => expertController.editExpertProfilePicture(req, res));
 expertRouter.get("/status/:id", expertAuth_1.expertAuth, (req, res) => expertController.checkExpertStatus(req, res));
 expertRouter.post("/verifyEmail", (req, res) => expertController.verifyEmailForPasswordReset(req, res));
@@ -79,9 +79,13 @@ expertRouter
     .post("/expertSendMessage", (req, res) => chatController.expertSendMessage(req, res));
 expertRouter
     .use(expertAuth_1.expertAuth)
-    .get("/add_prescription", (req, res) => prescriptionController.addPrescription(req, res)).get("/prescriptions", (req, res) => prescriptionController.getAllPrescriptions(req, res)).get("/get_prescription_details", (req, res) => prescriptionController.getPrescriptionDetailsByExpert(req, res));
+    .get("/add_prescription", (req, res) => prescriptionController.addPrescription(req, res))
+    .get("/prescriptions", (req, res) => prescriptionController.getAllPrescriptions(req, res))
+    .get("/get_prescription_details", (req, res) => prescriptionController.getPrescriptionDetailsByExpert(req, res));
 expertRouter
     .use(expertAuth_1.expertAuth)
-    .get("/notifications", (req, res) => notificationController.getNotificationsForExpert(req, res)).put("/notifications/mark-as-read", (req, res) => notificationController.markNotificationAsReadForExpert(req, res)).put("/notifications/clear", (req, res) => notificationController.clearNotificationsForExpert(req, res));
+    .get("/notifications", (req, res) => notificationController.getNotificationsForExpert(req, res))
+    .put("/notifications/mark-as-read", (req, res) => notificationController.markNotificationAsReadForExpert(req, res))
+    .put("/notifications/clear", (req, res) => notificationController.clearNotificationsForExpert(req, res));
 expertRouter.get("/share_roomId_through_email", (req, res) => expertController.shareRoomIdThroughEmail(req, res));
 exports.default = expertRouter;

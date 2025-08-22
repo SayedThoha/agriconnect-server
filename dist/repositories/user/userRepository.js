@@ -37,11 +37,6 @@ class UserRepository extends baseRepository_1.default {
             return this.create(userData);
         });
     }
-    findById(id) {
-        return __awaiter(this, void 0, void 0, function* () {
-            return yield userModel_1.User.findById(id);
-        });
-    }
     checkEmail(email) {
         return __awaiter(this, void 0, void 0, function* () {
             try {

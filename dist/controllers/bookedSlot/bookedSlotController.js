@@ -77,13 +77,6 @@ class BookedSlotController {
             try {
                 const { expertId } = req.query;
                 const appointment = yield this.bookedSlotService.getUpcomingAppointmentByExpert(expertId);
-                if (Object.keys(appointment).length) {
-                    // console.log("Next appointment:", appointment);
-                }
-                else {
-                    // console.log("No upcoming appointments found.");
-                    // res.status(Http_Status_Codes.OK).json({});
-                }
                 res.status(httpStatusCodes_1.Http_Status_Codes.OK).json(appointment);
             }
             catch (error) {

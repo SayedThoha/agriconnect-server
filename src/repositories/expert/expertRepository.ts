@@ -1,15 +1,13 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { IExpertRepository } from "./IExpertRepository";
 import { Specialisation } from "../../models/specialisationModel";
 import { Expert, IExpert } from "../../models/expertModel";
 import { ExpertKyc, IExpertKyc } from "../../models/expertKycModel";
 import BaseRepository from "../base/baseRepository";
-import { Slot } from "../../models/slotModel";
-
 import { IPrescriptionInput } from "../../interfaces/commonInterface";
 import { BookedSlot, IBookedSlot } from "../../models/bookeSlotModel";
 import { IPrescription, Prescription } from "../../models/prescriptionModel";
 import { User } from "../../models/userModel";
+import { Slot } from "../../models/slotModel";
 
 class ExpertRepository
   extends BaseRepository<IExpert>
@@ -18,11 +16,9 @@ class ExpertRepository
   constructor() {
     super(Expert);
   }
-
   async getSpecialisations() {
     return await Specialisation.find();
   }
-
   async findByEmail(email: string): Promise<IExpert | null> {
     try {
       return await Expert.findOne({ email });
@@ -31,7 +27,6 @@ class ExpertRepository
       throw new Error(`Error finding expert by email: ${error}`);
     }
   }
-
   async createKyc(
     expertId: string,
     expertDetails: IExpert
@@ -250,7 +245,7 @@ class ExpertRepository
     );
   }
 
-  async getUserEmailFromSlot(slot: any): Promise<string | null> {
+  async getUserEmailFromSlot(slot: IBookedSlot): Promise<string | null> {
     const user = await User.findById(slot?.userId);
     return user ? user.email : null;
   }

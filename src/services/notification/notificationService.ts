@@ -1,9 +1,9 @@
 import { INotification } from "../../models/notificationModel";
-import NotificationRepository from "../../repositories/notification/notificationRepository";
+import { INotificationRepository } from "../../repositories/notification/INotificationRepository";
 import { INotificationService } from "./INotificationService";
 
 class NotificationService implements INotificationService {
-  constructor(private notificationRepository: NotificationRepository) {}
+  constructor(private notificationRepository: INotificationRepository) {}
 
   async getNotificationsForUser(userId: string): Promise<INotification[]> {
     try {

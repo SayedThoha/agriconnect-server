@@ -21,7 +21,6 @@ import BookedSlotService from "../services/bookedSlot/bookedSlotService";
 import BookedSlotController from "../controllers/bookedSlot/bookedSlotController";
 
 const expertRouter = express.Router();
-
 const expertRepository = new ExpertRepository();
 const expertService = new ExpertService(expertRepository);
 const expertController = new ExpertController(expertService);
@@ -80,7 +79,7 @@ expertRouter.post("/editExpertProfile", expertAuth, (req, res) =>
 );
 
 expertRouter.post("/opt_for_new_email", expertAuth, (req, res) =>
-  expertController.optForNewEmail(req, res)
+  expertController.otpForNewEmail(req, res)
 );
 
 expertRouter.post("/edit_expert_profile_picture", expertAuth, (req, res) =>
@@ -142,43 +141,41 @@ expertRouter.get("/get_bookings_of_expert", expertAuth, (req, res) =>
   expertController.getExpertBookings(req, res)
 );
 
+expertRouter
+  .use(expertAuth)
+  .get("/expert_accessed_chats", (req, res) =>
+    chatController.getExpertChats(req, res)
+  )
+  .get("/expertFetchAllMessages", (req, res) =>
+    chatController.getExpertMessages(req, res)
+  )
+  .post("/expertSendMessage", (req, res) =>
+    chatController.expertSendMessage(req, res)
+  );
 
 expertRouter
-.use(expertAuth)
-.get("/expert_accessed_chats", (req, res) =>
-  chatController.getExpertChats(req, res)
-)
-.get("/expertFetchAllMessages", (req, res) =>
-  chatController.getExpertMessages(req, res)
-)
-.post("/expertSendMessage", (req, res) =>
-  chatController.expertSendMessage(req, res)
-);
-
-
-expertRouter
-.use(expertAuth)
-.get("/add_prescription", (req, res) =>
-  prescriptionController.addPrescription(req, res)
-).get("/prescriptions", (req, res) =>
-  prescriptionController.getAllPrescriptions(req, res)
-).get("/get_prescription_details", (req, res) =>
-  prescriptionController.getPrescriptionDetailsByExpert(req, res)
-);
-
-
+  .use(expertAuth)
+  .get("/add_prescription", (req, res) =>
+    prescriptionController.addPrescription(req, res)
+  )
+  .get("/prescriptions", (req, res) =>
+    prescriptionController.getAllPrescriptions(req, res)
+  )
+  .get("/get_prescription_details", (req, res) =>
+    prescriptionController.getPrescriptionDetailsByExpert(req, res)
+  );
 
 expertRouter
-.use(expertAuth)
-.get("/notifications", (req, res) =>
-  notificationController.getNotificationsForExpert(req, res)
-).put("/notifications/mark-as-read", (req, res) =>
-  notificationController.markNotificationAsReadForExpert(req, res)
-).put("/notifications/clear", (req, res) =>
-  notificationController.clearNotificationsForExpert(req, res)
-);
-
-
+  .use(expertAuth)
+  .get("/notifications", (req, res) =>
+    notificationController.getNotificationsForExpert(req, res)
+  )
+  .put("/notifications/mark-as-read", (req, res) =>
+    notificationController.markNotificationAsReadForExpert(req, res)
+  )
+  .put("/notifications/clear", (req, res) =>
+    notificationController.clearNotificationsForExpert(req, res)
+  );
 
 expertRouter.get("/share_roomId_through_email", (req, res) =>
   expertController.shareRoomIdThroughEmail(req, res)

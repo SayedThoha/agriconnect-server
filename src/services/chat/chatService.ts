@@ -1,44 +1,38 @@
 import { IChat } from "../../models/chatModel";
 import { IMessage, Message } from "../../models/messageModel";
-import ChatRepository from "../../repositories/chat/chatRepository";
+import { IChatRepository } from "../../repositories/chat/IChatRepository";
 import { IChatService } from "./IChatService";
 
 class ChatService implements IChatService {
-  constructor(private chatRepository: ChatRepository) {}
+  constructor(private chatRepository: IChatRepository) {}
 
   async getUserChat(userId: string, expertId?: string): Promise<IChat | null> {
     if (!userId) {
       throw new Error("User ID is required");
     }
-
     const chat = await this.chatRepository.findChatByUserId(userId);
-
     if (chat) {
       return chat;
     } else {
       if (!expertId) {
         throw new Error("You don't have any chats yet");
       }
-
       return await this.chatRepository.createChat(userId, expertId);
     }
   }
 
   async fetchUserChats(userId: string): Promise<IChat[]> {
     const chats = await this.chatRepository.findChatsByUserId(userId);
-
     for (const chat of chats) {
       if (chat.latestMessage) {
         const populatedMessage = await Message.findById(
           chat.latestMessage
         ).populate("sender");
-
         if (populatedMessage) {
           chat.latestMessage = populatedMessage;
         }
       }
     }
-
     return chats;
   }
 

@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
+import { UpdateWriteOpResult } from "mongoose";
 import { IExpertDocuments } from "../../interfaces/adminInterface";
 import { Admin, IAdmin } from "../../models/adminModel";
 import { BookedSlot, IBookedSlot } from "../../models/bookeSlotModel";
@@ -11,7 +11,6 @@ import {
 import { IUser, User } from "../../models/userModel";
 import BaseRepository from "../base/baseRepository";
 import { IAdminRepository } from "./IAdminRepository";
-
 class AdminRepository
   extends BaseRepository<IAdmin>
   implements IAdminRepository
@@ -19,8 +18,6 @@ class AdminRepository
   constructor() {
     super(Admin);
   }
-
-
   async findByEmail(email: string): Promise<IAdmin | null> {
     try {
       return await this.model.findOne({ email });
@@ -28,7 +25,6 @@ class AdminRepository
       throw new Error(`Error finding admin by email: ${error}`);
     }
   }
-
   async getUserCount(): Promise<number> {
     try {
       return await User.countDocuments({});
@@ -36,7 +32,6 @@ class AdminRepository
       throw new Error(`Error getting user count: ${error}`);
     }
   }
-
   async getExpertCount(): Promise<number> {
     try {
       return await Expert.countDocuments({});
@@ -44,7 +39,6 @@ class AdminRepository
       throw new Error(`Error getting expert count: ${error}`);
     }
   }
-
   async findAllExperts(): Promise<IExpert[]> {
     try {
       const experts = await Expert.find();
@@ -54,7 +48,6 @@ class AdminRepository
       throw error;
     }
   }
-
   async findAllUsers(): Promise<IUser[]> {
     try {
       const users = await User.find();
@@ -64,7 +57,6 @@ class AdminRepository
       throw error;
     }
   }
-
   async findAllSpecialisations(): Promise<ISpecialisation[]> {
     try {
       const specialisations = await Specialisation.find();
@@ -74,7 +66,6 @@ class AdminRepository
       throw error;
     }
   }
-
   async createSpecialisation(specialisation: string): Promise<ISpecialisation> {
     try {
       const newSpecialisation = await Specialisation.create({
@@ -87,7 +78,6 @@ class AdminRepository
       throw error;
     }
   }
-
   async updateSpecialisation(
     _id: string,
     specialisation: string
@@ -97,7 +87,6 @@ class AdminRepository
         { _id },
         { specialisation }
       );
-
       if (!result.matchedCount) {
         throw new Error("Specialisation not found");
       }
@@ -106,7 +95,6 @@ class AdminRepository
       throw error;
     }
   }
-
   async deleteSpecialisation(_id: string): Promise<boolean> {
     try {
       const result = await Specialisation.deleteOne({ _id });
@@ -116,7 +104,6 @@ class AdminRepository
       throw error;
     }
   }
-
   async findUserById(_id: string): Promise<IUser | null> {
     try {
       return await User.findOne({ _id });
@@ -125,7 +112,6 @@ class AdminRepository
       throw error;
     }
   }
-
   async updateUserBlockStatus(_id: string, blocked: boolean): Promise<void> {
     try {
       const user = await User.findOne({ _id });
@@ -139,12 +125,10 @@ class AdminRepository
       throw error;
     }
   }
-
   async searchUsers(searchTerm: string): Promise<IUser[]> {
     try {
       const regex = new RegExp("^" + searchTerm.toLowerCase(), "i");
       const users = await User.find();
-
       return users.filter(
         (user: IUser) =>
           regex.test(user.firstName) ||
@@ -156,12 +140,10 @@ class AdminRepository
       throw error;
     }
   }
-
   async searchExperts(searchTerm: string): Promise<IExpert[]> {
     try {
       const regex = new RegExp("^" + searchTerm.toLowerCase(), "i");
       const experts = await Expert.find();
-
       return experts.filter(
         (expert: IExpert) =>
           regex.test(expert.firstName) ||
@@ -173,7 +155,6 @@ class AdminRepository
       throw error;
     }
   }
-
   async findExpertById(_id: string): Promise<IExpert | null> {
     try {
       return await Expert.findById(_id);
@@ -182,7 +163,6 @@ class AdminRepository
       throw error;
     }
   }
-
   async updateExpertStatus(expert: IExpert): Promise<void> {
     try {
       await expert.save();
@@ -191,7 +171,6 @@ class AdminRepository
       throw error;
     }
   }
-
   async findPendingKycData(): Promise<IExpertKyc[]> {
     try {
       const data = await ExpertKyc.find()
@@ -201,14 +180,12 @@ class AdminRepository
           select: "-password -created_time -otp -otp_update_time -__v",
         })
         .exec();
-
       return data;
     } catch (error) {
       console.error("Error in findPendingKycData repository:", error);
       throw error;
     }
   }
-
   async findKycByExpertId(expertId: string): Promise<IExpertKyc | null> {
     try {
       return await ExpertKyc.findOne({ expertId }).populate("expertId").exec();
@@ -217,7 +194,6 @@ class AdminRepository
       throw error;
     }
   }
-
   async updateKycDetails(
     kycId: string,
     updateData: Partial<IExpertKyc>
@@ -243,7 +219,6 @@ class AdminRepository
       throw error;
     }
   }
-
   async updateExpertKycStatus(
     expertId: string,
     verified: boolean
@@ -257,7 +232,6 @@ class AdminRepository
       throw error;
     }
   }
-
   async findByIdForDownload(
     expertId: string
   ): Promise<IExpertDocuments | null> {
@@ -268,12 +242,9 @@ class AdminRepository
       throw error;
     }
   }
-
-
-  async updatePayOut(payOut: number): Promise<any> {
+  async updatePayOut(payOut: number): Promise<UpdateWriteOpResult> {
     return await Admin.updateMany({}, { $set: { payOut } });
   }
-
   async getAppointmentDetails(): Promise<IBookedSlot[]> {
     return await BookedSlot.find({})
       .populate({
@@ -282,7 +253,6 @@ class AdminRepository
       .populate({ path: "expertId" })
       .populate("userId");
   }
-
   async getSlotDetails(): Promise<IBookedSlot[]> {
     return await BookedSlot.find({}).populate("slotId");
   }

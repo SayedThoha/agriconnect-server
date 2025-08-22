@@ -1,16 +1,13 @@
-/* eslint-disable @typescript-eslint/no-empty-object-type */
-/* eslint-disable  @typescript-eslint/no-explicit-any */
-
 import { Request, Response } from "express";
 import { Http_Status_Codes } from "../../constants/httpStatusCodes";
-import AdminService from "../../services/admin/adminService";
 import { KycUpdateData } from "../../models/expertKycModel";
 import { DownloadRequest } from "../../interfaces/adminInterface";
 import { IAdminController } from "./IAdminController";
 import { SearchUserRequest } from "../../interfaces/commonInterface";
+import { IAdminService } from "../../services/admin/IAdminService";
 
 class AdminController implements IAdminController {
-  constructor(private adminService: AdminService) {}
+  constructor(private adminService: IAdminService) {}
 
   async login(req: Request, res: Response): Promise<void> {
     try {
@@ -57,7 +54,6 @@ class AdminController implements IAdminController {
   async getExperts(req: Request, res: Response): Promise<void> {
     try {
       const { expert } = req.query;
-
       if (expert === "all") {
         const expertData = await this.adminService.getAllExperts();
         res.status(Http_Status_Codes.OK).json(expertData);
@@ -109,7 +105,6 @@ class AdminController implements IAdminController {
         return;
       }
       await this.adminService.addSpecialisation(data);
-
       res.status(Http_Status_Codes.CREATED).json({
         message: "Specialisation added Successfully",
       });
@@ -124,7 +119,6 @@ class AdminController implements IAdminController {
   async editSpecialisation(req: Request, res: Response): Promise<void> {
     try {
       const data = req.body;
-
       if (!data) {
         res.status(Http_Status_Codes.BAD_REQUEST).json({
           message: "Edit Failed",
@@ -132,23 +126,24 @@ class AdminController implements IAdminController {
         return;
       }
       await this.adminService.editSpecialisation(data);
-
       res.status(Http_Status_Codes.OK).json({
         message: "Edit Successfully",
       });
-    } catch (error: any) {
+    } catch (error) {
       console.error("Error in editSpecialization controller:", error);
-      if (error.message === "Specialization not found") {
-        res.status(Http_Status_Codes.NOT_FOUND).json({
-          message: "Specialization not found",
-        });
-        return;
-      }
-      if (error.message === "Invalid specialization data") {
-        res.status(Http_Status_Codes.BAD_REQUEST).json({
-          message: "Invalid data provided",
-        });
-        return;
+      if (error instanceof Error) {
+        if (error.message === "Specialization not found") {
+          res.status(Http_Status_Codes.NOT_FOUND).json({
+            message: "Specialization not found",
+          });
+          return;
+        }
+        if (error.message === "Invalid specialization data") {
+          res.status(Http_Status_Codes.BAD_REQUEST).json({
+            message: "Invalid data provided",
+          });
+          return;
+        }
       }
       res.status(Http_Status_Codes.INTERNAL_SERVER_ERROR).json({
         message: "Internal Server Error",
@@ -169,19 +164,21 @@ class AdminController implements IAdminController {
       res.status(Http_Status_Codes.OK).json({
         message: "Delete Successfully",
       });
-    } catch (error: any) {
+    } catch (error) {
       console.error("Error in deleteSpecialization controller:", error);
-      if (error.message === "Specialization not found") {
-        res.status(Http_Status_Codes.NOT_FOUND).json({
-          message: "Specialization not found",
-        });
-        return;
-      }
-      if (error.message === "Specialization ID is required") {
-        res.status(Http_Status_Codes.BAD_REQUEST).json({
-          message: "Invalid specialization ID",
-        });
-        return;
+      if (error instanceof Error) {
+        if (error.message === "Specialization not found") {
+          res.status(Http_Status_Codes.NOT_FOUND).json({
+            message: "Specialization not found",
+          });
+          return;
+        }
+        if (error.message === "Specialization ID is required") {
+          res.status(Http_Status_Codes.BAD_REQUEST).json({
+            message: "Invalid specialization ID",
+          });
+          return;
+        }
       }
       res.status(Http_Status_Codes.INTERNAL_SERVER_ERROR).json({
         message: "Internal Server Error",
@@ -202,19 +199,21 @@ class AdminController implements IAdminController {
       res.status(Http_Status_Codes.OK).json({
         message: "Status changed successfully",
       });
-    } catch (error: any) {
+    } catch (error) {
       console.error("Error in toggleBlockStatus controller:", error);
-      if (error.message === "User not found") {
-        res.status(Http_Status_Codes.NOT_FOUND).json({
-          message: "User not found",
-        });
-        return;
-      }
-      if (error.message === "User ID is required") {
-        res.status(Http_Status_Codes.BAD_REQUEST).json({
-          message: "User ID is required",
-        });
-        return;
+      if (error instanceof Error) {
+        if (error.message === "User not found") {
+          res.status(Http_Status_Codes.NOT_FOUND).json({
+            message: "User not found",
+          });
+          return;
+        }
+        if (error.message === "User ID is required") {
+          res.status(Http_Status_Codes.BAD_REQUEST).json({
+            message: "User ID is required",
+          });
+          return;
+        }
       }
       res.status(Http_Status_Codes.INTERNAL_SERVER_ERROR).json({
         message: "Internal Server Error",
@@ -234,19 +233,21 @@ class AdminController implements IAdminController {
       }
       const user = await this.adminService.getUserDetails(data._id);
       res.status(Http_Status_Codes.OK).json(user);
-    } catch (error: any) {
+    } catch (error) {
       console.error("Error in getUserDetails controller:", error);
-      if (error.message === "User not found") {
-        res.status(Http_Status_Codes.NOT_FOUND).json({
-          message: "User not found",
-        });
-        return;
-      }
-      if (error.message === "User ID is required") {
-        res.status(Http_Status_Codes.BAD_REQUEST).json({
-          message: "User ID is required",
-        });
-        return;
+      if (error instanceof Error) {
+        if (error.message === "User not found") {
+          res.status(Http_Status_Codes.NOT_FOUND).json({
+            message: "User not found",
+          });
+          return;
+        }
+        if (error.message === "User ID is required") {
+          res.status(Http_Status_Codes.BAD_REQUEST).json({
+            message: "User ID is required",
+          });
+          return;
+        }
       }
       res.status(Http_Status_Codes.INTERNAL_SERVER_ERROR).json({
         message: "Internal Server Error",
@@ -255,7 +256,7 @@ class AdminController implements IAdminController {
   }
 
   async searchUsers(
-    req: Request<{}, {}, SearchUserRequest>,
+    req: Request<unknown, unknown, SearchUserRequest>,
     res: Response
   ): Promise<void> {
     try {
@@ -269,13 +270,15 @@ class AdminController implements IAdminController {
       }
       const results = await this.adminService.searchUsers(data);
       res.status(Http_Status_Codes.OK).json(results);
-    } catch (error: any) {
+    } catch (error) {
       console.error("Error in searchUsers controller:", error);
-      if (error.message === "Search term is required") {
-        res.status(Http_Status_Codes.BAD_REQUEST).json({
-          message: "Search term is required",
-        });
-        return;
+      if (error instanceof Error) {
+        if (error.message === "Search term is required") {
+          res.status(Http_Status_Codes.BAD_REQUEST).json({
+            message: "Search term is required",
+          });
+          return;
+        }
       }
       res.status(Http_Status_Codes.INTERNAL_SERVER_ERROR).json({
         message: "Internal Server Error",
@@ -284,12 +287,11 @@ class AdminController implements IAdminController {
   }
 
   async searchExperts(
-    req: Request<{}, {}, SearchUserRequest>,
+    req: Request<unknown, unknown, SearchUserRequest>,
     res: Response
   ): Promise<void> {
     try {
       const { data } = req.body;
-
       if (!data) {
         res.status(Http_Status_Codes.BAD_REQUEST).json({
           message: "No data to search",
@@ -298,13 +300,15 @@ class AdminController implements IAdminController {
       }
       const results = await this.adminService.searchExperts(data);
       res.status(Http_Status_Codes.OK).json(results);
-    } catch (error: any) {
+    } catch (error) {
       console.error("Error in searchUsers controller:", error);
-      if (error.message === "Search term is required") {
-        res.status(Http_Status_Codes.BAD_REQUEST).json({
-          message: "Search term is required",
-        });
-        return;
+      if (error instanceof Error) {
+        if (error.message === "Search term is required") {
+          res.status(Http_Status_Codes.BAD_REQUEST).json({
+            message: "Search term is required",
+          });
+          return;
+        }
       }
       res.status(Http_Status_Codes.INTERNAL_SERVER_ERROR).json({
         message: "Internal Server Error",
@@ -329,19 +333,21 @@ class AdminController implements IAdminController {
       res.status(Http_Status_Codes.OK).json({
         message: "Expert status of block changed",
       });
-    } catch (error: any) {
+    } catch (error) {
       console.error("Error in toggleExpertStatus controller:", error);
-      if (error.message === "Expert not found") {
-        res.status(Http_Status_Codes.NOT_FOUND).json({
-          message: "Expert not found",
-        });
-        return;
-      }
-      if (error.message === "Expert ID is required") {
-        res.status(Http_Status_Codes.BAD_REQUEST).json({
-          message: "Expert ID is required",
-        });
-        return;
+      if (error instanceof Error) {
+        if (error.message === "Expert not found") {
+          res.status(Http_Status_Codes.NOT_FOUND).json({
+            message: "Expert not found",
+          });
+          return;
+        }
+        if (error.message === "Expert ID is required") {
+          res.status(Http_Status_Codes.BAD_REQUEST).json({
+            message: "Expert ID is required",
+          });
+          return;
+        }
       }
       res.status(Http_Status_Codes.INTERNAL_SERVER_ERROR).json({
         message: "Internal Server Error",
@@ -362,7 +368,7 @@ class AdminController implements IAdminController {
   }
 
   async getExpertKycDetails(
-    req: Request<{}, {}, {}, { expertId?: string }>,
+    req: Request<unknown, unknown, unknown, { expertId?: string }>,
     res: Response
   ): Promise<void> {
     try {
@@ -376,20 +382,21 @@ class AdminController implements IAdminController {
       }
       const kycDetails = await this.adminService.getExpertKycDetails(expertId);
       res.status(Http_Status_Codes.OK).json(kycDetails);
-    } catch (error: any) {
+    } catch (error) {
       console.error("Error in getExpertKycDetails controller:", error);
-
-      if (error.message === "Expert ID is required") {
-        res.status(Http_Status_Codes.BAD_REQUEST).json({
-          message: "Expert ID is required",
-        });
-        return;
-      }
-      if (error.message === "KYC details not found") {
-        res.status(Http_Status_Codes.NOT_FOUND).json({
-          message: "KYC details not found",
-        });
-        return;
+      if (error instanceof Error) {
+        if (error.message === "Expert ID is required") {
+          res.status(Http_Status_Codes.BAD_REQUEST).json({
+            message: "Expert ID is required",
+          });
+          return;
+        }
+        if (error.message === "KYC details not found") {
+          res.status(Http_Status_Codes.NOT_FOUND).json({
+            message: "KYC details not found",
+          });
+          return;
+        }
       }
       res.status(Http_Status_Codes.INTERNAL_SERVER_ERROR).json({
         message: "Internal Server Error",
@@ -398,7 +405,7 @@ class AdminController implements IAdminController {
   }
 
   async submitKycDetails(
-    req: Request<{}, {}, KycUpdateData>,
+    req: Request<unknown, unknown, KycUpdateData>,
     res: Response
   ): Promise<void> {
     try {
@@ -411,21 +418,22 @@ class AdminController implements IAdminController {
       }
       const result = await this.adminService.submitKycDetails(data);
       res.status(Http_Status_Codes.OK).json(result);
-    } catch (error: any) {
+    } catch (error) {
       console.error("Error in submitKycDetails controller:", error);
+      if (error instanceof Error) {
+        if (error.message === "KYC ID is required") {
+          res.status(Http_Status_Codes.BAD_REQUEST).json({
+            message: "KYC ID is required",
+          });
+          return;
+        }
 
-      if (error.message === "KYC ID is required") {
-        res.status(Http_Status_Codes.BAD_REQUEST).json({
-          message: "KYC ID is required",
-        });
-        return;
-      }
-
-      if (error.message === "KYC details not found") {
-        res.status(Http_Status_Codes.NOT_FOUND).json({
-          message: "KYC details not found",
-        });
-        return;
+        if (error.message === "KYC details not found") {
+          res.status(Http_Status_Codes.NOT_FOUND).json({
+            message: "KYC details not found",
+          });
+          return;
+        }
       }
       res.status(Http_Status_Codes.INTERNAL_SERVER_ERROR).json({
         message: "Internal Server Error",
@@ -434,7 +442,7 @@ class AdminController implements IAdminController {
   }
 
   async downloadKycDocuments(
-    req: Request<{}, {}, {}, DownloadRequest>,
+    req: Request<unknown, unknown, unknown, DownloadRequest>,
     res: Response
   ): Promise<Response> {
     try {

@@ -62,7 +62,7 @@ const bookedSlotSchema = new mongoose_1.default.Schema({
     },
     prescription_id: {
         type: mongoose_1.default.Schema.Types.ObjectId,
-        ref: "Prescription"
-    }
+        ref: "Prescription",
+    },
 });
 exports.BookedSlot = mongoose_1.default.model("BookedSlot", bookedSlotSchema);

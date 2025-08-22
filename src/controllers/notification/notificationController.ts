@@ -1,15 +1,13 @@
 import { Http_Status_Codes } from "../../constants/httpStatusCodes";
-import NotificationService from "../../services/notification/notificationService";
 import { Request, Response } from "express";
 import { INotificationController } from "./INotificationController";
+import { INotificationService } from "../../services/notification/INotificationService";
 
 class NotificationController implements INotificationController {
-  constructor(private notificationService: NotificationService) {}
-
+  constructor(private notificationService: INotificationService) {}
   async getNotificationsForUser(req: Request, res: Response): Promise<void> {
     try {
       const { userId } = req.query;
-
       if (!userId) {
         res.status(Http_Status_Codes.BAD_REQUEST).json({
           message: "User ID is required",
@@ -28,25 +26,21 @@ class NotificationController implements INotificationController {
       });
     }
   }
-
   async markNotificationAsReadForUser(
     req: Request,
     res: Response
   ): Promise<void> {
     try {
       const { userId } = req.body;
-
       if (!userId) {
         res.status(Http_Status_Codes.BAD_REQUEST).json({
           message: "User ID is required",
         });
         return;
       }
-
       await this.notificationService.markNotificationAsReadForUser(
         userId as string
       );
-
       res
         .status(Http_Status_Codes.OK)
         .json({ message: "Notifications marked as read" });
@@ -57,16 +51,13 @@ class NotificationController implements INotificationController {
       });
     }
   }
-
   async clearNotificationsForUser(req: Request, res: Response): Promise<void> {
     try {
       const { userId } = req.body;
-
       if (!userId) {
         res.status(400).json({ message: "User ID is required" });
         return;
       }
-
       await this.notificationService.clearNotificationsForUser(
         userId as string
       );
@@ -76,13 +67,9 @@ class NotificationController implements INotificationController {
       res.status(500).json({ message: "Internal Server Error" });
     }
   }
-
-  
-
   async getNotificationsForExpert(req: Request, res: Response): Promise<void> {
     try {
       const { expertId } = req.query;
-
       if (!expertId) {
         res.status(Http_Status_Codes.BAD_REQUEST).json({
           message: "User ID is required",
@@ -101,25 +88,21 @@ class NotificationController implements INotificationController {
       });
     }
   }
-
   async markNotificationAsReadForExpert(
     req: Request,
     res: Response
   ): Promise<void> {
     try {
       const { expertId } = req.body;
-
       if (!expertId) {
         res.status(Http_Status_Codes.BAD_REQUEST).json({
           message: "User ID is required",
         });
         return;
       }
-
       await this.notificationService.markNotificationAsReadForExpert(
         expertId as string
       );
-
       res
         .status(Http_Status_Codes.OK)
         .json({ message: "Notifications marked as read" });
@@ -130,7 +113,6 @@ class NotificationController implements INotificationController {
       });
     }
   }
-
   async clearNotificationsForExpert(
     req: Request,
     res: Response
@@ -142,7 +124,6 @@ class NotificationController implements INotificationController {
         res.status(400).json({ message: "Expert ID is required" });
         return;
       }
-
       await this.notificationService.clearNotificationsForExpert(
         expertId as string
       );

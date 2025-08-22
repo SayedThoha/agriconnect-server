@@ -16,10 +16,10 @@ const specialisationModel_1 = require("../../models/specialisationModel");
 const expertModel_1 = require("../../models/expertModel");
 const expertKycModel_1 = require("../../models/expertKycModel");
 const baseRepository_1 = __importDefault(require("../base/baseRepository"));
-const slotModel_1 = require("../../models/slotModel");
 const bookeSlotModel_1 = require("../../models/bookeSlotModel");
 const prescriptionModel_1 = require("../../models/prescriptionModel");
 const userModel_1 = require("../../models/userModel");
+const slotModel_1 = require("../../models/slotModel");
 class ExpertRepository extends baseRepository_1.default {
     constructor() {
         super(expertModel_1.Expert);
@@ -102,7 +102,7 @@ class ExpertRepository extends baseRepository_1.default {
     findById(id) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                return yield expertModel_1.Expert.findById(id);
+                return yield this.findById(id);
             }
             catch (error) {
                 console.error("Error in expert repository findById:", error);

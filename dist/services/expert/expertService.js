@@ -9,7 +9,6 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-/* eslint-disable  @typescript-eslint/no-explicit-any */
 const httpStatusCodes_1 = require("../../constants/httpStatusCodes");
 const hashPassword_1 = require("../../utils/hashPassword");
 const otp_1 = require("../../utils/otp");
@@ -179,6 +178,13 @@ class ExpertService {
                         message: "Your account is blocked by Admin",
                     };
                 }
+                if (expert.kyc_verification === false) {
+                    return {
+                        success: false,
+                        statusCode: httpStatusCodes_1.Http_Status_Codes.FORBIDDEN,
+                        message: "Your account is not verified",
+                    };
+                }
                 if (expert.is_verified === false) {
                     const otp = (0, otp_1.generateOtp)();
                     const updatedExpert = yield this.expertRepository.updateExpertOtpDetails(expert._id.toString(), otp);
@@ -249,7 +255,7 @@ class ExpertService {
             return this.expertRepository.updateExpertProfile(id, updateData);
         });
     }
-    optForNewEmail(expertId, email) {
+    otpForNewEmail(expertId, email) {
         return __awaiter(this, void 0, void 0, function* () {
             if (!expertId || !email) {
                 throw new Error("Expert ID and email are required");
@@ -274,7 +280,11 @@ class ExpertService {
                 otp: otp,
                 otp_update_time: new Date(),
             });
-            return "otp sent to mail";
+            return {
+                success: false,
+                statusCode: httpStatusCodes_1.Http_Status_Codes.OK,
+                message: "otp sent to mail",
+            };
         });
     }
     editExpertProfilePicture(expertId, imageUrl) {

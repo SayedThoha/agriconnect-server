@@ -1,6 +1,4 @@
 "use strict";
-/* eslint-disable @typescript-eslint/no-empty-object-type */
-/* eslint-disable  @typescript-eslint/no-explicit-any */
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -149,17 +147,19 @@ class AdminController {
             }
             catch (error) {
                 console.error("Error in editSpecialization controller:", error);
-                if (error.message === "Specialization not found") {
-                    res.status(httpStatusCodes_1.Http_Status_Codes.NOT_FOUND).json({
-                        message: "Specialization not found",
-                    });
-                    return;
-                }
-                if (error.message === "Invalid specialization data") {
-                    res.status(httpStatusCodes_1.Http_Status_Codes.BAD_REQUEST).json({
-                        message: "Invalid data provided",
-                    });
-                    return;
+                if (error instanceof Error) {
+                    if (error.message === "Specialization not found") {
+                        res.status(httpStatusCodes_1.Http_Status_Codes.NOT_FOUND).json({
+                            message: "Specialization not found",
+                        });
+                        return;
+                    }
+                    if (error.message === "Invalid specialization data") {
+                        res.status(httpStatusCodes_1.Http_Status_Codes.BAD_REQUEST).json({
+                            message: "Invalid data provided",
+                        });
+                        return;
+                    }
                 }
                 res.status(httpStatusCodes_1.Http_Status_Codes.INTERNAL_SERVER_ERROR).json({
                     message: "Internal Server Error",
@@ -184,17 +184,19 @@ class AdminController {
             }
             catch (error) {
                 console.error("Error in deleteSpecialization controller:", error);
-                if (error.message === "Specialization not found") {
-                    res.status(httpStatusCodes_1.Http_Status_Codes.NOT_FOUND).json({
-                        message: "Specialization not found",
-                    });
-                    return;
-                }
-                if (error.message === "Specialization ID is required") {
-                    res.status(httpStatusCodes_1.Http_Status_Codes.BAD_REQUEST).json({
-                        message: "Invalid specialization ID",
-                    });
-                    return;
+                if (error instanceof Error) {
+                    if (error.message === "Specialization not found") {
+                        res.status(httpStatusCodes_1.Http_Status_Codes.NOT_FOUND).json({
+                            message: "Specialization not found",
+                        });
+                        return;
+                    }
+                    if (error.message === "Specialization ID is required") {
+                        res.status(httpStatusCodes_1.Http_Status_Codes.BAD_REQUEST).json({
+                            message: "Invalid specialization ID",
+                        });
+                        return;
+                    }
                 }
                 res.status(httpStatusCodes_1.Http_Status_Codes.INTERNAL_SERVER_ERROR).json({
                     message: "Internal Server Error",
@@ -219,17 +221,19 @@ class AdminController {
             }
             catch (error) {
                 console.error("Error in toggleBlockStatus controller:", error);
-                if (error.message === "User not found") {
-                    res.status(httpStatusCodes_1.Http_Status_Codes.NOT_FOUND).json({
-                        message: "User not found",
-                    });
-                    return;
-                }
-                if (error.message === "User ID is required") {
-                    res.status(httpStatusCodes_1.Http_Status_Codes.BAD_REQUEST).json({
-                        message: "User ID is required",
-                    });
-                    return;
+                if (error instanceof Error) {
+                    if (error.message === "User not found") {
+                        res.status(httpStatusCodes_1.Http_Status_Codes.NOT_FOUND).json({
+                            message: "User not found",
+                        });
+                        return;
+                    }
+                    if (error.message === "User ID is required") {
+                        res.status(httpStatusCodes_1.Http_Status_Codes.BAD_REQUEST).json({
+                            message: "User ID is required",
+                        });
+                        return;
+                    }
                 }
                 res.status(httpStatusCodes_1.Http_Status_Codes.INTERNAL_SERVER_ERROR).json({
                     message: "Internal Server Error",
@@ -252,17 +256,19 @@ class AdminController {
             }
             catch (error) {
                 console.error("Error in getUserDetails controller:", error);
-                if (error.message === "User not found") {
-                    res.status(httpStatusCodes_1.Http_Status_Codes.NOT_FOUND).json({
-                        message: "User not found",
-                    });
-                    return;
-                }
-                if (error.message === "User ID is required") {
-                    res.status(httpStatusCodes_1.Http_Status_Codes.BAD_REQUEST).json({
-                        message: "User ID is required",
-                    });
-                    return;
+                if (error instanceof Error) {
+                    if (error.message === "User not found") {
+                        res.status(httpStatusCodes_1.Http_Status_Codes.NOT_FOUND).json({
+                            message: "User not found",
+                        });
+                        return;
+                    }
+                    if (error.message === "User ID is required") {
+                        res.status(httpStatusCodes_1.Http_Status_Codes.BAD_REQUEST).json({
+                            message: "User ID is required",
+                        });
+                        return;
+                    }
                 }
                 res.status(httpStatusCodes_1.Http_Status_Codes.INTERNAL_SERVER_ERROR).json({
                     message: "Internal Server Error",
@@ -285,11 +291,13 @@ class AdminController {
             }
             catch (error) {
                 console.error("Error in searchUsers controller:", error);
-                if (error.message === "Search term is required") {
-                    res.status(httpStatusCodes_1.Http_Status_Codes.BAD_REQUEST).json({
-                        message: "Search term is required",
-                    });
-                    return;
+                if (error instanceof Error) {
+                    if (error.message === "Search term is required") {
+                        res.status(httpStatusCodes_1.Http_Status_Codes.BAD_REQUEST).json({
+                            message: "Search term is required",
+                        });
+                        return;
+                    }
                 }
                 res.status(httpStatusCodes_1.Http_Status_Codes.INTERNAL_SERVER_ERROR).json({
                     message: "Internal Server Error",
@@ -312,11 +320,13 @@ class AdminController {
             }
             catch (error) {
                 console.error("Error in searchUsers controller:", error);
-                if (error.message === "Search term is required") {
-                    res.status(httpStatusCodes_1.Http_Status_Codes.BAD_REQUEST).json({
-                        message: "Search term is required",
-                    });
-                    return;
+                if (error instanceof Error) {
+                    if (error.message === "Search term is required") {
+                        res.status(httpStatusCodes_1.Http_Status_Codes.BAD_REQUEST).json({
+                            message: "Search term is required",
+                        });
+                        return;
+                    }
                 }
                 res.status(httpStatusCodes_1.Http_Status_Codes.INTERNAL_SERVER_ERROR).json({
                     message: "Internal Server Error",
@@ -343,17 +353,19 @@ class AdminController {
             }
             catch (error) {
                 console.error("Error in toggleExpertStatus controller:", error);
-                if (error.message === "Expert not found") {
-                    res.status(httpStatusCodes_1.Http_Status_Codes.NOT_FOUND).json({
-                        message: "Expert not found",
-                    });
-                    return;
-                }
-                if (error.message === "Expert ID is required") {
-                    res.status(httpStatusCodes_1.Http_Status_Codes.BAD_REQUEST).json({
-                        message: "Expert ID is required",
-                    });
-                    return;
+                if (error instanceof Error) {
+                    if (error.message === "Expert not found") {
+                        res.status(httpStatusCodes_1.Http_Status_Codes.NOT_FOUND).json({
+                            message: "Expert not found",
+                        });
+                        return;
+                    }
+                    if (error.message === "Expert ID is required") {
+                        res.status(httpStatusCodes_1.Http_Status_Codes.BAD_REQUEST).json({
+                            message: "Expert ID is required",
+                        });
+                        return;
+                    }
                 }
                 res.status(httpStatusCodes_1.Http_Status_Codes.INTERNAL_SERVER_ERROR).json({
                     message: "Internal Server Error",
@@ -390,17 +402,19 @@ class AdminController {
             }
             catch (error) {
                 console.error("Error in getExpertKycDetails controller:", error);
-                if (error.message === "Expert ID is required") {
-                    res.status(httpStatusCodes_1.Http_Status_Codes.BAD_REQUEST).json({
-                        message: "Expert ID is required",
-                    });
-                    return;
-                }
-                if (error.message === "KYC details not found") {
-                    res.status(httpStatusCodes_1.Http_Status_Codes.NOT_FOUND).json({
-                        message: "KYC details not found",
-                    });
-                    return;
+                if (error instanceof Error) {
+                    if (error.message === "Expert ID is required") {
+                        res.status(httpStatusCodes_1.Http_Status_Codes.BAD_REQUEST).json({
+                            message: "Expert ID is required",
+                        });
+                        return;
+                    }
+                    if (error.message === "KYC details not found") {
+                        res.status(httpStatusCodes_1.Http_Status_Codes.NOT_FOUND).json({
+                            message: "KYC details not found",
+                        });
+                        return;
+                    }
                 }
                 res.status(httpStatusCodes_1.Http_Status_Codes.INTERNAL_SERVER_ERROR).json({
                     message: "Internal Server Error",
@@ -423,17 +437,19 @@ class AdminController {
             }
             catch (error) {
                 console.error("Error in submitKycDetails controller:", error);
-                if (error.message === "KYC ID is required") {
-                    res.status(httpStatusCodes_1.Http_Status_Codes.BAD_REQUEST).json({
-                        message: "KYC ID is required",
-                    });
-                    return;
-                }
-                if (error.message === "KYC details not found") {
-                    res.status(httpStatusCodes_1.Http_Status_Codes.NOT_FOUND).json({
-                        message: "KYC details not found",
-                    });
-                    return;
+                if (error instanceof Error) {
+                    if (error.message === "KYC ID is required") {
+                        res.status(httpStatusCodes_1.Http_Status_Codes.BAD_REQUEST).json({
+                            message: "KYC ID is required",
+                        });
+                        return;
+                    }
+                    if (error.message === "KYC details not found") {
+                        res.status(httpStatusCodes_1.Http_Status_Codes.NOT_FOUND).json({
+                            message: "KYC details not found",
+                        });
+                        return;
+                    }
                 }
                 res.status(httpStatusCodes_1.Http_Status_Codes.INTERNAL_SERVER_ERROR).json({
                     message: "Internal Server Error",

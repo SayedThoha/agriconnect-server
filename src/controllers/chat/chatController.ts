@@ -1,9 +1,10 @@
 import { Http_Status_Codes } from "../../constants/httpStatusCodes";
-import ChatService from "../../services/chat/chatService";
 import { Request, Response } from "express";
 import { IChatController } from "./IChatController";
+import { IChatService } from "../../services/chat/IChatService";
+
 class ChatController implements IChatController {
-  constructor(private chatService: ChatService) {}
+  constructor(private chatService: IChatService) {}
 
   async userAccessChat(req: Request, res: Response): Promise<void> {
     try {
@@ -30,16 +31,13 @@ class ChatController implements IChatController {
   async userFetchAllChat(req: Request, res: Response): Promise<void> {
     try {
       const { userId } = req.query;
-
       if (!userId || typeof userId !== "string") {
         res
           .status(Http_Status_Codes.BAD_REQUEST)
           .json({ message: "Missing or invalid userId" });
         return;
       }
-
       const chats = await this.chatService.fetchUserChats(userId);
-
       res.status(Http_Status_Codes.OK).json(chats);
     } catch (error) {
       console.error("Error in userFetchAllChat:", error);
@@ -52,7 +50,6 @@ class ChatController implements IChatController {
   async sendMessage(req: Request, res: Response): Promise<void> {
     try {
       const { content, chatId, userId } = req.body;
-
       const message = await this.chatService.sendMessage(
         content,
         chatId,
@@ -70,14 +67,12 @@ class ChatController implements IChatController {
   async userFetchAllMessages(req: Request, res: Response): Promise<void> {
     try {
       const { chatId } = req.query;
-
       if (!chatId) {
         res
           .status(Http_Status_Codes.BAD_REQUEST)
           .json({ message: "Chat ID is required" });
         return;
       }
-
       const messages = await this.chatService.fetchAllMessages(
         chatId as string
       );
@@ -93,14 +88,12 @@ class ChatController implements IChatController {
   async getExpertChats(req: Request, res: Response): Promise<void> {
     try {
       const { expertId } = req.query;
-
       if (!expertId) {
         res
           .status(Http_Status_Codes.BAD_REQUEST)
           .json({ message: "Expert ID is required" });
         return;
       }
-
       const chats = await this.chatService.fetchChatsByExpert(
         expertId as string
       );
@@ -116,18 +109,15 @@ class ChatController implements IChatController {
   async getExpertMessages(req: Request, res: Response): Promise<void> {
     try {
       const { chatId } = req.query;
-
       if (!chatId) {
         res
           .status(Http_Status_Codes.BAD_REQUEST)
           .json({ message: "Chat ID is required" });
         return;
       }
-
       const messages = await this.chatService.fetchMessagesByChatId(
         chatId as string
       );
-
       res.status(Http_Status_Codes.OK).json(messages);
     } catch (error) {
       console.error("Error fetching messages:", error);
@@ -140,14 +130,12 @@ class ChatController implements IChatController {
   async expertSendMessage(req: Request, res: Response): Promise<void> {
     try {
       const { content, chatId, expertId } = req.body;
-
       if (!content || !chatId || !expertId) {
         res
           .status(Http_Status_Codes.BAD_REQUEST)
           .json({ message: "Invalid data passed" });
         return;
       }
-
       const populatedMessage = await this.chatService.sendExpertMessage(
         content,
         chatId,

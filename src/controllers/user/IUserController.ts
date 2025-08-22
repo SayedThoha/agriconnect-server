@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-empty-object-type */
 import { Request, Response } from "express";
 import {
   FarmerBookingDetails,
@@ -12,7 +11,7 @@ export interface IUserController {
   login(req: Request, res: Response): Promise<void>;
   getUserDetails(req: Request, res: Response): Promise<void>;
   editUserProfile(req: Request, res: Response): Promise<void>;
-  optForNewEmail(req: Request, res: Response): Promise<void>;
+  otpForNewEmail(req: Request, res: Response): Promise<void>;
   editUserProfilePicture(req: Request, res: Response): Promise<void>;
   checkUserStatus(req: Request, res: Response): Promise<void>;
   verifyEmailForPasswordReset(req: Request, res: Response): Promise<void>;
@@ -23,11 +22,11 @@ export interface IUserController {
   getExpertDetails(req: Request, res: Response): Promise<void>;
   checkSlotAvailability(req: Request, res: Response): Promise<void>;
   createBookingPayment(
-    req: Request<{}, {}, PaymentRequest>,
+    req: Request<unknown, unknown, PaymentRequest>,
     res: Response
   ): Promise<void>;
   appointmentBooking(
-    req: Request<{}, {}, FarmerBookingDetails>,
+    req: Request<unknown, unknown, FarmerBookingDetails>,
     res: Response
   ): Promise<void>;
   userDetails(req: Request, res: Response): Promise<void>;

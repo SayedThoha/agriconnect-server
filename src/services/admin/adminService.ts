@@ -1,4 +1,3 @@
-/* eslint-disable  @typescript-eslint/no-explicit-any */
 import fs from "fs";
 import path from "path";
 import { config } from "dotenv";
@@ -12,19 +11,18 @@ import {
 import { IExpert } from "../../models/expertModel";
 import { ISpecialisation } from "../../models/specialisationModel";
 import { IUser } from "../../models/userModel";
-import AdminRepository from "../../repositories/admin/adminRepository";
-
 import { comparePass } from "../../utils/hashPassword";
 import jwt from "jsonwebtoken";
 import { IAdminService } from "./IAdminService";
 import { IBookedSlot } from "../../models/bookeSlotModel";
-
+import { IAdminRepository } from "../../repositories/admin/IAdminRepository";
+import { sendVerificationMail } from "../../utils/sendVerificationMail";
 config();
 class AdminServices implements IAdminService {
   private jwtSecret: string = process.env.JWT_SECRET || "default_secret";
 
   constructor(
-    private adminRepository: AdminRepository,
+    private adminRepository: IAdminRepository,
 
     private baseDestinationPath = path.join(
       "D:",
@@ -35,7 +33,6 @@ class AdminServices implements IAdminService {
 
   async validateLogin(email: string, password: string): Promise<ILoginResult> {
     const adminData = await this.adminRepository.findByEmail(email);
-
     if (!adminData) {
       return {
         success: false,
@@ -43,9 +40,7 @@ class AdminServices implements IAdminService {
         message: "Invalid username",
       };
     }
-
     const passwordMatch = await comparePass(password, adminData.password);
-
     if (!passwordMatch) {
       return {
         success: false,
@@ -53,7 +48,6 @@ class AdminServices implements IAdminService {
         message: "Incorrect Password",
       };
     }
-
     if (!adminData._id) {
       return {
         success: false,
@@ -66,15 +60,12 @@ class AdminServices implements IAdminService {
         "JWT_SECRET is not defined. Please set it in your environment."
       );
     }
-
     const accessToken = jwt.sign({ adminId: adminData._id }, this.jwtSecret);
-
     const accessedUser: IAdminResponse = {
       email: adminData.email,
       role: adminData.role,
       payOut: adminData.payOut,
     };
-
     return {
       success: true,
       status: Http_Status_Codes.OK,
@@ -126,12 +117,10 @@ class AdminServices implements IAdminService {
       if (!_id) {
         throw new Error("User ID is required");
       }
-
       const user = await this.adminRepository.findUserById(_id);
       if (!user) {
         throw new Error("User not found");
       }
-
       const newBlockStatus = user.blocked === true ? false : true;
       await this.adminRepository.updateUserBlockStatus(_id, newBlockStatus);
     } catch (error) {
@@ -145,12 +134,10 @@ class AdminServices implements IAdminService {
       if (!_id) {
         throw new Error("User ID is required");
       }
-
       const user = await this.adminRepository.findUserById(_id);
       if (!user) {
         throw new Error("User not found");
       }
-
       return user;
     } catch (error) {
       console.error("Error in getUserDetails service:", error);
@@ -217,7 +204,6 @@ class AdminServices implements IAdminService {
       if (!data._id || !data.specialisation) {
         throw new Error("Invalid specialization data");
       }
-
       await this.adminRepository.updateSpecialisation(
         data._id,
         data.specialisation
@@ -233,9 +219,7 @@ class AdminServices implements IAdminService {
       if (!_id) {
         throw new Error("Specialisation ID is required");
       }
-
       const isDeleted = await this.adminRepository.deleteSpecialisation(_id);
-
       if (!isDeleted) {
         throw new Error("Specialisation not found");
       }
@@ -250,15 +234,11 @@ class AdminServices implements IAdminService {
       if (!_id) {
         throw new Error("Expert ID is required");
       }
-
       const expert = await this.adminRepository.findExpertById(_id);
-
       if (!expert) {
         throw new Error("Expert not found");
       }
-
       expert.blocked = expert.blocked === true ? false : true;
-
       await this.adminRepository.updateExpertStatus(expert);
     } catch (error) {
       console.error("Error in toggleExpertStatus service:", error);
@@ -269,9 +249,7 @@ class AdminServices implements IAdminService {
   async getPendingKycData(): Promise<IExpertKyc[]> {
     try {
       const kycData = await this.adminRepository.findPendingKycData();
-
       const filteredKycData = kycData.filter((item) => item.expertId !== null);
-
       return filteredKycData;
     } catch (error) {
       console.error("Error in getPendingKycData service:", error);
@@ -284,20 +262,16 @@ class AdminServices implements IAdminService {
       if (!expertId) {
         throw new Error("Expert ID is required");
       }
-
       const kycDetails = await this.adminRepository.findKycByExpertId(expertId);
-
       if (!kycDetails) {
         throw new Error("KYC details not found");
       }
-
       return kycDetails;
     } catch (error) {
       console.error("Error in getExpertKycDetails service:", error);
       throw error;
     }
   }
-
   private verificationOrder: KycVerificationField[] = [
     "id_proof_type",
     "id_proof",
@@ -334,23 +308,26 @@ class AdminServices implements IAdminService {
       if (!data._id) {
         throw new Error("KYC ID is required");
       }
-
       const kycDetails = await this.adminRepository.updateKycDetails(
         data._id,
         data
       );
-
       if (!kycDetails) {
         throw new Error("KYC details not found");
       }
-
       const failedVerification = this.getFailedVerification(kycDetails);
-
       if (failedVerification) {
         return { message: failedVerification.message };
       }
-
       await this.adminRepository.updateExpertKycStatus(data.expert_id, true);
+      const expert = await this.adminRepository.findExpertById(data.expert_id);
+      const email = expert?.email;
+      if (email) {
+        await sendVerificationMail(
+          email,
+          "your Agriconnect account has been successfully verified"
+        );
+      }
       return { message: "KYC verification done" };
     } catch (error) {
       console.error("Error in submitKycDetails service:", error);
@@ -358,7 +335,7 @@ class AdminServices implements IAdminService {
     }
   }
 
-  private getFilePath(expert: IExpert, name: any, index: number) {
+  private getFilePath(expert: IExpert, name: unknown, index: number) {
     switch (name) {
       case "identity_proof":
         return expert.identity_proof;
@@ -373,7 +350,7 @@ class AdminServices implements IAdminService {
     }
   }
 
-  private copyFile(sourcePath: string, name: any) {
+  private copyFile(sourcePath: string, name: unknown) {
     const fullPath = path.resolve(sourcePath);
     const destinationPath = path.join(
       this.baseDestinationPath,
@@ -392,37 +369,34 @@ class AdminServices implements IAdminService {
     });
   }
 
-  async downloadDocument(data: { expertId: any; name: any; index: any }) {
+  async downloadDocument(data: {
+    expertId: string;
+    name: unknown;
+    index: number;
+  }): Promise<unknown> {
     const { expertId, name, index } = data;
     const expert = await this.adminRepository.findExpertById(expertId);
-
     if (!expert) {
       throw new Error("Expert not found");
     }
-
     const filePath = this.getFilePath(expert, name, index);
-
     if (!filePath) {
       throw new Error("File not found");
     }
-
     return this.copyFile(filePath, name);
   }
 
   async editPayOut(payOut: number): Promise<string> {
     const result = await this.adminRepository.updatePayOut(payOut);
-
     if (result.modifiedCount === 0) {
       throw new Error("No records updated");
     }
-
     return "Edited Successfully";
   }
 
   async getAppointmentDetails(): Promise<IBookedSlot[]> {
     try {
       const appointments = await this.adminRepository.getAppointmentDetails();
-
       return appointments;
     } catch (error) {
       console.error(error);

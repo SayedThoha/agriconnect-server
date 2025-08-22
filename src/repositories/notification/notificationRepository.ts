@@ -10,7 +10,6 @@ class NotificationRepository
     super(Notification);
   }
 
-  
   async getNotificationsForUser(userId: string): Promise<INotification[]> {
     try {
       const notifications = await Notification.find({
@@ -30,7 +29,6 @@ class NotificationRepository
       throw error;
     }
   }
-
   async markNotificationAsReadForUser(userId: string): Promise<void> {
     try {
       await Notification.updateMany(
@@ -41,7 +39,6 @@ class NotificationRepository
       console.log(error);
     }
   }
-
   async clearNotificationsForUser(userId: string): Promise<void> {
     try {
       await Notification.updateMany(
@@ -54,7 +51,6 @@ class NotificationRepository
     }
   }
 
-  
   async getNotificationsForExpert(expertId: string): Promise<INotification[]> {
     try {
       const notifications = await Notification.find({

@@ -1,8 +1,9 @@
 import { IPrescriptionInput } from "../../interfaces/commonInterface";
 import { IBookedSlot } from "../../models/bookeSlotModel";
 import { IPrescription } from "../../models/prescriptionModel";
-
-export interface IPrescriptionRepository {
+import { IBaseRepository } from "../base/IBaseRepository";
+export interface IPrescriptionRepository
+  extends IBaseRepository<IPrescription> {
   findPrescriptionById(prescriptionId: string): Promise<IPrescription | null>;
   createPrescription(
     prescriptionData: IPrescriptionInput

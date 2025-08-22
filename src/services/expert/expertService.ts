@@ -1,4 +1,3 @@
-/* eslint-disable  @typescript-eslint/no-explicit-any */
 import { Http_Status_Codes } from "../../constants/httpStatusCodes";
 import {
   ExpertRegistrationDTO,
@@ -7,7 +6,6 @@ import {
 import { AccessedUser, LoginResponse } from "../../interfaces/userInterface";
 import { IExpert } from "../../models/expertModel";
 import { ISpecialisation } from "../../models/specialisationModel";
-import ExpertRepository from "../../repositories/expert/expertRepository";
 import { comparePass, hashedPass } from "../../utils/hashPassword";
 import { generateOtp } from "../../utils/otp";
 import { sentOtpToEmail } from "../../utils/sendOtpToMail";
@@ -19,13 +17,12 @@ import {
 } from "../../utils/token";
 import { IBookedSlot } from "../../models/bookeSlotModel";
 import { generateMailForRoomId } from "../../utils/sendRoomId";
+import { IExpertRepository } from "../../repositories/expert/IExpertRepository";
 export type ExpertResponse = IExpert | null;
 export type ExpertResponeType = IExpert | null | { success?: boolean };
-
 class ExpertService implements IExpertService {
   private readonly OTP_EXPIRY_MINUTES = 59;
-  constructor(private expertRepository: ExpertRepository) {}
-
+  constructor(private expertRepository: IExpertRepository) {}
   async registerExpert(
     expertData: ExpertRegistrationDTO
   ): Promise<{ status: boolean; message: string }> {
@@ -75,18 +72,16 @@ class ExpertService implements IExpertService {
       (field) => !data[field as keyof ExpertRegistrationDTO]
     );
   }
-
   async getSpecialisations(): Promise<ISpecialisation[]> {
     return await this.expertRepository.getSpecialisations();
   }
-  async resendOtp(email: string): Promise<Record<string, any>> {
+  async resendOtp(email: string): Promise<OtpVerificationResult> {
     try {
       const otp = generateOtp();
       const updatedExpert = await this.expertRepository.updateExpertOtp(
         email,
         otp
       );
-
       if (!updatedExpert) {
         return {
           success: false,
@@ -94,7 +89,6 @@ class ExpertService implements IExpertService {
           message: "User not found",
         };
       }
-
       const isOtpSent = await sentOtpToEmail(email, otp);
       if (!isOtpSent) {
         return {
@@ -110,7 +104,6 @@ class ExpertService implements IExpertService {
       };
     } catch (error) {
       console.log(error);
-
       return {
         success: false,
         statusCode: Http_Status_Codes.INTERNAL_SERVER_ERROR,
@@ -118,7 +111,6 @@ class ExpertService implements IExpertService {
       };
     }
   }
-
   async verifyOtp(
     email: string,
     otp: string,
@@ -127,7 +119,6 @@ class ExpertService implements IExpertService {
   ): Promise<OtpVerificationResult> {
     try {
       const expert = await this.expertRepository.findByEmail(email);
-
       if (!expert) {
         return {
           success: false,
@@ -146,7 +137,6 @@ class ExpertService implements IExpertService {
       const timeDifference = Math.floor(
         (new Date().getTime() - expert.otp_update_time!.getTime()) / 1000
       );
-
       if (timeDifference > otpExpirySeconds) {
         return {
           success: false,
@@ -160,7 +150,6 @@ class ExpertService implements IExpertService {
           true,
           role ? newEmail : undefined
         );
-
       if (!updatedExpert) {
         return {
           success: false,
@@ -207,6 +196,13 @@ class ExpertService implements IExpertService {
           message: "Your account is blocked by Admin",
         };
       }
+      if (expert.kyc_verification === false) {
+        return {
+          success: false,
+          statusCode: Http_Status_Codes.FORBIDDEN,
+          message: "Your account is not verified",
+        };
+      }
       if (expert.is_verified === false) {
         const otp = generateOtp();
         const updatedExpert =
@@ -214,7 +210,6 @@ class ExpertService implements IExpertService {
             expert._id.toString(),
             otp
           );
-
         if (!updatedExpert) {
           return {
             success: false,
@@ -263,7 +258,6 @@ class ExpertService implements IExpertService {
       };
     }
   }
-
   async getExpertDetails(id: string): Promise<IExpert | null> {
     const expert = await this.expertRepository.findById(id);
     if (!expert) {
@@ -271,7 +265,6 @@ class ExpertService implements IExpertService {
     }
     return expert;
   }
-
   async editExpertProfile(
     id: string,
     updateData: Partial<IExpert>
@@ -281,8 +274,10 @@ class ExpertService implements IExpertService {
     }
     return this.expertRepository.updateExpertProfile(id, updateData);
   }
-
-  async optForNewEmail(expertId: string, email: string): Promise<any> {
+  async otpForNewEmail(
+    expertId: string,
+    email: string
+  ): Promise<OtpVerificationResult> {
     if (!expertId || !email) {
       throw new Error("Expert ID and email are required");
     }
@@ -306,9 +301,12 @@ class ExpertService implements IExpertService {
       otp: otp,
       otp_update_time: new Date(),
     });
-    return "otp sent to mail";
+    return {
+      success: false,
+      statusCode: Http_Status_Codes.OK,
+      message: "otp sent to mail",
+    };
   }
-
   async editExpertProfilePicture(
     expertId: string,
     imageUrl: string
@@ -319,7 +317,6 @@ class ExpertService implements IExpertService {
     await this.expertRepository.updateProfilePicture(expertId, imageUrl);
     return "Profile picture updated successfully";
   }
-
   async checkExpertStatus(expertId: string): Promise<{ blocked: boolean }> {
     try {
       const status = await this.expertRepository.checkExpertStatus(expertId);
@@ -329,7 +326,6 @@ class ExpertService implements IExpertService {
       throw new Error("Error checking user status");
     }
   }
-
   async verifyEmailForPasswordReset(email: string): Promise<void> {
     try {
       const expert = await this.expertRepository.findByEmail(email);
@@ -354,11 +350,9 @@ class ExpertService implements IExpertService {
         email,
         hashedPassword
       );
-
       if (!user) {
         return { status: false, message: "User not found" };
       }
-
       return { status: true, message: "Password Updated" };
     } catch (error) {
       throw new Error(`Failed to update password: ${error}`);
@@ -409,7 +403,6 @@ class ExpertService implements IExpertService {
   async getBookingDetails(expertId: string): Promise<IBookedSlot[]> {
     try {
       const bookings = await this.expertRepository.getBookingDetails(expertId);
-
       return bookings;
     } catch (error) {
       console.error(error);
@@ -430,7 +423,6 @@ class ExpertService implements IExpertService {
       throw error;
     }
   }
-
   async getExpertBookings(expertId: string): Promise<IBookedSlot[]> {
     if (!expertId) {
       throw new Error("Expert ID is required");
@@ -452,7 +444,6 @@ class ExpertService implements IExpertService {
       throw new Error("Failed to retrieve expertbookings");
     }
   }
-
   async shareRoomIdService(
     slotId: string,
     roomId: string
@@ -472,5 +463,4 @@ class ExpertService implements IExpertService {
     return { message: `Room ID sent to user's email.` };
   }
 }
-
 export default ExpertService;

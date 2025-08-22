@@ -12,13 +12,13 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-/* eslint-disable  @typescript-eslint/no-explicit-any */
 const fs_1 = __importDefault(require("fs"));
 const path_1 = __importDefault(require("path"));
 const dotenv_1 = require("dotenv");
 const httpStatusCodes_1 = require("../../constants/httpStatusCodes");
 const hashPassword_1 = require("../../utils/hashPassword");
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
+const sendVerificationMail_1 = require("../../utils/sendVerificationMail");
 (0, dotenv_1.config)();
 class AdminServices {
     constructor(adminRepository, baseDestinationPath = path_1.default.join("D:", "Project 2 Pics", "agriconnect_files")) {
@@ -320,6 +320,11 @@ class AdminServices {
                     return { message: failedVerification.message };
                 }
                 yield this.adminRepository.updateExpertKycStatus(data.expert_id, true);
+                const expert = yield this.adminRepository.findExpertById(data.expert_id);
+                const email = expert === null || expert === void 0 ? void 0 : expert.email;
+                if (email) {
+                    yield (0, sendVerificationMail_1.sendVerificationMail)(email, "your Agriconnect account has been successfully verified");
+                }
                 return { message: "KYC verification done" };
             }
             catch (error) {

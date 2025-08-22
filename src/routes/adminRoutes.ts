@@ -1,4 +1,3 @@
-//adminRoutes.ts
 import express from "express";
 import AdminRepository from "../repositories/admin/adminRepository";
 import AdminServices from "../services/admin/adminService";
@@ -25,7 +24,6 @@ adminRouter.post("/expertBlock", adminAuth, (req, res) =>
 adminRouter.post("/searchExpert", adminAuth, (req, res) =>
   adminController.searchExperts(req, res)
 );
-
 
 adminRouter.get("/userdata", adminAuth, (req, res) =>
   adminController.getUsers(req, res)
@@ -56,7 +54,6 @@ adminRouter.delete("/deleteSpecialisation", adminAuth, (req, res) =>
   adminController.deleteSpecialisation(req, res)
 );
 
-
 adminRouter.get("/kycDataCollection", adminAuth, (req, res) =>
   adminController.getKycData(req, res)
 );
@@ -68,7 +65,6 @@ adminRouter.get("/get_kyc_details_of_expert", adminAuth, (req, res) =>
 adminRouter.post("/submit_kyc_details", adminAuth, (req, res) =>
   adminController.submitKycDetails(req, res)
 );
-
 
 adminRouter.post("/editpayOut", (req, res) =>
   adminController.editPayOut(req, res)

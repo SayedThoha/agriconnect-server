@@ -1,12 +1,10 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Request, Response } from "express";
 import { Http_Status_Codes } from "../../constants/httpStatusCodes";
-import ExpertService from "../../services/expert/expertService";
 import { IExpertController } from "./IExpertController";
+import { IExpertService } from "../../services/expert/IExpertService";
 
 class ExpertController implements IExpertController {
-  constructor(private expertService: ExpertService) {}
-
+  constructor(private expertService: IExpertService) {}
   async expertRegistration(req: Request, res: Response): Promise<void> {
     try {
       const missingFields = this.expertService.validateRegistrationData(
@@ -33,7 +31,6 @@ class ExpertController implements IExpertController {
       });
     }
   }
-
   async getSpecialisation(req: Request, res: Response): Promise<void> {
     try {
       const specialisation = await this.expertService.getSpecialisations();
@@ -45,12 +42,10 @@ class ExpertController implements IExpertController {
       });
     }
   }
-
   async resendOtp(req: Request, res: Response): Promise<void> {
     try {
       const requiredFields = ["email"];
       const missingFields = requiredFields.filter((field) => !req.body[field]);
-
       if (missingFields.length > 0) {
         res.status(Http_Status_Codes.BAD_REQUEST).json({
           success: false,
@@ -66,14 +61,12 @@ class ExpertController implements IExpertController {
       });
     } catch (error) {
       console.log(error);
-
       res.status(Http_Status_Codes.INTERNAL_SERVER_ERROR).json({
         success: false,
         message: "Internal server error",
       });
     }
   }
-
   async verifyOtp(req: Request, res: Response): Promise<void> {
     try {
       const requiredFields = ["email", "otp"];
@@ -86,28 +79,24 @@ class ExpertController implements IExpertController {
         return;
       }
       const { email, otp, role, new_email } = req.body;
-
       const result = await this.expertService.verifyOtp(
         email,
         otp,
         role,
         new_email
       );
-
       res.status(result.statusCode).json({
         success: result.success,
         message: result.message,
       });
     } catch (error) {
       console.log(error);
-
       res.status(Http_Status_Codes.INTERNAL_SERVER_ERROR).json({
         success: false,
         message: "Internal server error",
       });
     }
   }
-
   async login(req: Request, res: Response): Promise<void> {
     try {
       const requiredFields = ["email", "password"];
@@ -119,10 +108,8 @@ class ExpertController implements IExpertController {
         });
         return;
       }
-
       const { email, password } = req.body;
       const result = await this.expertService.loginExpert(email, password);
-
       res.status(result.statusCode).json({
         success: result.success,
         message: result.message,
@@ -149,7 +136,6 @@ class ExpertController implements IExpertController {
         return;
       }
       const expert = await this.expertService.getExpertDetails(_id as string);
-
       if (!expert) {
         res
           .status(Http_Status_Codes.NOT_FOUND)
@@ -164,7 +150,6 @@ class ExpertController implements IExpertController {
         .json({ message: "Internal server error" });
     }
   }
-
   async editExpertProfile(req: Request, res: Response): Promise<void> {
     try {
       const data = req.body;
@@ -174,7 +159,6 @@ class ExpertController implements IExpertController {
           .json({ message: "Expert ID is required" });
         return;
       }
-
       const updatedExpert = await this.expertService.editExpertProfile(
         data._id,
         {
@@ -201,8 +185,7 @@ class ExpertController implements IExpertController {
         .json({ message: "Internal server error" });
     }
   }
-
-  async optForNewEmail(req: Request, res: Response): Promise<void> {
+  async otpForNewEmail(req: Request, res: Response): Promise<void> {
     try {
       const { expertId, email } = req.body;
       if (!expertId || !email) {
@@ -211,24 +194,29 @@ class ExpertController implements IExpertController {
           .json({ message: "User ID and email are required" });
         return;
       }
-      const message = await this.expertService.optForNewEmail(expertId, email);
-
-      res.status(Http_Status_Codes.OK).json({ message });
-    } catch (error: any) {
-      console.error("Error in optForNewEmail controller:", error);
-
-      if (error.message === "Existing email. Try another") {
-        res
-          .status(Http_Status_Codes.BAD_REQUEST)
-          .json({ message: error.message });
-      } else {
+      const message = await this.expertService.otpForNewEmail(expertId, email);
+      if (!message) {
         res
           .status(Http_Status_Codes.INTERNAL_SERVER_ERROR)
           .json({ message: "Internal Server Error" });
       }
+      res
+        .status(Http_Status_Codes.OK)
+        .json({ message: "otp send to new email" });
+    } catch (error: unknown) {
+      console.error("Error in optForNewEmail controller:", error);
+      if (error instanceof Error) {
+        if (error.message === "Existing email. Try another") {
+          res
+            .status(Http_Status_Codes.BAD_REQUEST)
+            .json({ message: error.message });
+        }
+      }
+      res
+        .status(Http_Status_Codes.INTERNAL_SERVER_ERROR)
+        .json({ message: "Internal Server Error" });
     }
   }
-
   async editExpertProfilePicture(req: Request, res: Response): Promise<void> {
     try {
       const { expertId, image_url } = req.body;
@@ -257,7 +245,6 @@ class ExpertController implements IExpertController {
       res.status(200).json(status);
     } catch (error) {
       console.error("Error in checkUserStatus:", error);
-
       res.status(500).json({ message: "Internal server error" });
     }
   }
@@ -286,7 +273,6 @@ class ExpertController implements IExpertController {
       });
     }
   }
-
   async updatePassword(req: Request, res: Response): Promise<void> {
     try {
       const requiredFields = ["email", "password"];
@@ -313,7 +299,6 @@ class ExpertController implements IExpertController {
       });
     }
   }
-
   async refreshToken(req: Request, res: Response): Promise<void> {
     const { refreshToken } = req.body;
     if (!refreshToken) {
@@ -356,7 +341,6 @@ class ExpertController implements IExpertController {
         .json({ message: "Internal Server Error" });
     }
   }
-
   async getExpertDashboardDetails(req: Request, res: Response): Promise<void> {
     try {
       const { expertId } = req.query;
@@ -377,7 +361,6 @@ class ExpertController implements IExpertController {
         .json({ message: "Internal Server Error" });
     }
   }
-
   async getExpertBookings(req: Request, res: Response): Promise<void> {
     try {
       const { expertId } = req.query;
@@ -398,23 +381,19 @@ class ExpertController implements IExpertController {
         .json({ message: "Internal Server Error" });
     }
   }
-
   async shareRoomIdThroughEmail(req: Request, res: Response): Promise<void> {
     try {
       const { roomId, slotId } = req.query;
-
       if (!roomId || !slotId) {
         res
           .status(Http_Status_Codes.BAD_REQUEST)
           .json({ message: "Missing required field" });
         return;
       }
-
       const response = await this.expertService.shareRoomIdService(
         slotId as string,
         roomId as string
       );
-
       res.status(Http_Status_Codes.OK).json(response);
     } catch (error) {
       console.error(error);
@@ -425,5 +404,4 @@ class ExpertController implements IExpertController {
     }
   }
 }
-
 export default ExpertController;

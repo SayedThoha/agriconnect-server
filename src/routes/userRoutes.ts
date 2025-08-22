@@ -1,6 +1,5 @@
 import express from "express";
 import UserRepository from "../repositories/user/userRepository";
-
 import UserController from "../controllers/user/userController";
 import GoogleAuthRepository from "../repositories/googleAuth/googleAuthRepository";
 import GoogleAuthService from "../services/googleAuthService";
@@ -79,7 +78,7 @@ userRouter.post("/editUserProfile_name", (req, res) =>
 );
 
 userRouter.post("/opt_for_new_email", (req, res) =>
-  userController.optForNewEmail(req, res)
+  userController.otpForNewEmail(req, res)
 );
 
 userRouter.post("/edit_user_profile_picture", (req, res) =>
@@ -196,5 +195,4 @@ userRouter
   );
 
   
-
 export default userRouter;

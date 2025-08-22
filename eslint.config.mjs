@@ -7,8 +7,8 @@ export default [
   {
     files: ["**/*.{js,mjs,cjs,ts}"],
     rules: {
-      "@typescript-eslint/no-unused-vars": "off",
-      "@typescript-eslint/no-explicit-any": "off",
+      // "@typescript-eslint/no-unused-vars": "off",
+      // "@typescript-eslint/no-explicit-any": "on",
       
     
     },

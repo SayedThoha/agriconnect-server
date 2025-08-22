@@ -1,6 +1,5 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { ISlotData, SlotUpdateData } from "../../interfaces/commonInterface";
-import { Admin } from "../../models/adminModel";
+import { Admin, IAdmin } from "../../models/adminModel";
 import { Expert, IExpert } from "../../models/expertModel";
 import { ISlot, Slot } from "../../models/slotModel";
 import BaseRepository from "../base/baseRepository";
@@ -31,7 +30,7 @@ class SlotRepository extends BaseRepository<ISlot> implements ISlotRepository {
     }
   }
 
-  async findAdminSettings(): Promise<any> {
+  async findAdminSettings(): Promise<IAdmin[]> {
     try {
       return await Admin.find({});
     } catch (error) {

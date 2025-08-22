@@ -190,7 +190,7 @@ class UserController {
             }
         });
     }
-    optForNewEmail(req, res) {
+    otpForNewEmail(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 const { userId, email } = req.body;
@@ -200,21 +200,28 @@ class UserController {
                         .json({ message: "User ID and email are required" });
                     return;
                 }
-                const message = yield this.userService.optForNewEmail(userId, email);
-                res.status(httpStatusCodes_1.Http_Status_Codes.OK).json({ message });
+                const message = yield this.userService.otpForNewEmail(userId, email);
+                if (!message) {
+                    res
+                        .status(httpStatusCodes_1.Http_Status_Codes.BAD_REQUEST)
+                        .json({ message: "Internal Servar Error" });
+                }
+                res
+                    .status(httpStatusCodes_1.Http_Status_Codes.OK)
+                    .json({ message: "otp send to new email" });
             }
             catch (error) {
                 console.error("Error in optForNewEmail controller:", error);
-                if (error.message === "Existing email. Try another") {
-                    res
-                        .status(httpStatusCodes_1.Http_Status_Codes.BAD_REQUEST)
-                        .json({ message: error.message });
+                if (error instanceof Error) {
+                    if (error.message === "Existing email. Try another") {
+                        res
+                            .status(httpStatusCodes_1.Http_Status_Codes.BAD_REQUEST)
+                            .json({ message: error.message });
+                    }
                 }
-                else {
-                    res
-                        .status(httpStatusCodes_1.Http_Status_Codes.INTERNAL_SERVER_ERROR)
-                        .json({ message: "Internal Server Error" });
-                }
+                res
+                    .status(httpStatusCodes_1.Http_Status_Codes.INTERNAL_SERVER_ERROR)
+                    .json({ message: "Internal Server Error" });
             }
         });
     }

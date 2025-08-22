@@ -10,7 +10,6 @@ class BookedSlotRepository
     super(BookedSlot);
   }
 
-  
   async findBookedSlotsByUser(userId: string): Promise<IBookedSlot[]> {
     try {
       const bookedSlots = await BookedSlot.find({ userId })
@@ -30,7 +29,6 @@ class BookedSlotRepository
     }
   }
 
-
   async findPendingAppointmentsByUser(userId: string): Promise<IBookedSlot[]> {
     return await BookedSlot.find({ userId, consultation_status: "pending" })
       .populate({
@@ -41,12 +39,9 @@ class BookedSlotRepository
       .populate("expertId");
   }
 
-
   async findBookedSlotById(appointmentId: string): Promise<IBookedSlot | null> {
     return await BookedSlot.findById(appointmentId);
   }
-
-
 
   async findPendingAppointmentsByExpert(
     expertId: string
@@ -59,7 +54,6 @@ class BookedSlotRepository
       .populate("userId")
       .populate("expertId");
   }
-
 
   async findSlotByIdAndUpdate(
     slotId: string,
@@ -82,8 +76,6 @@ class BookedSlotRepository
       }
     );
   }
-  
-
 }
 
 export default BookedSlotRepository;

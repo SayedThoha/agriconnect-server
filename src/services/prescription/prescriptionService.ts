@@ -1,9 +1,9 @@
 import { IPrescription } from "../../models/prescriptionModel";
-import PrescriptionRepository from "../../repositories/prescription/prescriptionRepository";
+import { IPrescriptionRepository } from "../../repositories/prescription/IPrescriptionRepository";
 import { IPrescriptionService } from "./IPrescriptionService";
 
 class PrescriptionService implements IPrescriptionService {
-  constructor(private prescriptionRepository: PrescriptionRepository) {}
+  constructor(private prescriptionRepository: IPrescriptionRepository) {}
 
   async getPrescriptionDetails(prescriptionId: string): Promise<IPrescription> {
     const data = await this.prescriptionRepository.findPrescriptionById(

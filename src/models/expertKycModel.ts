@@ -1,9 +1,10 @@
 import { Document, Schema } from "mongoose";
 import mongoose from "mongoose";
 import { enumForKycVerification } from "../constants/enum";
+import { IExpert } from "./expertModel";
 
 export interface IExpertKyc extends Document {
-  expertId: mongoose.Schema.Types.ObjectId;
+  expertId: mongoose.Schema.Types.ObjectId | IExpert;
   exp_certificate: boolean;
   qualification_certificate: boolean;
   expert_licence: boolean;
@@ -74,8 +75,6 @@ const expertKycschema: Schema<IExpertKyc> = new mongoose.Schema(
 );
 
 export const ExpertKyc = mongoose.model("expertKyccollection", expertKycschema);
-
-
 
 export interface KycUpdateData {
   _id: string;

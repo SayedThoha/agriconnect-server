@@ -3,13 +3,10 @@ import { IMessage, Message } from "../../models/messageModel";
 import BaseRepository from "../base/baseRepository";
 import mongoose from "mongoose";
 import { IChatRepository } from "./IChatRepository";
-
 class ChatRepository extends BaseRepository<IChat> implements IChatRepository {
-  
   constructor() {
     super(Chat);
   }
-
   async findChatByUserId(userId: string): Promise<IChat | null> {
     return await this.model.findOne({ user: userId }).populate([
       { path: "user", model: "User" },
@@ -21,11 +18,11 @@ class ChatRepository extends BaseRepository<IChat> implements IChatRepository {
   async createChat(userId: string, expertId: string): Promise<IChat | null> {
     const chatData: Partial<IChat> = {
       chatName: "sender",
-      user: new mongoose.Types.ObjectId(userId), 
-      expert: new mongoose.Types.ObjectId(expertId), 
+      user: new mongoose.Types.ObjectId(userId),
+      expert: new mongoose.Types.ObjectId(expertId),
     };
 
-    const createdChat = await this.create(chatData); 
+    const createdChat = await this.create(chatData);
 
     return this.model
       .findOne({ _id: createdChat._id })
@@ -35,7 +32,7 @@ class ChatRepository extends BaseRepository<IChat> implements IChatRepository {
 
   async findChatsByUserId(userId: string): Promise<IChat[]> {
     return await this.model
-      .find({ users: userId }) 
+      .find({ users: userId })
       .populate([
         { path: "user", model: "User" },
         { path: "expert", model: "Expert" },
@@ -58,7 +55,6 @@ class ChatRepository extends BaseRepository<IChat> implements IChatRepository {
   async findMessagesByChatId(chatId: string): Promise<IMessage[]> {
     return await Message.find({ chat: chatId }).sort({ updatedAt: -1 });
   }
-  
 
   async findChatsByExpertId(expertId: string): Promise<IChat[]> {
     return await this.model
@@ -70,8 +66,6 @@ class ChatRepository extends BaseRepository<IChat> implements IChatRepository {
       ])
       .sort({ updatedAt: -1 });
   }
-
- 
 
   async createMessage(
     content: string,
@@ -86,18 +80,15 @@ class ChatRepository extends BaseRepository<IChat> implements IChatRepository {
       chat: chatId,
     });
 
-    
     await this.model.findByIdAndUpdate(chatId, {
       $set: { latestMessage: newMessage._id },
     });
 
-    
     return await Message.findById(newMessage._id).populate({
       path: "sender",
       model: senderModel,
     });
   }
-  
 }
 
 export default ChatRepository;

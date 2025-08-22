@@ -1,7 +1,7 @@
 import { IChat } from "../../models/chatModel";
 import { IMessage } from "../../models/messageModel";
-
-export interface IChatRepository {
+import { IBaseRepository } from "../base/IBaseRepository";
+export interface IChatRepository extends IBaseRepository<IChat> {
   findChatByUserId(userId: string): Promise<IChat | null>;
   createChat(userId: string, expertId: string): Promise<IChat | null>;
   findChatsByUserId(userId: string): Promise<IChat[]>;
@@ -14,5 +14,4 @@ export interface IChatRepository {
     senderId: string,
     senderModel: string
   ): Promise<IMessage | null>;
-  
 }

@@ -1,5 +1,4 @@
-
-import { Types } from 'mongoose';
+import { Types } from "mongoose";
 import { IUser } from "../models/userModel";
 
 export interface IUserInput {
@@ -15,29 +14,25 @@ export interface IUserInput {
   created_time?: Date;
   wallet?: number;
   profile_picture?: string;
-  
 }
 
 export interface LoginResponse {
-    success: boolean;
-    statusCode: number;
-    message: string;
-    accessToken?: string;
-    refreshToken?:string;
-    accessedUser?: Partial<IUser>;
-    email?: string;
+  success: boolean;
+  statusCode: number;
+  message: string;
+  accessToken?: string;
+  refreshToken?: string;
+  accessedUser?: Partial<IUser>;
+  email?: string;
 }
 
 export interface AccessedUser {
-    _id: Types.ObjectId;
-    firstName: string;
-    lastName: string;
-    email: string;
-    role?: string;
+  _id: Types.ObjectId;
+  firstName: string;
+  lastName: string;
+  email: string;
+  role?: string;
 }
-
-
-
 
 export interface OtpVerificationResult {
   success: boolean;

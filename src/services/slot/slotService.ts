@@ -1,13 +1,12 @@
 import { Http_Status_Codes } from "../../constants/httpStatusCodes";
 import { SlotServiceResponse } from "../../interfaces/expertInterface";
 import { ISlot } from "../../models/slotModel";
-import SlotRepository from "../../repositories/slot/slotRepository";
 import mongoose from "mongoose";
-
 import { ISlotData, SlotUpdateData } from "../../interfaces/commonInterface";
 import { ISlotService } from "./ISlotService";
+import { ISlotRepository } from "../../repositories/slot/ISlotRepository";
 class SlotService implements ISlotService {
-  constructor(private slotRepository: SlotRepository) {}
+  constructor(private slotRepository: ISlotRepository) {}
 
   private convertToLocalDate(date: Date): Date {
     const utcDate = new Date(date);
@@ -112,7 +111,6 @@ class SlotService implements ISlotService {
 
   async getExpertSlotDetails(expertId: string): Promise<ISlot[]> {
     const currentTime = new Date();
-
     try {
       return await this.slotRepository.findSlotsByExpertId(
         expertId,
@@ -157,7 +155,6 @@ class SlotService implements ISlotService {
       };
     }
   }
-
   async getExpertSlots(expertId: string): Promise<ISlot[]> {
     try {
       const slots = await this.slotRepository.getSlots(expertId);
@@ -167,7 +164,6 @@ class SlotService implements ISlotService {
       throw error;
     }
   }
-
   async bookSlot(slotData: SlotUpdateData): Promise<ISlot | null> {
     try {
       const updatedSlot = await this.slotRepository.updateSlotBooking(slotData);
@@ -180,7 +176,6 @@ class SlotService implements ISlotService {
       throw error;
     }
   }
-
   async getSlotDetails(slotId: string): Promise<ISlot | null> {
     try {
       const slot = await this.slotRepository.userFindSlotById(slotId);

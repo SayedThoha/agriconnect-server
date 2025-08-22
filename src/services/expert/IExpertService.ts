@@ -1,5 +1,3 @@
-
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import {
   ExpertRegistrationDTO,
   OtpVerificationResult,
@@ -15,7 +13,7 @@ export interface IExpertService {
   ): Promise<{ status: boolean; message: string }>;
   validateRegistrationData(data: Partial<ExpertRegistrationDTO>): string[];
   getSpecialisations(): Promise<ISpecialisation[]>;
-  resendOtp(email: string): Promise<Record<string, any>>;
+  resendOtp(email: string): Promise<OtpVerificationResult>;
   verifyOtp(
     email: string,
     otp: string,
@@ -34,12 +32,17 @@ export interface IExpertService {
   refreshToken(refreshToken: string): Promise<LoginResponse>;
   getBookingDetails(expertId: string): Promise<IBookedSlot[]>;
   getExpertDashboardDetails(expertId: string): Promise<IBookedSlot[]>;
-  
+  editExpertProfile(
+    id: string,
+    updateData: Partial<IExpert>
+  ): Promise<IExpert | null>;
+  otpForNewEmail(
+    expertId: string,
+    email: string
+  ): Promise<OtpVerificationResult>;
   getExpertBookings(expertId: string): Promise<IBookedSlot[]>;
-  
   shareRoomIdService(
     slotId: string,
     roomId: string
   ): Promise<{ message: string }>;
-  
 }

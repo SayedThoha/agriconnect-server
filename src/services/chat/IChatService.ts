@@ -1,6 +1,5 @@
 import { IChat } from "../../models/chatModel";
 import { IMessage } from "../../models/messageModel";
-
 export interface IChatService {
   getUserChat(userId: string, expertId?: string): Promise<IChat | null>;
   fetchUserChats(userId: string): Promise<IChat[]>;

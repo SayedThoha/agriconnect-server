@@ -1,13 +1,11 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-/* eslint-disable @typescript-eslint/no-empty-object-type */
+import { Date } from "mongoose";
 import { IBookedSlot } from "../../models/bookeSlotModel";
-import BookedSlotRepository from "../../repositories/bookedSlot/bookedSlotRepository";
 import { IBookedSlotService } from "./IBookedSlotService";
+import { ISlot } from "../../models/slotModel";
+import { IBookedSlotRepository } from "../../repositories/bookedSlot/IBookedSlotRepository";
 
 class BookedSlotService implements IBookedSlotService {
-  constructor(private bookedSlotRepository: BookedSlotRepository) {}
-
-  
+  constructor(private bookedSlotRepository: IBookedSlotRepository) {}
   async getBookingDetails(userId: string): Promise<IBookedSlot[]> {
     try {
       if (!userId) {
@@ -33,41 +31,44 @@ class BookedSlotService implements IBookedSlotService {
     return data;
   }
 
-  async getUpcomingAppointment(userId: string): Promise<IBookedSlot | {}> {
+  async getUpcomingAppointment(userId: string): Promise<IBookedSlot | null> {
     const now = new Date();
-    const margin = 15 * 60 * 1000; 
+    const margin = 15 * 60 * 1000;
 
     const bookedSlots =
       await this.bookedSlotRepository.findPendingAppointmentsByUser(userId);
 
-  
-    const upcomingAppointments = bookedSlots.filter((slot) => {
+    const upcomingAppointments = bookedSlots.filter((slot: IBookedSlot) => {
       if (
         !slot.slotId ||
         typeof slot.slotId !== "object" ||
-        !("time" in slot.slotId)
+        !("time" in slot.slotId) ||
+        !(
+          typeof slot.slotId.time === "string" ||
+          typeof slot.slotId.time === "number" ||
+          slot.slotId.time instanceof Date
+        )
       ) {
         console.error("Invalid slotId:", slot.slotId);
         return false;
       }
 
-      const slotTime = new Date((slot.slotId as any).time);
+      const slotTime = new Date(slot.slotId.time);
       return slotTime.getTime() > now.getTime() - margin;
     });
 
     upcomingAppointments.sort(
       (a, b) =>
-        new Date((a.slotId as any).time).getTime() -
-        new Date((b.slotId as any).time).getTime()
+        new Date((a.slotId as ISlot).time).getTime() -
+        new Date((b.slotId as ISlot).time).getTime()
     );
 
     return upcomingAppointments[0] || {};
   }
 
-
   async getUpcomingAppointmentByExpert(
     expertId: string
-  ): Promise<IBookedSlot | {}> {
+  ): Promise<IBookedSlot | null> {
     const now = new Date();
     const margin = 15 * 60 * 1000;
     const bookedSlots =
@@ -76,18 +77,23 @@ class BookedSlotService implements IBookedSlotService {
       if (
         !slot.slotId ||
         typeof slot.slotId !== "object" ||
-        !("time" in slot.slotId)
+        !("time" in slot.slotId) ||
+        !(
+          typeof slot.slotId.time === "string" ||
+          typeof slot.slotId.time === "number" ||
+          slot.slotId.time instanceof Date
+        )
       ) {
         console.error("Invalid slotId:", slot.slotId);
         return false;
       }
-      const slotTime = new Date((slot.slotId as any).time);
+      const slotTime = new Date(slot.slotId.time);
       return slotTime.getTime() > now.getTime() - margin;
     });
     upcomingAppointments.sort(
       (a, b) =>
-        new Date((a.slotId as any).time).getTime() -
-        new Date((b.slotId as any).time).getTime()
+        new Date((a.slotId as ISlot).time).getTime() -
+        new Date((b.slotId as ISlot).time).getTime()
     );
     return upcomingAppointments[0] || {};
   }

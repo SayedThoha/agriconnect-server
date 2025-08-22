@@ -1,15 +1,16 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { ISlotData, SlotUpdateData } from "../../interfaces/commonInterface";
+import { IAdmin } from "../../models/adminModel";
 import { IExpert } from "../../models/expertModel";
 import { ISlot } from "../../models/slotModel";
+import { IBaseRepository } from "../base/IBaseRepository";
 
-export interface ISlotRepository {
+export interface ISlotRepository extends IBaseRepository<ISlot> {
   findSlotByExpertIdAndTime(
     expertId: string,
     time: Date
   ): Promise<ISlot | null>;
   createSlot(slotData: Partial<ISlot>): Promise<ISlot>;
-  findAdminSettings(): Promise<any>;
+  findAdminSettings(): Promise<IAdmin[]>;
   findExpertById(id: string): Promise<IExpert | null>;
   createMultipleSlots(slots: ISlotData[]): Promise<ISlot[]>;
   findSlotsByExpertId(expertId: string, currentTime: Date): Promise<ISlot[]>;

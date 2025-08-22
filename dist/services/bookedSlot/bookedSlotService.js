@@ -45,7 +45,10 @@ class BookedSlotService {
             const upcomingAppointments = bookedSlots.filter((slot) => {
                 if (!slot.slotId ||
                     typeof slot.slotId !== "object" ||
-                    !("time" in slot.slotId)) {
+                    !("time" in slot.slotId) ||
+                    !(typeof slot.slotId.time === "string" ||
+                        typeof slot.slotId.time === "number" ||
+                        slot.slotId.time instanceof Date)) {
                     console.error("Invalid slotId:", slot.slotId);
                     return false;
                 }
@@ -65,7 +68,10 @@ class BookedSlotService {
             const upcomingAppointments = bookedSlots.filter((slot) => {
                 if (!slot.slotId ||
                     typeof slot.slotId !== "object" ||
-                    !("time" in slot.slotId)) {
+                    !("time" in slot.slotId) ||
+                    !(typeof slot.slotId.time === "string" ||
+                        typeof slot.slotId.time === "number" ||
+                        slot.slotId.time instanceof Date)) {
                     console.error("Invalid slotId:", slot.slotId);
                     return false;
                 }

@@ -1,8 +1,7 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-
 import {
   FarmerBookingDetails,
   PaymentOrder,
+  ServiceResponse,
 } from "../../interfaces/commonInterface";
 import {
   LoginResponse,
@@ -11,15 +10,14 @@ import {
 import { IExpert } from "../../models/expertModel";
 import { ISpecialisation } from "../../models/specialisationModel";
 import { IUser } from "../../models/userModel";
-
 export interface IUserService {
   registerUser(userData: {
     firstName: string;
     lastName: string;
     email: string;
     password: string;
-  }): Promise<any>;
-  resendOtp(email: string): Promise<Record<string, any>>;
+  }): Promise<ServiceResponse>;
+  resendOtp(email: string): Promise<OtpVerificationResult>;
   verifyOtp(
     email: string,
     otp: string,
@@ -32,7 +30,7 @@ export interface IUserService {
     id: string,
     updateData: Partial<IUser>
   ): Promise<IUser | null>;
-  optForNewEmail(userId: string, email: string): Promise<any>;
+  otpForNewEmail(userId: string, email: string): Promise<ServiceResponse>;
   editUserProfilePicture(userId: string, imageUrl: string): Promise<string>;
   checkUserStatus(userId: string): Promise<{ blocked: boolean }>;
   verifyEmailForPasswordReset(email: string): Promise<void>;

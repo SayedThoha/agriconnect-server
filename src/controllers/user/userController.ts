@@ -1,38 +1,29 @@
-/* eslint-disable @typescript-eslint/no-empty-object-type */
-/* eslint-disable @typescript-eslint/no-explicit-any */
-//userController.ts
 import { Request, Response } from "express";
 import { Http_Status_Codes } from "../../constants/httpStatusCodes";
-import UserServices from "../../services/user/userService";
 import {
   FarmerBookingDetails,
   PaymentRequest,
 } from "../../interfaces/commonInterface";
-
+import { IUserService } from "../../services/user/IUserService";
 class UserController {
-  constructor(private userService: UserServices) {}
-
+  constructor(private userService: IUserService) {}
   async registerUser(req: Request, res: Response): Promise<void> {
     try {
       const requiredFields = ["firstName", "lastName", "email", "password"];
       const missingFields = requiredFields.filter((field) => !req.body[field]);
-
       if (missingFields.length > 0) {
         res.status(Http_Status_Codes.BAD_REQUEST).json({
           error: `Missing required fields: ${missingFields.join(", ")}`,
         });
         return;
       }
-
       const { firstName, lastName, email, password } = req.body;
-
       const result = await this.userService.registerUser({
         firstName,
         lastName,
         email,
         password,
       });
-
       if (result.success) {
         res.status(Http_Status_Codes.CREATED).json({ message: result.message });
       } else {
@@ -47,12 +38,10 @@ class UserController {
         .json({ message: "Server side error" });
     }
   }
-
   async resendOtp(req: Request, res: Response): Promise<void> {
     try {
       const requiredFields = ["email"];
       const missingFields = requiredFields.filter((field) => !req.body[field]);
-
       if (missingFields.length > 0) {
         res.status(Http_Status_Codes.BAD_REQUEST).json({
           success: false,
@@ -62,26 +51,22 @@ class UserController {
       }
       const { email } = req.body;
       const result = await this.userService.resendOtp(email);
-
       res.status(result.statusCode).json({
         success: result.success,
         message: result.message,
       });
     } catch (error) {
       console.log(error);
-
       res.status(Http_Status_Codes.INTERNAL_SERVER_ERROR).json({
         success: false,
         message: "Internal server error",
       });
     }
   }
-
   async verifyOtp(req: Request, res: Response): Promise<void> {
     try {
       const requiredFields = ["email", "otp"];
       const missingFields = requiredFields.filter((field) => !req.body[field]);
-
       if (missingFields.length > 0) {
         res.status(Http_Status_Codes.BAD_REQUEST).json({
           success: false,
@@ -89,23 +74,19 @@ class UserController {
         });
         return;
       }
-
       const { email, otp, role, new_email } = req.body;
-
       const result = await this.userService.verifyOtp(
         email,
         otp,
         role,
         new_email
       );
-
       res.status(result.statusCode).json({
         success: result.success,
         message: result.message,
       });
     } catch (error) {
       console.log(error);
-
       res.status(Http_Status_Codes.INTERNAL_SERVER_ERROR).json({
         success: false,
         message: "Internal server error",
@@ -116,7 +97,6 @@ class UserController {
     try {
       const requiredFields = ["email", "password"];
       const missingFields = requiredFields.filter((field) => !req.body[field]);
-
       if (missingFields.length > 0) {
         res.status(Http_Status_Codes.BAD_REQUEST).json({
           success: false,
@@ -126,7 +106,6 @@ class UserController {
       }
       const { email, password } = req.body;
       const result = await this.userService.login(email, password);
-
       res.status(result.statusCode).json({
         success: result.success,
         message: result.message,
@@ -137,7 +116,6 @@ class UserController {
       });
     } catch (error) {
       console.log(error);
-
       res.status(Http_Status_Codes.INTERNAL_SERVER_ERROR).json({
         success: false,
         message: "Internal server error",
@@ -154,7 +132,6 @@ class UserController {
         return;
       }
       const user = await this.userService.getUserDetails(_id as string);
-
       if (!user) {
         res
           .status(Http_Status_Codes.NOT_FOUND)
@@ -172,7 +149,6 @@ class UserController {
   async editUserProfile(req: Request, res: Response): Promise<void> {
     try {
       const { _id, firstName, lastName, email } = req.body;
-
       if (!_id || !firstName || !lastName || !email) {
         res
           .status(Http_Status_Codes.BAD_REQUEST)
@@ -200,31 +176,36 @@ class UserController {
         .json({ message: "Internal server error" });
     }
   }
-  async optForNewEmail(req: Request, res: Response): Promise<void> {
+  async otpForNewEmail(req: Request, res: Response): Promise<void> {
     try {
       const { userId, email } = req.body;
-
       if (!userId || !email) {
         res
           .status(Http_Status_Codes.BAD_REQUEST)
           .json({ message: "User ID and email are required" });
         return;
       }
-      const message = await this.userService.optForNewEmail(userId, email);
-
-      res.status(Http_Status_Codes.OK).json({ message });
-    } catch (error: any) {
-      console.error("Error in optForNewEmail controller:", error);
-
-      if (error.message === "Existing email. Try another") {
+      const message = await this.userService.otpForNewEmail(userId, email);
+      if (!message) {
         res
           .status(Http_Status_Codes.BAD_REQUEST)
-          .json({ message: error.message });
-      } else {
-        res
-          .status(Http_Status_Codes.INTERNAL_SERVER_ERROR)
-          .json({ message: "Internal Server Error" });
+          .json({ message: "Internal Servar Error" });
       }
+      res
+        .status(Http_Status_Codes.OK)
+        .json({ message: "otp send to new email" });
+    } catch (error) {
+      console.error("Error in optForNewEmail controller:", error);
+      if (error instanceof Error) {
+        if (error.message === "Existing email. Try another") {
+          res
+            .status(Http_Status_Codes.BAD_REQUEST)
+            .json({ message: error.message });
+        }
+      }
+      res
+        .status(Http_Status_Codes.INTERNAL_SERVER_ERROR)
+        .json({ message: "Internal Server Error" });
     }
   }
   async editUserProfilePicture(req: Request, res: Response): Promise<void> {
@@ -255,7 +236,6 @@ class UserController {
       res.status(200).json(status);
     } catch (error) {
       console.error("Error in checkUserStatus:", error);
-
       res.status(500).json({ message: "Internal server error" });
     }
   }
@@ -266,7 +246,6 @@ class UserController {
     try {
       const requiredFields = ["email"];
       const missingFields = requiredFields.filter((field) => !req.body[field]);
-
       if (missingFields.length > 0) {
         res.status(Http_Status_Codes.BAD_REQUEST).json({
           error: `Missing required fields: ${missingFields.join(", ")}`,
@@ -285,12 +264,10 @@ class UserController {
       });
     }
   }
-
   async updatePassword(req: Request, res: Response): Promise<void> {
     try {
       const requiredFields = ["email", "password"];
       const missingFields = requiredFields.filter((field) => !req.body[field]);
-
       if (missingFields.length > 0) {
         res.status(Http_Status_Codes.BAD_REQUEST).json({
           error: `Missing required fields: ${missingFields.join(", ")}`,
@@ -299,7 +276,6 @@ class UserController {
       }
       const { email, password } = req.body;
       const result = await this.userService.updatePassword(email, password);
-
       if (!result.status) {
         res
           .status(Http_Status_Codes.NOT_FOUND)
@@ -378,11 +354,9 @@ class UserController {
       });
     }
   }
-
   async checkSlotAvailability(req: Request, res: Response): Promise<void> {
     try {
       const { slotId } = req.query;
-
       if (!slotId) {
         res
           .status(Http_Status_Codes.BAD_REQUEST)
@@ -391,7 +365,6 @@ class UserController {
       }
       const { isAvailable, message } =
         await this.userService.checkSlotAvailability(slotId as string);
-
       if (!isAvailable) {
         res.status(Http_Status_Codes.UNAUTHORIZED).json({ message });
         return;
@@ -404,9 +377,8 @@ class UserController {
         .json({ message: "Internal server error" });
     }
   }
-
   async createBookingPayment(
-    req: Request<{}, {}, PaymentRequest>,
+    req: Request<unknown, unknown, PaymentRequest>,
     res: Response
   ): Promise<void> {
     try {
@@ -428,33 +400,28 @@ class UserController {
       res.status(Http_Status_Codes.OK).json(paymentOrder);
     } catch (error) {
       console.error("Error in user controller createBookingPayment:", error);
-
       res
         .status(Http_Status_Codes.INTERNAL_SERVER_ERROR)
         .json({ message: "Internal server error" });
     }
   }
-
   async appointmentBooking(
-    req: Request<{}, {}, FarmerBookingDetails>,
+    req: Request<unknown, unknown, FarmerBookingDetails>,
     res: Response
   ): Promise<void> {
     try {
       const farmerDetails = req.body;
       await this.userService.bookAppointment(farmerDetails);
-
       res
         .status(Http_Status_Codes.CREATED)
         .json({ message: "Slot booking completed" });
     } catch (error) {
       console.error("Error in appointment booking:", error);
-
       res
         .status(Http_Status_Codes.INTERNAL_SERVER_ERROR)
         .json({ message: "Internal server error" });
     }
   }
-
   async userDetails(req: Request, res: Response): Promise<void> {
     try {
       const { userId } = req.query;
@@ -465,7 +432,6 @@ class UserController {
         return;
       }
       const user = await this.userService.getUserDetails(userId as string);
-
       if (!user) {
         res
           .status(Http_Status_Codes.NOT_FOUND)
@@ -480,7 +446,6 @@ class UserController {
         .json({ message: "Internal server error" });
     }
   }
-
   async cancelSlot(req: Request, res: Response): Promise<void> {
     try {
       const { slotId } = req.query;
@@ -494,5 +459,4 @@ class UserController {
     }
   }
 }
-
 export default UserController;

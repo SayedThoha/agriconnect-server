@@ -13,7 +13,6 @@ class UserRepository extends BaseRepository<IUser> implements IUserRepository {
   constructor() {
     super(User);
   }
-
   async emailExist(email: string): Promise<IUser | null> {
     try {
       return await this.model.findOne({ email });
@@ -21,11 +20,9 @@ class UserRepository extends BaseRepository<IUser> implements IUserRepository {
       throw new Error(`Error checking email existence: ${error}`);
     }
   }
-
   async saveUser(userData: Partial<IUser>): Promise<IUser> {
     return this.create(userData);
   }
-
   async checkEmail(email: string): Promise<IUser | null> {
     try {
       return await this.model.findOne({ email });
@@ -33,7 +30,6 @@ class UserRepository extends BaseRepository<IUser> implements IUserRepository {
       throw new Error(`Error checking email: ${error}`);
     }
   }
-
   async updateUserOtp(email: string, otp: string): Promise<IUser | null> {
     try {
       return await this.model.findOneAndUpdate(
@@ -48,7 +44,6 @@ class UserRepository extends BaseRepository<IUser> implements IUserRepository {
       throw new Error(`Error updating user OTP: ${error}`);
     }
   }
-
   async findUserByEmail(email: string): Promise<IUser | null> {
     try {
       return await this.model.findOne({ email });
@@ -259,11 +254,9 @@ class UserRepository extends BaseRepository<IUser> implements IUserRepository {
       throw error;
     }
   }
-
   async updateWallet(userId: string, amount: number): Promise<IUser | null> {
     return await User.findByIdAndUpdate(userId, { $inc: { wallet: amount } });
   }
-
   async findSlotByIdAndUpdate(
     slotId: string,
     updateData: object
@@ -274,7 +267,6 @@ class UserRepository extends BaseRepository<IUser> implements IUserRepository {
       { new: true }
     );
   }
-
   async findOneBookedSlotAndUpdate(
     filter: object,
     updateData: object
@@ -285,11 +277,9 @@ class UserRepository extends BaseRepository<IUser> implements IUserRepository {
       { new: true }
     );
   }
-
   async findBookedSlotById(appointmentId: string): Promise<IBookedSlot | null> {
     return await BookedSlot.findById(appointmentId);
   }
-
   async updateUserWallet(userId: string, amount: number): Promise<void> {
     await User.findByIdAndUpdate(userId, { $inc: { wallet: amount } });
   }

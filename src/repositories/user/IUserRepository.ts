@@ -3,10 +3,11 @@ import { IExpert } from "../../models/expertModel";
 import { ISlot } from "../../models/slotModel";
 import { ISpecialisation } from "../../models/specialisationModel";
 import { IUser } from "../../models/userModel";
+import { IBaseRepository } from "../base/IBaseRepository";
 
-export interface IUserRepository {
+export interface IUserRepository extends IBaseRepository<IUser> {
   emailExist(email: string): Promise<IUser | null>;
-  saveUser(data: IUser): Promise<Partial<IUser> | null>;
+  saveUser(data: Partial<IUser>): Promise<Partial<IUser> | null>;
   checkEmail(email: string): Promise<IUser | null>;
   updateUserOtp(email: string, otp: string): Promise<IUser | null>;
   findUserById(id: string): Promise<IUser | null>;
@@ -14,7 +15,18 @@ export interface IUserRepository {
     id: string,
     updateData: Partial<IUser>
   ): Promise<IUser | null>;
+  findUserByEmail(email: string): Promise<IUser | null>;
+  updateUserVerification(
+    email: string,
+    isVerified: boolean,
+    newEmail?: string
+  ): Promise<IUser | null>;
+  updateUserById(
+    userId: string,
+    updateData: Partial<IUser>
+  ): Promise<IUser | null>;
   updateProfilePicture(userId: string, imageUrl: string): Promise<void>;
+  updateUserOtpDetails(userId: string, otp: string): Promise<IUser | null>;
   checkUserStatus(userId: string): Promise<{ blocked: boolean }>;
   updatePassword(email: string, hashedPassword: string): Promise<IUser | null>;
   getSpecialisations(): Promise<ISpecialisation[]>;
@@ -37,7 +49,6 @@ export interface IUserRepository {
     filter: object,
     updateData: object
   ): Promise<IBookedSlot | null>;
-
   findBookedSlotById(appointmentId: string): Promise<IBookedSlot | null>;
   updateUserWallet(userId: string, amount: number): Promise<void>;
 }

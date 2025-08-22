@@ -1,12 +1,10 @@
 import { Request, Response } from "express";
 import { Http_Status_Codes } from "../../constants/httpStatusCodes";
-import PrescriptionService from "../../services/prescription/prescriptionService";
 import { IPrescriptionController } from "./IPrescriptionController";
+import { IPrescriptionService } from "../../services/prescription/IPrescriptionService";
 
 class PrescriptionController implements IPrescriptionController {
-
-  constructor(private prescriptionService: PrescriptionService) {}
-
+  constructor(private prescriptionService: IPrescriptionService) {}
   async getPrescriptionDetails(req: Request, res: Response): Promise<void> {
     try {
       const { _id } = req.query;
@@ -21,7 +19,6 @@ class PrescriptionController implements IPrescriptionController {
       const data = await this.prescriptionService.getPrescriptionDetails(
         _id as string
       );
-      
 
       res.status(Http_Status_Codes.OK).json(data);
     } catch (error) {
@@ -31,8 +28,6 @@ class PrescriptionController implements IPrescriptionController {
         .json({ message: "Internal Server Error" });
     }
   }
-
-  
   async addPrescription(req: Request, res: Response): Promise<void> {
     try {
       const { appointmentId, issue, prescription } = req.query;
@@ -62,12 +57,13 @@ class PrescriptionController implements IPrescriptionController {
       });
     }
   }
-
-  async getPrescriptionDetailsByExpert(req: Request, res: Response): Promise<void> {
+  async getPrescriptionDetailsByExpert(
+    req: Request,
+    res: Response
+  ): Promise<void> {
     try {
-      
       const { _id } = req.query;
-      
+
       if (!_id) {
         res
           .status(Http_Status_Codes.BAD_REQUEST)
@@ -75,10 +71,10 @@ class PrescriptionController implements IPrescriptionController {
         return;
       }
 
-      const data = await this.prescriptionService.getPrescriptionDetailsByExpert(
-        _id as string
-      );
-      
+      const data =
+        await this.prescriptionService.getPrescriptionDetailsByExpert(
+          _id as string
+        );
 
       res.status(Http_Status_Codes.OK).json(data);
     } catch (error) {
@@ -91,8 +87,8 @@ class PrescriptionController implements IPrescriptionController {
 
   async getAllPrescriptions(req: Request, res: Response): Promise<void> {
     try {
-      const prescriptions = await this.prescriptionService.getAllPrescriptions();
-      
+      const prescriptions =
+        await this.prescriptionService.getAllPrescriptions();
       res.status(Http_Status_Codes.OK).json(prescriptions);
     } catch (error) {
       console.log(error);

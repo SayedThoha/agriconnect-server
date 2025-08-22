@@ -1,7 +1,5 @@
 import { NextFunction, Request, Response } from "express";
 import jwt from "jsonwebtoken";
-
-
 const adminAuth = async (req: Request, res: Response, next: NextFunction) => {
   const authHeader = req.headers["authorization"];
   if (authHeader && authHeader.startsWith("admin-Bearer")) {

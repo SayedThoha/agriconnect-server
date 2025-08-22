@@ -1,7 +1,4 @@
-/* eslint-disable  @typescript-eslint/no-explicit-any */
-
 import { IUserService } from "./IUserService";
-import UserRepository from "../../repositories/user/userRepository";
 import { IUser } from "../../models/userModel";
 import { comparePass, hashedPass } from "../../utils/hashPassword";
 import { generateOtp } from "../../utils/otp";
@@ -19,13 +16,14 @@ import {
 } from "../../utils/token";
 import { ISpecialisation } from "../../models/specialisationModel";
 import { IExpert } from "../../models/expertModel";
-
 import {
   FarmerBookingDetails,
   PaymentOrder,
+  ServiceResponse,
 } from "../../interfaces/commonInterface";
 import Razorpay from "razorpay";
 import { NotificationService } from "../../utils/notificationService";
+import { IUserRepository } from "../../repositories/user/IUserRepository";
 
 export type UserResponse = IUser | null;
 export type UserResponeType = IUser | null | { success?: boolean };
@@ -33,7 +31,7 @@ export type UserResponeType = IUser | null | { success?: boolean };
 class UserService implements IUserService {
   private readonly OTP_EXPIRY_MINUTES = 59;
   private razorpayInstance!: Razorpay;
-  constructor(private userRepository: UserRepository) {
+  constructor(private userRepository: IUserRepository) {
     this.initializeRazorpay();
   }
 
@@ -42,12 +40,16 @@ class UserService implements IUserService {
     lastName: string;
     email: string;
     password: string;
-  }): Promise<any> {
+  }): Promise<ServiceResponse> {
     try {
       const existingUser = await this.userRepository.emailExist(userData.email);
 
       if (existingUser) {
-        return { success: false, message: "Email already exists" };
+        return {
+          success: false,
+          statusCode: Http_Status_Codes.CONFLICT,
+          message: "Email already exists",
+        };
       }
       const hashedPassword = await hashedPass(userData.password);
       const otp = generateOtp();
@@ -62,39 +64,18 @@ class UserService implements IUserService {
       });
 
       if (!user) {
-        return { success: false, message: "Failed to register user" };
+        return {
+          success: false,
+          statusCode: Http_Status_Codes.NOT_FOUND,
+          message: "Failed to register user",
+        };
       }
 
       const isOtpSent = await sentOtpToEmail(userData.email, otp);
       if (!isOtpSent) {
-        return { success: false, message: "Failed to send OTP" };
-      }
-      return { success: true, message: "Verify OTP to complete registration" };
-    } catch (error) {
-      console.log(error);
-    }
-  }
-
-  async resendOtp(email: string): Promise<Record<string, any>> {
-    try {
-      const otp = generateOtp();
-
-      const updatedUser = await this.userRepository.updateUserOtp(email, otp);
-
-      if (!updatedUser) {
-        return {
-          success: false,
-          statusCode: Http_Status_Codes.NOT_FOUND,
-          message: "User not found",
-        };
-      }
-
-      const isOtpSent = await sentOtpToEmail(email, otp);
-      if (!isOtpSent) {
         return {
           success: false,
           statusCode: Http_Status_Codes.INTERNAL_SERVER_ERROR,
-
           message: "Failed to send OTP",
         };
       }
@@ -102,11 +83,44 @@ class UserService implements IUserService {
       return {
         success: true,
         statusCode: Http_Status_Codes.OK,
+        message: "Verify OTP to complete registration",
+      };
+    } catch (error) {
+      console.log(error);
+      return {
+        success: false,
+        statusCode: Http_Status_Codes.INTERNAL_SERVER_ERROR,
+        message: "Internal server error",
+      };
+    }
+  }
+
+  async resendOtp(email: string): Promise<OtpVerificationResult> {
+    try {
+      const otp = generateOtp();
+      const updatedUser = await this.userRepository.updateUserOtp(email, otp);
+      if (!updatedUser) {
+        return {
+          success: false,
+          statusCode: Http_Status_Codes.NOT_FOUND,
+          message: "User not found",
+        };
+      }
+      const isOtpSent = await sentOtpToEmail(email, otp);
+      if (!isOtpSent) {
+        return {
+          success: false,
+          statusCode: Http_Status_Codes.INTERNAL_SERVER_ERROR,
+          message: "Failed to send OTP",
+        };
+      }
+      return {
+        success: true,
+        statusCode: Http_Status_Codes.OK,
         message: "Successfully sent a new OTP",
       };
     } catch (error) {
       console.log(error);
-
       return {
         success: false,
         statusCode: Http_Status_Codes.INTERNAL_SERVER_ERROR,
@@ -279,7 +293,10 @@ class UserService implements IUserService {
     return this.userRepository.updateUserProfile(id, updateData);
   }
 
-  async optForNewEmail(userId: string, email: string): Promise<any> {
+  async otpForNewEmail(
+    userId: string,
+    email: string
+  ): Promise<ServiceResponse> {
     if (!userId || !email) {
       throw new Error("User ID and email are required");
     }
@@ -303,7 +320,11 @@ class UserService implements IUserService {
       otp: otp,
       otp_update_time: new Date(),
     });
-    return "otp sent to mail";
+    return {
+      success: false,
+      statusCode: Http_Status_Codes.OK,
+      message: "otp sent to mail",
+    };
   }
 
   async editUserProfilePicture(

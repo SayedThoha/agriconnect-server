@@ -43,8 +43,6 @@ abstract class BaseRepository <T extends Document> implements IBaseRepository<T>
     }
   }
 
-
-
 }
 
 

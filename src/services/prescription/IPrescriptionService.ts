@@ -1,5 +1,4 @@
 import { IPrescription } from "../../models/prescriptionModel";
-
 export interface IPrescriptionService {
   getPrescriptionDetails(prescriptionId: string): Promise<IPrescription>;
   addPrescription(

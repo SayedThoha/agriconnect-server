@@ -7,7 +7,7 @@ export interface IExpertController {
   login(req: Request, res: Response): Promise<void>;
   getExpertDetails(req: Request, res: Response): Promise<void>;
   editExpertProfile(req: Request, res: Response): Promise<void>;
-  optForNewEmail(req: Request, res: Response): Promise<void>;
+  otpForNewEmail(req: Request, res: Response): Promise<void>;
   editExpertProfilePicture(req: Request, res: Response): Promise<void>;
   checkExpertStatus(req: Request, res: Response): Promise<void>;
   verifyEmailForPasswordReset(req: Request, res: Response): Promise<void>;

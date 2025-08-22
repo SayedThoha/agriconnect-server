@@ -1,6 +1,6 @@
 import nodemailer from "nodemailer";
 
-export const sentOtpToEmail = (email: string, otp: string) => {
+export const sendVerificationMail = (email: string, message: string) => {
   const transporter = nodemailer.createTransport({
     service: "gmail",
     auth: {
@@ -16,12 +16,11 @@ export const sentOtpToEmail = (email: string, otp: string) => {
     text?: string;
     html?: string;
   }
-
   const mailOptions = {
     from: process.env.TRANSPORTER_EMAIL,
     to: email,
-    subject: "OTP Verification",
-    text: `Welcome to Agri Connect, Your Otp for registration is :${otp}`,
+    subject: "verification of account",
+    text: `${message}`,
   };
 
   const sendEmail = async (mailOptions: MailOptions): Promise<boolean> => {

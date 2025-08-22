@@ -1,5 +1,4 @@
 
-
 export interface GoogleAuthPayload {
     email: string;
     name: string;

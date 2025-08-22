@@ -6,7 +6,6 @@ interface ExpertRequest extends Request {
   expertId?: string;
 }
 
-
 export const expertAuth = async (
   req: ExpertRequest,
   res: Response,
@@ -17,10 +16,7 @@ export const expertAuth = async (
     res.status(401).json({ message: "Unauthorized" });
     return; 
   }
-
   const token = authHeader.split(" ")[1];
-
-
   try {
     
     const decoded = await verifyToken(token);

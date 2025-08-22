@@ -1,20 +1,21 @@
-
 import mongoose, { Schema, Document } from "mongoose";
-export interface IBookedSlot extends Document{
-    _id:mongoose.Types.ObjectId;
-    userId:mongoose.Types.ObjectId;
-    slotId:mongoose.Types.ObjectId;
-    expertId:mongoose.Types.ObjectId;
-    payment_method:string;
-    payment_status:boolean;
-    consultation_status:string;
-    farmer_details:object;
-    created_time: Date;
-    roomId:string;
-    prescription_id:mongoose.Types.ObjectId;
+import { ISlot } from "./slotModel";
+
+export interface IBookedSlot extends Document {
+  _id: mongoose.Types.ObjectId;
+  userId: mongoose.Types.ObjectId;
+  slotId: mongoose.Types.ObjectId | ISlot;
+  expertId: mongoose.Types.ObjectId;
+  payment_method: string;
+  payment_status: boolean;
+  consultation_status: string;
+  farmer_details: object;
+  created_time: Date;
+  roomId: string;
+  prescription_id: mongoose.Types.ObjectId;
 }
 
-const bookedSlotSchema:Schema<IBookedSlot> = new mongoose.Schema({
+const bookedSlotSchema: Schema<IBookedSlot> = new mongoose.Schema({
   userId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "User",
@@ -69,12 +70,10 @@ const bookedSlotSchema:Schema<IBookedSlot> = new mongoose.Schema({
   roomId: {
     type: String,
   },
-  prescription_id:{
+  prescription_id: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: "Prescription"
-  }
+    ref: "Prescription",
+  },
 });
 
-
-export const BookedSlot=mongoose.model("BookedSlot",bookedSlotSchema)
-
+export const BookedSlot = mongoose.model("BookedSlot", bookedSlotSchema);

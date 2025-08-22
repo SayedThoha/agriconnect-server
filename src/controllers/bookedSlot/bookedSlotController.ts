@@ -1,10 +1,10 @@
 import { Http_Status_Codes } from "../../constants/httpStatusCodes";
-import BookedSlotService from "../../services/bookedSlot/bookedSlotService";
 import { Request, Response } from "express";
 import { IBookedSlotController } from "./IBookedSlotController";
+import { IBookedSlotService } from "../../services/bookedSlot/IBookedSlotService";
 
 class BookedSlotController implements IBookedSlotController {
-  constructor(private bookedSlotService: BookedSlotService) {}
+  constructor(private bookedSlotService: IBookedSlotService) {}
 
   async getBookingDetails(req: Request, res: Response): Promise<void> {
     try {
@@ -75,12 +75,7 @@ class BookedSlotController implements IBookedSlotController {
         await this.bookedSlotService.getUpcomingAppointmentByExpert(
           expertId as string
         );
-      if (Object.keys(appointment).length) {
-        // console.log("Next appointment:", appointment);
-      } else {
-        // console.log("No upcoming appointments found.");
-        // res.status(Http_Status_Codes.OK).json({});
-      }
+
       res.status(Http_Status_Codes.OK).json(appointment);
     } catch (error) {
       console.error("Error fetching upcoming appointment:", error);
