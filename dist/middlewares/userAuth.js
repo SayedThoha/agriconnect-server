@@ -56,7 +56,7 @@ const checkUserBlocked = (req, res, next) => __awaiter(void 0, void 0, void 0, f
         next();
     }
     catch (error) {
-        console.log(error);
+        console.error(error);
         res.status(500).json({ message: "Server Error" });
     }
 });

@@ -91,7 +91,7 @@ class PrescriptionController implements IPrescriptionController {
         await this.prescriptionService.getAllPrescriptions();
       res.status(Http_Status_Codes.OK).json(prescriptions);
     } catch (error) {
-      console.log(error);
+      console.error(error);
       res.status(500).json({ message: "internal server Error" });
     }
   }

@@ -1,9 +1,10 @@
-import { Model, Document } from 'mongoose';
+import { Model, Document } from "mongoose";
 import { IBaseRepository } from "./IBaseRepository";
 
-abstract class BaseRepository <T extends Document> implements IBaseRepository<T> {
-
-    constructor(protected readonly model: Model<T>) {}
+abstract class BaseRepository<T extends Document>
+  implements IBaseRepository<T>
+{
+  constructor(protected readonly model: Model<T>) {}
 
   async findById(id: string): Promise<T | null> {
     try {
@@ -42,8 +43,6 @@ abstract class BaseRepository <T extends Document> implements IBaseRepository<T>
       throw new Error(`Error deleting document: ${error}`);
     }
   }
-
 }
 
-
-export default BaseRepository
+export default BaseRepository;

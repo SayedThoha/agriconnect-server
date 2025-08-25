@@ -46,7 +46,7 @@ class NotificationRepository extends baseRepository_1.default {
                 yield notificationModel_1.Notification.updateMany({ userId, isReadByUser: false }, { $set: { isReadByUser: true } });
             }
             catch (error) {
-                console.log(error);
+                console.error(error);
             }
         });
     }
@@ -89,7 +89,7 @@ class NotificationRepository extends baseRepository_1.default {
                 yield notificationModel_1.Notification.updateMany({ expertId, isReadByExpert: false }, { $set: { isReadByExpert: true } });
             }
             catch (error) {
-                console.log(error);
+                console.error(error);
             }
         });
     }

@@ -74,7 +74,7 @@ class PrescriptionRepository extends baseRepository_1.default {
                 return prescriptions;
             }
             catch (error) {
-                console.log(error);
+                console.error(error);
                 throw new Error("Error fetching prescriptions");
             }
         });

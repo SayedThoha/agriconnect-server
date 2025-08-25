@@ -36,7 +36,7 @@ class NotificationRepository
         { $set: { isReadByUser: true } }
       );
     } catch (error) {
-      console.log(error);
+      console.error(error);
     }
   }
   async clearNotificationsForUser(userId: string): Promise<void> {
@@ -78,7 +78,7 @@ class NotificationRepository
         { $set: { isReadByExpert: true } }
       );
     } catch (error) {
-      console.log(error);
+      console.error(error);
     }
   }
 

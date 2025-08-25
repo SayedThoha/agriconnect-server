@@ -35,7 +35,7 @@ class ExpertRepository extends baseRepository_1.default {
                 return yield expertModel_1.Expert.findOne({ email });
             }
             catch (error) {
-                console.log(error);
+                console.error(error);
                 throw new Error(`Error finding expert by email: ${error}`);
             }
         });
@@ -99,10 +99,11 @@ class ExpertRepository extends baseRepository_1.default {
             }
         });
     }
-    findById(id) {
+    findExpertById(id) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                return yield this.findById(id);
+                const expert = yield this.findById(id);
+                return expert;
             }
             catch (error) {
                 console.error("Error in expert repository findById:", error);

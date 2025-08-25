@@ -56,7 +56,7 @@ class UserController {
         message: result.message,
       });
     } catch (error) {
-      console.log(error);
+      console.error(error);
       res.status(Http_Status_Codes.INTERNAL_SERVER_ERROR).json({
         success: false,
         message: "Internal server error",
@@ -86,7 +86,7 @@ class UserController {
         message: result.message,
       });
     } catch (error) {
-      console.log(error);
+      console.error(error);
       res.status(Http_Status_Codes.INTERNAL_SERVER_ERROR).json({
         success: false,
         message: "Internal server error",
@@ -115,7 +115,7 @@ class UserController {
         ...(result.email && { email: result.email }),
       });
     } catch (error) {
-      console.log(error);
+      console.error(error);
       res.status(Http_Status_Codes.INTERNAL_SERVER_ERROR).json({
         success: false,
         message: "Internal server error",
@@ -284,7 +284,7 @@ class UserController {
       }
       res.status(Http_Status_Codes.OK).json({ message: result.message });
     } catch (error) {
-      console.log(error);
+      console.error(error);
       res.status(Http_Status_Codes.INTERNAL_SERVER_ERROR).json({
         message: "Internal server error",
       });
@@ -304,7 +304,7 @@ class UserController {
       res.status(response.statusCode).json(response);
       return;
     } catch (error) {
-      console.log(error);
+      console.error(error);
       res.status(Http_Status_Codes.INTERNAL_SERVER_ERROR).json({
         success: false,
         message: "Internal server error",
@@ -317,7 +317,7 @@ class UserController {
       const specialisation = await this.userService.getSpecialisations();
       res.status(Http_Status_Codes.OK).json(specialisation);
     } catch (error) {
-      console.log(error);
+      console.error(error);
       res.status(Http_Status_Codes.INTERNAL_SERVER_ERROR).json({
         message: "Internal Server Error",
       });
@@ -328,7 +328,7 @@ class UserController {
       const expert = await this.userService.getExperts();
       res.status(Http_Status_Codes.OK).json(expert);
     } catch (error) {
-      console.log(error);
+      console.error(error);
       res.status(Http_Status_Codes.INTERNAL_SERVER_ERROR).json({
         message: "Internal Server Error",
       });

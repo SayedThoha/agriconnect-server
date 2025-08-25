@@ -25,7 +25,7 @@ class ExpertController implements IExpertController {
       }
       res.status(Http_Status_Codes.CREATED).json({ message: result.message });
     } catch (error) {
-      console.log("error due to expert registration:", error);
+      console.error("error due to expert registration:", error);
       res.status(Http_Status_Codes.INTERNAL_SERVER_ERROR).json({
         message: "Internal Server Error",
       });
@@ -36,7 +36,7 @@ class ExpertController implements IExpertController {
       const specialisation = await this.expertService.getSpecialisations();
       res.status(Http_Status_Codes.OK).json({ specialisation });
     } catch (error) {
-      console.log(error);
+      console.error(error);
       res.status(Http_Status_Codes.INTERNAL_SERVER_ERROR).json({
         message: "Internal Server Error",
       });
@@ -60,7 +60,7 @@ class ExpertController implements IExpertController {
         message: result.message,
       });
     } catch (error) {
-      console.log(error);
+      console.error(error);
       res.status(Http_Status_Codes.INTERNAL_SERVER_ERROR).json({
         success: false,
         message: "Internal server error",
@@ -90,7 +90,7 @@ class ExpertController implements IExpertController {
         message: result.message,
       });
     } catch (error) {
-      console.log(error);
+      console.error(error);
       res.status(Http_Status_Codes.INTERNAL_SERVER_ERROR).json({
         success: false,
         message: "Internal server error",
@@ -119,7 +119,7 @@ class ExpertController implements IExpertController {
         ...(result.email && { email: result.email }),
       });
     } catch (error) {
-      console.log(error);
+      console.error(error);
       res.status(Http_Status_Codes.INTERNAL_SERVER_ERROR).json({
         success: false,
         message: "Internal server error",
@@ -293,7 +293,7 @@ class ExpertController implements IExpertController {
       }
       res.status(Http_Status_Codes.OK).json({ message: result.message });
     } catch (error) {
-      console.log(error);
+      console.error(error);
       res.status(Http_Status_Codes.INTERNAL_SERVER_ERROR).json({
         message: "Internal server error",
       });
@@ -313,7 +313,7 @@ class ExpertController implements IExpertController {
       res.status(response.statusCode).json(response);
       return;
     } catch (error) {
-      console.log(error);
+      console.error(error);
       res.status(Http_Status_Codes.INTERNAL_SERVER_ERROR).json({
         success: false,
         message: "Internal server error",

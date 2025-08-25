@@ -17,13 +17,11 @@ class GoogleAuthService {
     loginWithGoogle(token) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                // Delegate to repository
                 const response = yield this.googleAuthRepository.handleGoogleLogin(token);
                 return response;
             }
             catch (error) {
-                //   throw new Error(`Google login failed: ${error.message}`);
-                console.log(error);
+                console.error(error);
                 return {
                     success: false,
                     token: "",

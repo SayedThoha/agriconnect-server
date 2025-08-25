@@ -61,7 +61,7 @@ class PrescriptionService {
                 return yield this.prescriptionRepository.getPrescriptionsByExpert();
             }
             catch (error) {
-                console.log(error);
+                console.error(error);
                 throw new Error("Prescriptions not found");
             }
         });

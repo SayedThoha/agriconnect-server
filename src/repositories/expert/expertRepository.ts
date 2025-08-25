@@ -23,7 +23,7 @@ class ExpertRepository
     try {
       return await Expert.findOne({ email });
     } catch (error) {
-      console.log(error);
+      console.error(error);
       throw new Error(`Error finding expert by email: ${error}`);
     }
   }
@@ -102,9 +102,10 @@ class ExpertRepository
     }
   }
 
-  async findById(id: string): Promise<IExpert | null> {
+  async findExpertById(id: string): Promise<IExpert | null> {
     try {
-      return await this.findById(id);
+      const expert = await this.findById(id);
+      return expert;
     } catch (error) {
       console.error("Error in expert repository findById:", error);
       throw new Error("Database operation failed");

@@ -15,5 +15,5 @@ update_unattended_slots();
 deleteClearedNotifications();
 
 server.listen(process.env.PORT, () => {
-  console.log("server started");
+  console.warn("server started");
 });

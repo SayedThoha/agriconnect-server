@@ -28,7 +28,7 @@ class NotificationController {
                 res.status(httpStatusCodes_1.Http_Status_Codes.OK).json(notification);
             }
             catch (error) {
-                console.log(error);
+                console.error(error);
                 res.status(httpStatusCodes_1.Http_Status_Codes.INTERNAL_SERVER_ERROR).json({
                     message: "Internal Server Error",
                 });
@@ -51,7 +51,7 @@ class NotificationController {
                     .json({ message: "Notifications marked as read" });
             }
             catch (error) {
-                console.log(error);
+                console.error(error);
                 res.status(httpStatusCodes_1.Http_Status_Codes.INTERNAL_SERVER_ERROR).json({
                     message: "Internal Server Error",
                 });
@@ -89,7 +89,7 @@ class NotificationController {
                 res.status(httpStatusCodes_1.Http_Status_Codes.OK).json(notification);
             }
             catch (error) {
-                console.log(error);
+                console.error(error);
                 res.status(httpStatusCodes_1.Http_Status_Codes.INTERNAL_SERVER_ERROR).json({
                     message: "Internal Server Error",
                 });
@@ -112,7 +112,7 @@ class NotificationController {
                     .json({ message: "Notifications marked as read" });
             }
             catch (error) {
-                console.log(error);
+                console.error(error);
                 res.status(httpStatusCodes_1.Http_Status_Codes.INTERNAL_SERVER_ERROR).json({
                     message: "Internal Server Error",
                 });

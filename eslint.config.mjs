@@ -7,10 +7,9 @@ export default [
   {
     files: ["**/*.{js,mjs,cjs,ts}"],
     rules: {
-      // "@typescript-eslint/no-unused-vars": "off",
-      // "@typescript-eslint/no-explicit-any": "on",
-      
-    
+      "@typescript-eslint/no-unused-vars": "warn",
+      "@typescript-eslint/no-explicit-any": "warn",
+      "no-console": ["warn", { allow: ["warn", "error"] }],
     },
   },
 

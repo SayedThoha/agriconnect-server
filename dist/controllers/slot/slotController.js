@@ -71,7 +71,7 @@ class SlotController {
                 res.status(httpStatusCodes_1.Http_Status_Codes.OK).json(slots);
             }
             catch (error) {
-                console.log(error);
+                console.error(error);
                 res.status(httpStatusCodes_1.Http_Status_Codes.INTERNAL_SERVER_ERROR).json({
                     message: "Internal Server Error",
                 });
@@ -112,7 +112,6 @@ class SlotController {
                     return;
                 }
                 const expert = yield this.slotService.getExpertSlots(data._id);
-                console.log(expert);
                 res.status(httpStatusCodes_1.Http_Status_Codes.OK).json(expert);
             }
             catch (error) {

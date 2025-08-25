@@ -68,7 +68,7 @@ class UserService {
                 };
             }
             catch (error) {
-                console.log(error);
+                console.error(error);
                 return {
                     success: false,
                     statusCode: httpStatusCodes_1.Http_Status_Codes.INTERNAL_SERVER_ERROR,
@@ -104,7 +104,7 @@ class UserService {
                 };
             }
             catch (error) {
-                console.log(error);
+                console.error(error);
                 return {
                     success: false,
                     statusCode: httpStatusCodes_1.Http_Status_Codes.INTERNAL_SERVER_ERROR,
@@ -155,7 +155,7 @@ class UserService {
                 };
             }
             catch (error) {
-                console.log(error);
+                console.error(error);
                 return {
                     success: false,
                     statusCode: httpStatusCodes_1.Http_Status_Codes.INTERNAL_SERVER_ERROR,
@@ -234,7 +234,7 @@ class UserService {
                 };
             }
             catch (error) {
-                console.log(error);
+                console.error(error);
                 return {
                     success: false,
                     statusCode: httpStatusCodes_1.Http_Status_Codes.INTERNAL_SERVER_ERROR,
@@ -325,7 +325,7 @@ class UserService {
                 yield this.userRepository.updateUserOtp(email, otp);
             }
             catch (error) {
-                console.log(error);
+                console.error(error);
                 throw new Error(`Email verification failed`);
             }
         });
@@ -375,7 +375,7 @@ class UserService {
                 };
             }
             catch (error) {
-                console.log(error);
+                console.error(error);
                 return {
                     success: false,
                     statusCode: httpStatusCodes_1.Http_Status_Codes.INTERNAL_SERVER_ERROR,
@@ -477,7 +477,7 @@ class UserService {
                         });
                     }
                     else {
-                        console.log("Razorpay failure case:", err);
+                        console.error("Razorpay failure case:", err);
                         reject({
                             success: false,
                             message: err || "Payment order creation failed",
@@ -515,7 +515,7 @@ class UserService {
                 yield notificationService_1.NotificationService.sendNotification(user._id.toString(), expertId.toString(), `Your slot booking for ${slot.time} is confirmed!`, "booking_success");
             }
             catch (error) {
-                console.log(error);
+                console.error(error);
             }
         });
     }

@@ -32,7 +32,7 @@ class GoogleAuthController {
                 res.status(response.statusCode).json(response);
             }
             catch (error) {
-                console.log(error);
+                console.error(error);
                 res.status(500).json({
                     success: false,
                     statusCode: httpStatusCodes_1.Http_Status_Codes.INTERNAL_SERVER_ERROR,

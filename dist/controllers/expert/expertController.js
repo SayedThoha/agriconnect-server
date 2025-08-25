@@ -34,7 +34,7 @@ class ExpertController {
                 res.status(httpStatusCodes_1.Http_Status_Codes.CREATED).json({ message: result.message });
             }
             catch (error) {
-                console.log("error due to expert registration:", error);
+                console.error("error due to expert registration:", error);
                 res.status(httpStatusCodes_1.Http_Status_Codes.INTERNAL_SERVER_ERROR).json({
                     message: "Internal Server Error",
                 });
@@ -48,7 +48,7 @@ class ExpertController {
                 res.status(httpStatusCodes_1.Http_Status_Codes.OK).json({ specialisation });
             }
             catch (error) {
-                console.log(error);
+                console.error(error);
                 res.status(httpStatusCodes_1.Http_Status_Codes.INTERNAL_SERVER_ERROR).json({
                     message: "Internal Server Error",
                 });
@@ -75,7 +75,7 @@ class ExpertController {
                 });
             }
             catch (error) {
-                console.log(error);
+                console.error(error);
                 res.status(httpStatusCodes_1.Http_Status_Codes.INTERNAL_SERVER_ERROR).json({
                     success: false,
                     message: "Internal server error",
@@ -103,7 +103,7 @@ class ExpertController {
                 });
             }
             catch (error) {
-                console.log(error);
+                console.error(error);
                 res.status(httpStatusCodes_1.Http_Status_Codes.INTERNAL_SERVER_ERROR).json({
                     success: false,
                     message: "Internal server error",
@@ -128,7 +128,7 @@ class ExpertController {
                 res.status(result.statusCode).json(Object.assign(Object.assign(Object.assign(Object.assign({ success: result.success, message: result.message }, (result.accessToken && { accessToken: result.accessToken })), (result.refreshToken && { refreshToken: result.refreshToken })), (result.accessedUser && { accessedUser: result.accessedUser })), (result.email && { email: result.email })));
             }
             catch (error) {
-                console.log(error);
+                console.error(error);
                 res.status(httpStatusCodes_1.Http_Status_Codes.INTERNAL_SERVER_ERROR).json({
                     success: false,
                     message: "Internal server error",
@@ -314,7 +314,7 @@ class ExpertController {
                 res.status(httpStatusCodes_1.Http_Status_Codes.OK).json({ message: result.message });
             }
             catch (error) {
-                console.log(error);
+                console.error(error);
                 res.status(httpStatusCodes_1.Http_Status_Codes.INTERNAL_SERVER_ERROR).json({
                     message: "Internal server error",
                 });
@@ -337,7 +337,7 @@ class ExpertController {
                 return;
             }
             catch (error) {
-                console.log(error);
+                console.error(error);
                 res.status(httpStatusCodes_1.Http_Status_Codes.INTERNAL_SERVER_ERROR).json({
                     success: false,
                     message: "Internal server error",

@@ -72,8 +72,13 @@ class ExpertService implements IExpertService {
       (field) => !data[field as keyof ExpertRegistrationDTO]
     );
   }
-  async getSpecialisations(): Promise<ISpecialisation[]> {
-    return await this.expertRepository.getSpecialisations();
+  async getSpecialisations(): Promise<ISpecialisation[] | null> {
+    try {
+      return await this.expertRepository.getSpecialisations();
+    } catch (error) {
+      console.error(error);
+      throw new Error(`error getting specialisation`);
+    }
   }
   async resendOtp(email: string): Promise<OtpVerificationResult> {
     try {
@@ -103,7 +108,7 @@ class ExpertService implements IExpertService {
         message: "Successfully sent a new OTP",
       };
     } catch (error) {
-      console.log(error);
+      console.error(error);
       return {
         success: false,
         statusCode: Http_Status_Codes.INTERNAL_SERVER_ERROR,
@@ -163,7 +168,7 @@ class ExpertService implements IExpertService {
         message: "Account verified successfully",
       };
     } catch (error) {
-      console.log(error);
+      console.error(error);
       return {
         success: false,
         statusCode: Http_Status_Codes.INTERNAL_SERVER_ERROR,
@@ -250,7 +255,7 @@ class ExpertService implements IExpertService {
         accessedUser,
       };
     } catch (error) {
-      console.log(error);
+      console.error(error);
       return {
         success: false,
         statusCode: Http_Status_Codes.INTERNAL_SERVER_ERROR,
@@ -259,7 +264,8 @@ class ExpertService implements IExpertService {
     }
   }
   async getExpertDetails(id: string): Promise<IExpert | null> {
-    const expert = await this.expertRepository.findById(id);
+    const expert = await this.expertRepository.findExpertById(id);
+
     if (!expert) {
       throw new Error("Expert not found");
     }
@@ -336,7 +342,7 @@ class ExpertService implements IExpertService {
       await sentOtpToEmail(email, otp);
       await this.expertRepository.updateExpertOtp(email, otp);
     } catch (error) {
-      console.log(error);
+      console.error(error);
       throw new Error(`Email verification failed`);
     }
   }
@@ -388,7 +394,7 @@ class ExpertService implements IExpertService {
         refreshToken: newRefreshToken,
       };
     } catch (error) {
-      console.log(error);
+      console.error(error);
       return {
         success: false,
         statusCode: Http_Status_Codes.INTERNAL_SERVER_ERROR,

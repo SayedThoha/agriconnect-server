@@ -28,7 +28,6 @@ class SlotController implements ISlotController {
       });
     }
   }
-
   async addAllSlots(req: Request, res: Response): Promise<void> {
     try {
       const { expertId, slots } = req.body;
@@ -44,7 +43,6 @@ class SlotController implements ISlotController {
       return;
     }
   }
-
   async expertSlotDetails(req: Request, res: Response): Promise<void> {
     try {
       const { _id } = req.query;
@@ -57,13 +55,12 @@ class SlotController implements ISlotController {
       const slots = await this.slotService.getExpertSlotDetails(_id);
       res.status(Http_Status_Codes.OK).json(slots);
     } catch (error) {
-      console.log(error);
+      console.error(error);
       res.status(Http_Status_Codes.INTERNAL_SERVER_ERROR).json({
         message: "Internal Server Error",
       });
     }
   }
-
   async removeSlot(req: Request, res: Response): Promise<void> {
     try {
       const { _id } = req.query;
@@ -84,7 +81,6 @@ class SlotController implements ISlotController {
       return;
     }
   }
-
   async getExpertSlots(req: Request, res: Response): Promise<void> {
     try {
       const data = req.query;
@@ -95,7 +91,6 @@ class SlotController implements ISlotController {
         return;
       }
       const expert = await this.slotService.getExpertSlots(data._id as string);
-      console.log(expert);
       res.status(Http_Status_Codes.OK).json(expert);
     } catch (error) {
       console.error("Error in getExpertSlotss controller:", error);
@@ -105,7 +100,6 @@ class SlotController implements ISlotController {
       });
     }
   }
-
   async addSlots(req: Request, res: Response): Promise<void> {
     try {
       const slotData: SlotUpdateData = req.body;

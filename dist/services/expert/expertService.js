@@ -62,7 +62,13 @@ class ExpertService {
     }
     getSpecialisations() {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield this.expertRepository.getSpecialisations();
+            try {
+                return yield this.expertRepository.getSpecialisations();
+            }
+            catch (error) {
+                console.error(error);
+                throw new Error(`error getting specialisation`);
+            }
         });
     }
     resendOtp(email) {
@@ -92,7 +98,7 @@ class ExpertService {
                 };
             }
             catch (error) {
-                console.log(error);
+                console.error(error);
                 return {
                     success: false,
                     statusCode: httpStatusCodes_1.Http_Status_Codes.INTERNAL_SERVER_ERROR,
@@ -143,7 +149,7 @@ class ExpertService {
                 };
             }
             catch (error) {
-                console.log(error);
+                console.error(error);
                 return {
                     success: false,
                     statusCode: httpStatusCodes_1.Http_Status_Codes.INTERNAL_SERVER_ERROR,
@@ -229,7 +235,7 @@ class ExpertService {
                 };
             }
             catch (error) {
-                console.log(error);
+                console.error(error);
                 return {
                     success: false,
                     statusCode: httpStatusCodes_1.Http_Status_Codes.INTERNAL_SERVER_ERROR,
@@ -240,7 +246,7 @@ class ExpertService {
     }
     getExpertDetails(id) {
         return __awaiter(this, void 0, void 0, function* () {
-            const expert = yield this.expertRepository.findById(id);
+            const expert = yield this.expertRepository.findExpertById(id);
             if (!expert) {
                 throw new Error("Expert not found");
             }
@@ -320,7 +326,7 @@ class ExpertService {
                 yield this.expertRepository.updateExpertOtp(email, otp);
             }
             catch (error) {
-                console.log(error);
+                console.error(error);
                 throw new Error(`Email verification failed`);
             }
         });
@@ -370,7 +376,7 @@ class ExpertService {
                 };
             }
             catch (error) {
-                console.log(error);
+                console.error(error);
                 return {
                     success: false,
                     statusCode: httpStatusCodes_1.Http_Status_Codes.INTERNAL_SERVER_ERROR,

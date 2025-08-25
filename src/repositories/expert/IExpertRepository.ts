@@ -16,7 +16,7 @@ export interface IExpertRepository extends IBaseRepository<IExpert> {
     isVerified: boolean,
     newEmail?: string
   ): Promise<IExpert | null>;
-  findById(id: string): Promise<IExpert | null>;
+  findExpertById(id: string): Promise<IExpert | null>;
   updateExpertProfile(
     id: string,
     updateData: Partial<IExpert>

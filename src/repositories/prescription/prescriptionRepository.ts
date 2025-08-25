@@ -70,7 +70,7 @@ class PrescriptionRepository
 
       return prescriptions;
     } catch (error) {
-      console.log(error);
+      console.error(error);
       throw new Error("Error fetching prescriptions");
     }
   }

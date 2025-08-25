@@ -28,7 +28,7 @@ export const verifyToken = (token: string): any => {
     const decoded = jwt.verify(token, secret);
     return decoded;
   } catch (error: any) {
-    console.log("Error while jwt token verification", error);
+    console.error("Error while jwt token verification", error);
 
     return null;
   }
@@ -40,7 +40,7 @@ export const verifyRefreshToken = (token: string): any => {
     const decoded = jwt.verify(token, secret);
     return decoded;
   } catch (error) {
-    console.log(error as Error);
+    console.error(error);
     return error;
   }
 };

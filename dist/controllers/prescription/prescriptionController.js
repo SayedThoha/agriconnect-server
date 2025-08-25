@@ -87,7 +87,7 @@ class PrescriptionController {
                 res.status(httpStatusCodes_1.Http_Status_Codes.OK).json(prescriptions);
             }
             catch (error) {
-                console.log(error);
+                console.error(error);
                 res.status(500).json({ message: "internal server Error" });
             }
         });

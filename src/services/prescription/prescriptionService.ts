@@ -63,7 +63,7 @@ class PrescriptionService implements IPrescriptionService {
     try {
       return await this.prescriptionRepository.getPrescriptionsByExpert();
     } catch (error) {
-      console.log(error);
+      console.error(error);
       throw new Error("Prescriptions not found");
     }
   }

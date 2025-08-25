@@ -86,7 +86,7 @@ class UserService implements IUserService {
         message: "Verify OTP to complete registration",
       };
     } catch (error) {
-      console.log(error);
+      console.error(error);
       return {
         success: false,
         statusCode: Http_Status_Codes.INTERNAL_SERVER_ERROR,
@@ -120,7 +120,7 @@ class UserService implements IUserService {
         message: "Successfully sent a new OTP",
       };
     } catch (error) {
-      console.log(error);
+      console.error(error);
       return {
         success: false,
         statusCode: Http_Status_Codes.INTERNAL_SERVER_ERROR,
@@ -185,7 +185,7 @@ class UserService implements IUserService {
         message: "Account verified successfully",
       };
     } catch (error) {
-      console.log(error);
+      console.error(error);
       return {
         success: false,
         statusCode: Http_Status_Codes.INTERNAL_SERVER_ERROR,
@@ -266,7 +266,7 @@ class UserService implements IUserService {
         accessedUser,
       };
     } catch (error) {
-      console.log(error);
+      console.error(error);
       return {
         success: false,
         statusCode: Http_Status_Codes.INTERNAL_SERVER_ERROR,
@@ -359,7 +359,7 @@ class UserService implements IUserService {
       await sentOtpToEmail(email, otp);
       await this.userRepository.updateUserOtp(email, otp);
     } catch (error) {
-      console.log(error);
+      console.error(error);
       throw new Error(`Email verification failed`);
     }
   }
@@ -413,7 +413,7 @@ class UserService implements IUserService {
         refreshToken: newRefreshToken,
       };
     } catch (error) {
-      console.log(error);
+      console.error(error);
       return {
         success: false,
         statusCode: Http_Status_Codes.INTERNAL_SERVER_ERROR,
@@ -512,7 +512,7 @@ class UserService implements IUserService {
             order_id: order.id,
           });
         } else {
-          console.log("Razorpay failure case:", err);
+          console.error("Razorpay failure case:", err);
           reject({
             success: false,
             message: err || "Payment order creation failed",
@@ -561,7 +561,7 @@ class UserService implements IUserService {
         "booking_success"
       );
     } catch (error) {
-      console.log(error);
+      console.error(error);
     }
   }
 

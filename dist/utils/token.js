@@ -29,7 +29,7 @@ const verifyToken = (token) => {
         return decoded;
     }
     catch (error) {
-        console.log("Error while jwt token verification", error);
+        console.error("Error while jwt token verification", error);
         return null;
     }
 };
@@ -41,7 +41,7 @@ const verifyRefreshToken = (token) => {
         return decoded;
     }
     catch (error) {
-        console.log(error);
+        console.error(error);
         return error;
     }
 };

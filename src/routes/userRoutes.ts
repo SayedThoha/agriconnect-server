@@ -1,9 +1,6 @@
 import express from "express";
 import UserRepository from "../repositories/user/userRepository";
 import UserController from "../controllers/user/userController";
-import GoogleAuthRepository from "../repositories/googleAuth/googleAuthRepository";
-import GoogleAuthService from "../services/googleAuthService";
-import GoogleAuthController from "../controllers/googleAuthController";
 import UserService from "../services/user/userService";
 import { userAuth } from "../middlewares/userAuth";
 import ChatController from "../controllers/chat/chatController";
@@ -48,12 +45,6 @@ const bookedSlotRepository = new BookedSlotRepository();
 const bookedSlotService = new BookedSlotService(bookedSlotRepository);
 const bookedSlotController = new BookedSlotController(bookedSlotService);
 
-const googleAuthRepository = new GoogleAuthRepository(
-  process.env.GOOGLE_CLIENT_ID!,
-  userRepository
-);
-const googleAuthService = new GoogleAuthService(googleAuthRepository);
-const googleAuthController = new GoogleAuthController(googleAuthService);
 
 userRouter.post("/userRegister", (req, res) =>
   userController.registerUser(req, res)
@@ -64,10 +55,6 @@ userRouter.post("/resendOtp", (req, res) => userController.resendOtp(req, res));
 userRouter.post("/verifyOtp", (req, res) => userController.verifyOtp(req, res));
 
 userRouter.post("/login", (req, res) => userController.login(req, res));
-
-userRouter.post("/googleLogin", (req, res) =>
-  googleAuthController.login(req, res)
-);
 
 userRouter.get("/getuserDetails", userAuth, (req, res) =>
   userController.getUserDetails(req, res)

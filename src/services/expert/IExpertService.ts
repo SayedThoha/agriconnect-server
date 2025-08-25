@@ -12,7 +12,7 @@ export interface IExpertService {
     expertData: ExpertRegistrationDTO
   ): Promise<{ status: boolean; message: string }>;
   validateRegistrationData(data: Partial<ExpertRegistrationDTO>): string[];
-  getSpecialisations(): Promise<ISpecialisation[]>;
+  getSpecialisations(): Promise<ISpecialisation[] | null>;
   resendOtp(email: string): Promise<OtpVerificationResult>;
   verifyOtp(
     email: string,
